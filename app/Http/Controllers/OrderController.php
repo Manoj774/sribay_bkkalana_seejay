@@ -116,7 +116,7 @@ class OrderController extends Controller
 
                     if (isset($product['aff_user_id'])){
 
-                        $$afiliate_user_data = DB::table('users')
+                        $afiliate_user_data = DB::table('users')
                         ->where('id', $product['aff_user_id'])->first();
 
                         $direct_commission_pre_product = $productData->sell_price * $productData->selling_margin / 100;
@@ -298,7 +298,7 @@ class OrderController extends Controller
                 }
 
             }
-            return response()->json(['message' => "Order Successful",'order_no'=> sprintf("%05d", $pr_id)], 200);
+            return response()->json(['message' => "Order Successful",'order_no'=> sprintf("%05d", $order->id)], 200);
         }
 
     }
