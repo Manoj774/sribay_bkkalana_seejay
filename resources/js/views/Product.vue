@@ -81,14 +81,14 @@
                                 <template>
                                     <v-row>
                                         <v-col
-                                            v-for="(category,index) in listData"
+                                            v-for="(product,index) in listData"
                                             cols="12"
                                             sm="6"
                                             md="4"
                                             lg="4"
                                             :key="index"
                                         >
-                                            <product-item :data="category"></product-item>
+                                            <product-item :data="product"></product-item>
                                         </v-col>
                                     </v-row>
                                 </template>
@@ -145,17 +145,9 @@ export default {
                 this.products = response.body.products;
                 let count = 1;
                 for (let categoryKey in this.products) {
-                    this.listData.push(
-                        {
-                            'count':count++,
-                            'image': this.products[categoryKey].image_url,
-                            'name': this.products[categoryKey].product_name,
-                            'price': this.products[categoryKey].sell_price,
-                            'id': this.products[categoryKey].id
-                        }
-                    );
+                    this.listData.push(this.products[categoryKey]);
                 }
-                console.log(this.listData);
+                // console.log(this.listData);
             })
                 .catch(error => {
                     console.log(error);
@@ -180,6 +172,8 @@ export default {
                 });
             });
         },
+
+
 
         productFilter(){
 

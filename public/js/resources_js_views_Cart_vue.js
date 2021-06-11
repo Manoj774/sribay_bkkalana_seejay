@@ -393,9 +393,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       if (this.user == null) {
         this.dialog = true;
       } else {
-        this.$router.push({
-          path: '/checkout/payment'
-        });
+        //   this.$router.push({path:'/checkout/payment'});
+        window.location.href = '/checkout/payment';
       }
     },
     registerUser: function registerUser() {
@@ -409,10 +408,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           localStorage.setItem('role', response.data.role);
           localStorage.setItem('user', JSON.stringify(response.data.user));
           _this.user = response.data.user;
-
-          _this.$router.push({
-            path: '/checkout/payment'
-          });
+          window.location.href = '/checkout/payment'; //   this.$router.push('/checkout/payment');
         })["catch"](function (error) {
           _this.$toast.open({
             message: error.message,
@@ -432,10 +428,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           localStorage.setItem('role', response.data.role);
           localStorage.setItem('user', JSON.stringify(response.data.user));
           _this2.user = response.data.user;
-
-          _this2.$router.push({
-            path: '/checkout/payment'
-          });
+          window.location.href = '/checkout/payment'; //   this.$router.push('/checkout/payment');
         })["catch"](function (error) {
           _this2.$toast.open({
             message: error.message,

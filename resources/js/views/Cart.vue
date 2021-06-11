@@ -339,7 +339,8 @@ export default {
           if (this.user == null){
               this.dialog = true;
           }else {
-              this.$router.push({path:'/checkout/payment'});
+            //   this.$router.push({path:'/checkout/payment'});
+              window.location.href = '/checkout/payment';
           }
       },
       registerUser(){
@@ -350,7 +351,8 @@ export default {
                   localStorage.setItem('role', response.data.role)
                   localStorage.setItem('user', JSON.stringify(response.data.user))
                   this.user = response.data.user;
-                  this.$router.push({path:'/checkout/payment'});
+                  window.location.href = '/checkout/payment';
+                //   this.$router.push('/checkout/payment');
               }).catch(error => {
                   this.$toast.open({
                       message: error.message,
@@ -367,7 +369,8 @@ export default {
                   localStorage.setItem('role', response.data.role)
                   localStorage.setItem('user', JSON.stringify(response.data.user))
                   this.user = response.data.user;
-                  this.$router.push({path:'/checkout/payment'});
+                  window.location.href = '/checkout/payment';
+                //   this.$router.push('/checkout/payment');
               }).catch(error => {
                   this.$toast.open({
                       message: error.message,

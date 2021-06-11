@@ -558,9 +558,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           _this2.buyNowAndCart();
 
-          _this2.$router.push({
-            path: '/checkout/payment'
-          });
+          window.location.href = '/checkout/payment'; // this.$router.push({path:'/checkout/payment'});
         })["catch"](function (error) {
           _this2.$toast.open({
             message: error.message,
@@ -583,9 +581,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
           _this3.buyNowAndCart();
 
-          _this3.$router.push({
-            path: '/checkout/payment'
-          });
+          window.location.href = '/checkout/payment'; // this.$router.push({path:'/checkout/payment'});
         })["catch"](function (error) {
           _this3.$toast.open({
             message: error.message,
@@ -697,7 +693,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           aff_user_id: item.user
         };
         axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
-          console.log(response.data.message);
+          window.location.href = _this7.$router.history.current.path; // console.log(this.$router.history.current);
+          // console.log(response.data.message)
         }, function (response) {
           var errors = response.data.message;
           var html = '';

@@ -89,7 +89,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ['data', 'colxs', 'colsm', 'colmd', 'collg', 'colxl'],
-  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["cart", "wishlist"])),
+  computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["wishlist"])),
   methods: {
     /**
      * method for adding item to cart
@@ -97,6 +97,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     addProductToCart: function addProductToCart(item) {
       var _this = this;
 
+      console.log(item);
       this.$snotify.success('Product adding to the cart', {
         closeOnClick: false,
         pauseOnHover: false,
@@ -104,8 +105,32 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         showProgressBar: false
       });
       setTimeout(function () {
-        _this.$store.dispatch("addProductToCart", item);
-      }, 500);
+        var newProduct = {
+          id: item.id,
+          image: item.image_url,
+          name: item.product_name,
+          price: item.sell_price,
+          quantity: 1,
+          total: item.sell_price * 1,
+          aff_user_id: null
+        };
+        axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
+          window.location.href = _this.$router.history.current.path; // console.log(this.$router.history.current);
+          // console.log(response.data.message)
+        }, function (response) {
+          var errors = response.data.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
+        });
+      }, 50);
     },
 
     /**
@@ -690,7 +715,11 @@ var render = function() {
             _c(
               "router-link",
               { attrs: { to: "/product-detail/" + _vm.data.id } },
-              [_c("img", { attrs: { alt: "product", src: _vm.data.image } })]
+              [
+                _c("img", {
+                  attrs: { alt: "product", src: _vm.data.image_url }
+                })
+              ]
             ),
             _vm._v(" "),
             _c(
@@ -745,7 +774,7 @@ var render = function() {
         _vm._v(" "),
         _c("div", { staticClass: "emb-card-content pa-4" }, [
           _c("h5", { staticClass: "font-weight-medium text-capitalize" }, [
-            _vm._v(_vm._s(_vm.data.name))
+            _vm._v(_vm._s(_vm.data.product_name))
           ]),
           _vm._v(" "),
           _c(
@@ -761,7 +790,7 @@ var render = function() {
                   { staticClass: "accent--text" },
                   [
                     _c("emb-currency-sign"),
-                    _vm._v(_vm._s(_vm.data.price) + "\n\t\t\t\t\t\t")
+                    _vm._v(_vm._s(_vm.data.sell_price) + "\n\t\t\t\t\t\t")
                   ],
                   1
                 )

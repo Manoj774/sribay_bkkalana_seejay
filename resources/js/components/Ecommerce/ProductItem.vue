@@ -4,7 +4,7 @@
 		<div>
 			<div class="thumb-warp" >
 				<router-link :to="'/product-detail/'+data.id">
-					<img alt="product" :src="data.image" >
+					<img alt="product" :src="data.image_url" >
 				</router-link>
 				<div class="wishlist-icon">
 
@@ -25,11 +25,11 @@
 				</div>
 			</div>
 			<div class="emb-card-content pa-4">
-				<h5 class="font-weight-medium text-capitalize">{{data.name}}</h5>
+				<h5 class="font-weight-medium text-capitalize">{{data.product_name}}</h5>
 				<div class="emb-meta-info layout align-center justify-space-between">
 					<div class="inline-block">
 						<h6 class="accent--text">
-							<emb-currency-sign></emb-currency-sign>{{data.price}}
+							<emb-currency-sign></emb-currency-sign>{{data.sell_price}}
 						</h6>
 					</div>
 					<div class="inline-block">
@@ -55,13 +55,14 @@ export default {
 
 	props: ['data','colxs','colsm','colmd','collg','colxl'],
 	computed: {
-	  ...mapGetters(["cart","wishlist"])
+	  ...mapGetters(["wishlist"])
 	},
 	methods: {
 		/**
 		 * method for adding item to cart
 		*/
 		addProductToCart(item) {
+			console.log(item)
 			this.$snotify.success('Product adding to the cart',{
 				closeOnClick: false,
 				pauseOnHover: false,
@@ -69,8 +70,31 @@ export default {
 				showProgressBar:false,
 			});
 			setTimeout(() => {
-				this.$store.dispatch("addProductToCart", item);
-			}, 500);
+                let newProduct = {
+                    id: item.id,
+                    image: item.image_url,
+                    name: item.product_name,
+                    price: item.sell_price,
+                    quantity: 1,
+                    total: item.sell_price *  1,
+                    aff_user_id: null
+                }
+                axios.post('/api/cart/add-to-cart',newProduct).then(response => {
+                    window.location.href = this.$router.history.current.path;
+                    // console.log(this.$router.history.current);
+                    // console.log(response.data.message)
+                }, response => {
+                    const errors = response.data.message;
+                    var html = '';
+                    for (const i in errors){
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
+			}, 50);
 		},
 		/**
 		 * method for checking if item exists in cart

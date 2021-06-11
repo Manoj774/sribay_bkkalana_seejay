@@ -7,6 +7,8 @@ use App\Providers\RouteServiceProvider;
 use App\Models\User;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 
@@ -43,7 +45,20 @@ class RegisterController extends Controller
             return response()->json(['message' => 'Register failed. Internal Server Error'],500 );
         }
 
-        return response()->json(['token' => $user->createToken('user-token')->plainTextToken,'role'=>$user->role,'user'=>$user]);
+        if(!Auth::attempt($request->only('email','password'))){
+            return response()->json([
+                'status' => 401,
+                'message' => "Unauthorized"
+            ],401);
+        }
+        //$user = User::where("email",$request->email)->first();
+        $user = User::where("email",$request->email)->first();
+        $token = $user->createToken('user-token')->plainTextToken;
+        Arr::add($user,'token',$token);
+        //$user = User::where("email",$request->email)->first();
+        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],'200');
+
+        // return response()->json(['token' => $user->createToken('user-token')->plainTextToken,'role'=>$user->role,'user'=>$user]);
     }
 
 }

@@ -71,7 +71,7 @@
                         localStorage.setItem('token', response.data.token)
                         localStorage.setItem('role', response.data.role)
                         localStorage.setItem('user', JSON.stringify(response.data.user))
-                        this.$router.push('/')
+                        window.location.href = '/';
                     }).catch(error => {
                         this.$toast.open({
                             message: error.message,
@@ -90,6 +90,7 @@
                         message: "Successfully logout",
                         type: 'success',
                     });
+                    location.reload();
                 }).catch(error => {
                     this.$toast.open({
                         message: error,

@@ -522,7 +522,8 @@ export default {
                     localStorage.setItem('user', JSON.stringify(response.data.user))
                     this.user = response.data.user;
                     this.buyNowAndCart()
-                    this.$router.push({path:'/checkout/payment'});
+                    window.location.href = '/checkout/payment';
+                    // this.$router.push({path:'/checkout/payment'});
                 }).catch(error => {
                     this.$toast.open({
                         message: error.message,
@@ -540,7 +541,8 @@ export default {
                     localStorage.setItem('user', JSON.stringify(response.data.user))
                     this.user = response.data.user;
                     this.buyNowAndCart()
-                    this.$router.push({path:'/checkout/payment'});
+                    window.location.href = '/checkout/payment';
+                    // this.$router.push({path:'/checkout/payment'});
                 }).catch(error => {
                     this.$toast.open({
                         message: error.message,
@@ -639,7 +641,9 @@ export default {
                     aff_user_id: item.user
                 }
                 axios.post('/api/cart/add-to-cart',newProduct).then(response => {
-                    console.log(response.data.message)
+                    window.location.href = this.$router.history.current.path;
+                    // console.log(this.$router.history.current);
+                    // console.log(response.data.message)
                 }, response => {
                     const errors = response.data.message;
                     var html = '';

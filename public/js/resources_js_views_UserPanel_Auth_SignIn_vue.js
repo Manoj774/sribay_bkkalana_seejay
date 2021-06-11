@@ -89,8 +89,7 @@ __webpack_require__.r(__webpack_exports__);
           localStorage.setItem('token', response.data.token);
           localStorage.setItem('role', response.data.role);
           localStorage.setItem('user', JSON.stringify(response.data.user));
-
-          _this.$router.push('/');
+          window.location.href = '/';
         })["catch"](function (error) {
           _this.$toast.open({
             message: error.message,
@@ -112,6 +111,8 @@ __webpack_require__.r(__webpack_exports__);
           message: "Successfully logout",
           type: 'success'
         });
+
+        location.reload();
       })["catch"](function (error) {
         _this2.$toast.open({
           message: error,

@@ -54,8 +54,11 @@ class LoginController extends Controller
                 'message' => "Unauthorized"
             ],401);
         }
+        $user = User::where("email",$request->email)->first();
+        $token = $user->createToken('user-token')->plainTextToken;
+        Arr::add($user,'token',$token);
         //$user = User::where("email",$request->email)->first();
-        return response()->json(['token' =>  auth()->user()->createToken('user-token')->plainTextToken,'role'=> auth()->user()->role,'user'=> auth()->user()],'200');
+        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],'200');
 
     }
 
@@ -68,7 +71,8 @@ class LoginController extends Controller
      */
     public function logOut(Request $request)
     {
-
+        // $user = $request->user();
+        // $user->currentAccessToken()->delete();
         return response()->json(['msg' => 'Logout Successful'],200);
     }
 
