@@ -398,6 +398,7 @@ export default {
           axios.get('/api/cart/get-cart-items').then(response => {
               this.cart = [];
               for (const i in response.data.cart_items){
+                  console.log(response.data.cart_items[i]);
                   this.cart.push(response.data.cart_items[i]);
               }
           }, response => {

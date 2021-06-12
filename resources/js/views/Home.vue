@@ -35,7 +35,7 @@
 			</emb-features>
 			<emb-feature-product
 				secTitle="Featured Products"
-				:data="featureProductData"
+                :data="featureProductData"
 			>
 			</emb-feature-product>
 			<emb-day-deal
@@ -129,18 +129,10 @@ export default {
   },
   methods: {
       getFeaturesProduct: function() {
-          axios.get(this.$serverUrl+'api/product').then(response => {
+          axios.get('/api/product/feature-products').then(response => {
               const responseData = response.data.products;
-              for (const i in responseData){
-                  this.featureProductData.push({
-                      objectID: responseData[i].id,
-                      image: responseData[i].image_url,
-                      name: responseData[i].product_name,
-                      price: responseData[i].sell_price,
-                      rating: 0
-                  });
-              }
-
+              this.featureProductData = responseData;
+              console.log(this.products);
           }, response => {
               const errors = response.data.message;
               var html = '';

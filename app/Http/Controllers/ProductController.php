@@ -43,6 +43,32 @@ class ProductController extends Controller
         return response()->json(['products' => $products], 200);
     }
 
+    public function getFeaturesProduct(){
+
+        $parentCategories = DB::table('categories')
+            ->select('categories.id', 'categories.name')
+            ->where('parent_id','=',0)
+            ->get();
+
+        $products = array();
+
+        foreach ($parentCategories as $category){
+            $items = DB::table('products')
+                ->select('products.id', 'products.product_name', 'products.sell_price', 'product_images.image_url')
+                ->join('product_images', 'products.id', '=', 'product_images.product_id')
+                ->join('product_has_categories', 'products.id', '=', 'product_has_categories.product_id')
+                ->where('product_has_categories.category_id', '=', $category->id)
+                ->groupBy('products.id')
+                ->get();
+
+            if (count($items) > 0){
+                $products[$category->name] = $items;
+            }
+        }
+
+        return response()->json(['products' => $products], 200);
+
+    }
 
     /**
      * Display a listing of the product by category.
@@ -181,6 +207,7 @@ class ProductController extends Controller
             'price'=>$request->price,
             'quantity'=>$request->quantity,
             'total'=>$request->total,
+            'aff_user_id'=>$request->aff_user_id
         ];
         $request->session()->put('cart',$cart_data);
         return response()->json(['message' => 'Success'], 201);

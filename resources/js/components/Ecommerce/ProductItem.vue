@@ -1,10 +1,10 @@
 <template>
 	<div>
-	<div class="product-item-wrap emb-card">
+	<div class="product-item-wrap emb-card" style="max-height: 400px; min-height: 400px;">
 		<div>
 			<div class="thumb-warp" >
 				<router-link :to="'/product-detail/'+data.id">
-					<img alt="product" :src="data.image_url" >
+					<img alt="product" :src="data.image_url" style="max-height: 280px;min-height: 280px;">
 				</router-link>
 				<div class="wishlist-icon">
 
@@ -25,7 +25,7 @@
 				</div>
 			</div>
 			<div class="emb-card-content pa-4">
-				<h5 class="font-weight-medium text-capitalize">{{data.product_name}}</h5>
+				<h6 class="font-weight-medium text-capitalize">{{data.product_name.substring(0,50)+'....'}}</h6>
 				<div class="emb-meta-info layout align-center justify-space-between">
 					<div class="inline-block">
 						<h6 class="accent--text">

@@ -463,6 +463,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this4.cart = [];
 
         for (var i in response.data.cart_items) {
+          console.log(response.data.cart_items[i]);
+
           _this4.cart.push(response.data.cart_items[i]);
         }
       }, function (response) {

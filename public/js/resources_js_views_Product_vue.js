@@ -591,102 +591,113 @@ var render = function() {
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
   return _c("div", [
-    _c("div", { staticClass: "product-item-wrap emb-card" }, [
-      _c("div", [
-        _c(
-          "div",
-          { staticClass: "thumb-warp" },
-          [
-            _c(
-              "router-link",
-              { attrs: { to: "/product-detail/" + _vm.data.id } },
-              [
-                _c("img", {
-                  attrs: { alt: "product", src: _vm.data.image_url }
-                })
-              ]
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "wishlist-icon" },
-              [
-                _c(
-                  "v-btn",
-                  {
-                    attrs: { icon: "" },
-                    on: {
-                      click: function($event) {
-                        return _vm.addItemToWishlist(_vm.data)
-                      }
-                    }
-                  },
-                  [
-                    _c("v-icon", { staticClass: "grey--text" }, [
-                      _vm._v("mdi-cards-heart ")
-                    ])
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "add-to-cart" },
-              [
-                _c(
-                  "v-btn",
-                  {
-                    staticClass: "accent",
-                    attrs: { small: "", icon: "" },
-                    on: {
-                      click: function($event) {
-                        return _vm.addProductToCart(_vm.data)
-                      }
-                    }
-                  },
-                  [_c("v-icon", [_vm._v("mdi-cart-plus ")])],
-                  1
-                )
-              ],
-              1
-            )
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "emb-card-content pa-4" }, [
-          _c("h5", { staticClass: "font-weight-medium text-capitalize" }, [
-            _vm._v(_vm._s(_vm.data.product_name))
-          ]),
-          _vm._v(" "),
+    _c(
+      "div",
+      {
+        staticClass: "product-item-wrap emb-card",
+        staticStyle: { "max-height": "400px", "min-height": "400px" }
+      },
+      [
+        _c("div", [
           _c(
             "div",
-            {
-              staticClass:
-                "emb-meta-info layout align-center justify-space-between"
-            },
+            { staticClass: "thumb-warp" },
             [
-              _c("div", { staticClass: "inline-block" }, [
-                _c(
-                  "h6",
-                  { staticClass: "accent--text" },
-                  [
-                    _c("emb-currency-sign"),
-                    _vm._v(_vm._s(_vm.data.sell_price) + "\n\t\t\t\t\t\t")
-                  ],
-                  1
-                )
-              ]),
+              _c(
+                "router-link",
+                { attrs: { to: "/product-detail/" + _vm.data.id } },
+                [
+                  _c("img", {
+                    staticStyle: {
+                      "max-height": "280px",
+                      "min-height": "280px"
+                    },
+                    attrs: { alt: "product", src: _vm.data.image_url }
+                  })
+                ]
+              ),
               _vm._v(" "),
-              _c("div", { staticClass: "inline-block" })
-            ]
-          )
+              _c(
+                "div",
+                { staticClass: "wishlist-icon" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { icon: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.addItemToWishlist(_vm.data)
+                        }
+                      }
+                    },
+                    [
+                      _c("v-icon", { staticClass: "grey--text" }, [
+                        _vm._v("mdi-cards-heart ")
+                      ])
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "div",
+                { staticClass: "add-to-cart" },
+                [
+                  _c(
+                    "v-btn",
+                    {
+                      staticClass: "accent",
+                      attrs: { small: "", icon: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.addProductToCart(_vm.data)
+                        }
+                      }
+                    },
+                    [_c("v-icon", [_vm._v("mdi-cart-plus ")])],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          ),
+          _vm._v(" "),
+          _c("div", { staticClass: "emb-card-content pa-4" }, [
+            _c("h6", { staticClass: "font-weight-medium text-capitalize" }, [
+              _vm._v(_vm._s(_vm.data.product_name.substring(0, 50) + "...."))
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "emb-meta-info layout align-center justify-space-between"
+              },
+              [
+                _c("div", { staticClass: "inline-block" }, [
+                  _c(
+                    "h6",
+                    { staticClass: "accent--text" },
+                    [
+                      _c("emb-currency-sign"),
+                      _vm._v(_vm._s(_vm.data.sell_price) + "\n\t\t\t\t\t\t")
+                    ],
+                    1
+                  )
+                ]),
+                _vm._v(" "),
+                _c("div", { staticClass: "inline-block" })
+              ]
+            )
+          ])
         ])
-      ])
-    ])
+      ]
+    )
   ])
 }
 var staticRenderFns = []

@@ -435,6 +435,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
@@ -445,7 +446,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   },
   data: function data() {
     return {
-      selectedTab: 'All',
+      selectedTab: 0,
       activeTab: null,
       slickOptions: {
         autoplay: true,
@@ -970,18 +971,10 @@ __webpack_require__.r(__webpack_exports__);
     getFeaturesProduct: function getFeaturesProduct() {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/product').then(function (response) {
+      axios.get('/api/product/feature-products').then(function (response) {
         var responseData = response.data.products;
-
-        for (var i in responseData) {
-          _this.featureProductData.push({
-            objectID: responseData[i].id,
-            image: responseData[i].image_url,
-            name: responseData[i].product_name,
-            price: responseData[i].sell_price,
-            rating: 0
-          });
-        }
+        _this.featureProductData = responseData;
+        console.log(_this.products);
       }, function (response) {
         var errors = response.data.message;
         var html = '';
@@ -2927,260 +2920,278 @@ var render = function() {
           _c("h2", [_vm._v(_vm._s(_vm.secTitle))])
         ]),
         _vm._v(" "),
-        _c("div", { staticClass: "tab-bar-wrap  text-center" }, [
-          _c(
-            "div",
-            { key: "All", staticClass: "tab-bar d-inline-block" },
-            [
-              _c(
-                "v-btn",
-                {
-                  staticClass: "d-inline-block",
-                  attrs: { text: "All" === _vm.selectedTab },
-                  on: {
-                    click: function($event) {
-                      return _vm.onTabChange("All")
+        _c(
+          "div",
+          { staticClass: "tab-bar-wrap  text-center" },
+          _vm._l(_vm.data, function(tab, key, index) {
+            return _c(
+              "div",
+              { key: key, staticClass: "tab-bar d-inline-block" },
+              [
+                _c(
+                  "v-btn",
+                  {
+                    staticClass: "d-inline-block",
+                    attrs: { text: index === _vm.selectedTab },
+                    on: {
+                      click: function($event) {
+                        return _vm.onTabChange(index)
+                      }
                     }
-                  }
-                },
-                [_vm._v(_vm._s("All"))]
-              )
-            ],
-            1
-          )
-        ]),
+                  },
+                  [_vm._v(_vm._s(key))]
+                )
+              ],
+              1
+            )
+          }),
+          0
+        ),
         _vm._v(" "),
         _c(
           "div",
           { staticClass: "tab-content" },
           [
-            [
-              "All" == _vm.selectedTab
-                ? _c(
-                    "div",
-                    { key: "All" },
-                    [
-                      _c(
-                        "slick",
-                        {
-                          ref: "carousel",
-                          attrs: { options: _vm.slickOptions }
-                        },
-                        _vm._l(_vm.data, function(cateogary, subindex) {
-                          return _c(
-                            "div",
-                            { key: subindex, staticClass: "tab-item" },
-                            [
-                              _c("div", { staticClass: "emb-card" }, [
+            _vm._l(_vm.data, function(tab, title, index) {
+              return [
+                index == _vm.selectedTab
+                  ? _c(
+                      "div",
+                      { key: index },
+                      [
+                        _c(
+                          "slick",
+                          {
+                            key: title,
+                            ref: "carousel",
+                            refInFor: true,
+                            attrs: { options: _vm.slickOptions }
+                          },
+                          _vm._l(_vm.data[title], function(
+                            cateogary,
+                            subindex
+                          ) {
+                            return _c(
+                              "div",
+                              { key: subindex, staticClass: "tab-item" },
+                              [
                                 _c(
                                   "div",
-                                  { staticClass: "thumb-wrap" },
+                                  {
+                                    staticClass: "emb-card",
+                                    staticStyle: {
+                                      "max-height": "400px",
+                                      "min-height": "400px"
+                                    }
+                                  },
                                   [
                                     _c(
-                                      "router-link",
-                                      {
-                                        attrs: {
-                                          to: "/products/" + cateogary.objectID
-                                        }
-                                      },
-                                      [
-                                        _c("img", {
-                                          attrs: {
-                                            alt: "feature product image",
-                                            src: cateogary.image,
-                                            width: "626",
-                                            height: "800"
-                                          }
-                                        })
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
                                       "div",
-                                      { staticClass: "wishlist-icon" },
-                                      [
-                                        _vm.ifItemExistInWishlist(cateogary)
-                                          ? _c(
-                                              "v-btn",
-                                              {
-                                                attrs: { icon: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.addItemToWishlist(
-                                                      cateogary
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c(
-                                                  "v-icon",
-                                                  {
-                                                    staticClass: "black--text"
-                                                  },
-                                                  [_vm._v("favorite")]
-                                                )
-                                              ],
-                                              1
-                                            )
-                                          : _c(
-                                              "v-btn",
-                                              {
-                                                attrs: { icon: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.addItemToWishlist(
-                                                      cateogary
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c(
-                                                  "v-icon",
-                                                  { staticClass: "grey--text" },
-                                                  [_vm._v("favorite")]
-                                                )
-                                              ],
-                                              1
-                                            )
-                                      ],
-                                      1
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      { staticClass: "add-to-cart" },
-                                      [
-                                        _vm.ifItemExistInCart(
-                                          cateogary,
-                                          _vm.cart
-                                        )
-                                          ? _c(
-                                              "v-btn",
-                                              {
-                                                staticClass: "accent",
-                                                attrs: {
-                                                  to: "/cart",
-                                                  icon: "",
-                                                  absolute: "",
-                                                  bottom: ""
-                                                }
-                                              },
-                                              [
-                                                _c("v-icon", [
-                                                  _vm._v("remove_red_eye")
-                                                ])
-                                              ],
-                                              1
-                                            )
-                                          : _c(
-                                              "v-btn",
-                                              {
-                                                staticClass: "accent",
-                                                attrs: { icon: "" },
-                                                on: {
-                                                  click: function($event) {
-                                                    return _vm.addProductToCart(
-                                                      cateogary
-                                                    )
-                                                  }
-                                                }
-                                              },
-                                              [
-                                                _c("v-icon", [
-                                                  _vm._v("shopping_cart")
-                                                ])
-                                              ],
-                                              1
-                                            )
-                                      ],
-                                      1
-                                    )
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "emb-card-content pa-4" },
-                                  [
-                                    _c("h5", {
-                                      staticClass: "font-weight-medium",
-                                      domProps: {
-                                        textContent: _vm._s(cateogary.name)
-                                      }
-                                    }),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "emb-meta-info layout align-center my-1"
-                                      },
+                                      { staticClass: "thumb-wrap" },
                                       [
                                         _c(
-                                          "div",
-                                          { staticClass: "inline-block" },
+                                          "router-link",
+                                          {
+                                            attrs: {
+                                              to: "/products/" + cateogary.id
+                                            }
+                                          },
                                           [
-                                            _c(
-                                              "h6",
-                                              {
-                                                staticClass:
-                                                  "accent--text font-weight-medium"
+                                            _c("img", {
+                                              staticStyle: {
+                                                "max-height": "280px",
+                                                "min-height": "280px"
                                               },
-                                              [
-                                                _c("emb-currency-sign"),
-                                                _vm._v(
-                                                  _vm._s(cateogary.price) +
-                                                    "\n                                            "
-                                                )
-                                              ],
-                                              1
-                                            )
+                                              attrs: {
+                                                alt: "feature product image",
+                                                src: cateogary.image_url,
+                                                width: "626",
+                                                height: "400"
+                                              }
+                                            })
                                           ]
                                         ),
                                         _vm._v(" "),
                                         _c(
                                           "div",
-                                          { staticClass: "inline-block " },
+                                          { staticClass: "wishlist-icon" },
                                           [
-                                            _c("v-rating", {
-                                              attrs: {
-                                                readonly: "",
-                                                "background-color": "grey",
-                                                color: "#edb876"
-                                              },
-                                              model: {
-                                                value: cateogary.rate,
-                                                callback: function($$v) {
-                                                  _vm.$set(
-                                                    cateogary,
-                                                    "rate",
-                                                    $$v
-                                                  )
-                                                },
-                                                expression: "cateogary.rate"
-                                              }
-                                            })
+                                            _vm.ifItemExistInWishlist(cateogary)
+                                              ? _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.addItemToWishlist(
+                                                          cateogary
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "v-icon",
+                                                      {
+                                                        staticClass:
+                                                          "black--text"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "mdi-cards-heart"
+                                                        )
+                                                      ]
+                                                    )
+                                                  ],
+                                                  1
+                                                )
+                                              : _c(
+                                                  "v-btn",
+                                                  {
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.addItemToWishlist(
+                                                          cateogary
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c(
+                                                      "v-icon",
+                                                      {
+                                                        staticClass:
+                                                          "grey--text"
+                                                      },
+                                                      [
+                                                        _vm._v(
+                                                          "mdi-cards-heart"
+                                                        )
+                                                      ]
+                                                    )
+                                                  ],
+                                                  1
+                                                )
                                           ],
                                           1
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          { staticClass: "add-to-cart" },
+                                          [
+                                            _vm.ifItemExistInCart(
+                                              cateogary,
+                                              _vm.cart
+                                            )
+                                              ? _c(
+                                                  "v-btn",
+                                                  {
+                                                    staticClass: "accent",
+                                                    attrs: {
+                                                      to: "/cart",
+                                                      icon: "",
+                                                      absolute: "",
+                                                      bottom: ""
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-icon", [
+                                                      _vm._v("remove_red_eye")
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                              : _c(
+                                                  "v-btn",
+                                                  {
+                                                    staticClass: "accent",
+                                                    attrs: { icon: "" },
+                                                    on: {
+                                                      click: function($event) {
+                                                        return _vm.addProductToCart(
+                                                          cateogary
+                                                        )
+                                                      }
+                                                    }
+                                                  },
+                                                  [
+                                                    _c("v-icon", [
+                                                      _vm._v("mdi-cart-plus")
+                                                    ])
+                                                  ],
+                                                  1
+                                                )
+                                          ],
+                                          1
+                                        )
+                                      ],
+                                      1
+                                    ),
+                                    _vm._v(" "),
+                                    _c(
+                                      "div",
+                                      { staticClass: "emb-card-content pa-4" },
+                                      [
+                                        _c("h6", {
+                                          domProps: {
+                                            textContent: _vm._s(
+                                              cateogary.product_name.substring(
+                                                0,
+                                                50
+                                              ) + "...."
+                                            )
+                                          }
+                                        }),
+                                        _vm._v(" "),
+                                        _c(
+                                          "div",
+                                          {
+                                            staticClass:
+                                              "emb-meta-info layout align-center my-1"
+                                          },
+                                          [
+                                            _c(
+                                              "div",
+                                              { staticClass: "inline-block" },
+                                              [
+                                                _c(
+                                                  "h6",
+                                                  {
+                                                    staticClass:
+                                                      "accent--text font-weight-medium"
+                                                  },
+                                                  [
+                                                    _c("emb-currency-sign"),
+                                                    _vm._v(
+                                                      _vm._s(
+                                                        cateogary.sell_price
+                                                      ) +
+                                                        "\n                                                "
+                                                    )
+                                                  ],
+                                                  1
+                                                )
+                                              ]
+                                            )
+                                          ]
                                         )
                                       ]
                                     )
                                   ]
                                 )
-                              ])
-                            ]
-                          )
-                        }),
-                        0
-                      )
-                    ],
-                    1
-                  )
-                : _vm._e()
-            ]
+                              ]
+                            )
+                          }),
+                          0
+                        )
+                      ],
+                      1
+                    )
+                  : _vm._e()
+              ]
+            })
           ],
           2
         )

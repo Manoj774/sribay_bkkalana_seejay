@@ -5,35 +5,36 @@
                 <h2>{{secTitle}}</h2>
             </div>
             <div class="tab-bar-wrap  text-center">
-                <div  :key="'All'" class="tab-bar d-inline-block">
-                    <v-btn class="d-inline-block" @click="onTabChange('All')" :text="'All' === selectedTab">{{'All'}}</v-btn>
+                <div v-for="(tab,key, index) in data" :key="key" class="tab-bar d-inline-block">
+                    <v-btn class="d-inline-block" @click="onTabChange(index)" :text="index === selectedTab">{{key}}</v-btn>
                 </div>
             </div>
             <div class="tab-content">
-                <template>
-                    <div v-if="'All' == selectedTab" :key="'All'">
-                        <slick ref="carousel" :options="slickOptions">
+                <template v-for="(tab,title, index) in data">
+                    <div v-if="index == selectedTab" :key="index">
+                        <slick ref="carousel" :options="slickOptions" :key="title">
                             <div
-                                v-for="(cateogary,subindex) in data"
+                                v-for="(cateogary,subindex) in data[title]"
                                 :key="subindex"
                                 class="tab-item"
                             >
-                                <div class="emb-card">
+                                <div class="emb-card" style="max-height: 400px; min-height: 400px;">
                                     <div class="thumb-wrap">
-                                        <router-link :to="'/products/'+cateogary.objectID">
+                                        <router-link :to="'/products/'+cateogary.id">
                                             <img
                                                 alt="feature product image"
-                                                :src="cateogary.image"
+                                                :src="cateogary.image_url"
                                                 width="626"
-                                                height="800"
+                                                height="400"
+                                                style="max-height: 280px;min-height: 280px;"
                                             >
                                         </router-link>
                                         <div class="wishlist-icon">
                                             <v-btn v-if="ifItemExistInWishlist(cateogary)" @click="addItemToWishlist(cateogary)" icon >
-                                                <v-icon  class="black--text">favorite</v-icon>
+                                                <v-icon  class="black--text">mdi-cards-heart</v-icon>
                                             </v-btn>
                                             <v-btn v-else @click="addItemToWishlist(cateogary)" icon >
-                                                <v-icon class="grey--text">favorite</v-icon>
+                                                <v-icon class="grey--text">mdi-cards-heart</v-icon>
                                             </v-btn>
                                         </div>
                                         <div class="add-to-cart">
@@ -41,27 +42,27 @@
                                                 <v-icon>remove_red_eye</v-icon>
                                             </v-btn>
                                             <v-btn v-else @click="addProductToCart(cateogary)" class="accent" icon >
-                                                <v-icon>shopping_cart</v-icon>
+                                                <v-icon>mdi-cart-plus</v-icon>
                                             </v-btn>
                                         </div>
                                     </div>
                                     <div class="emb-card-content pa-4">
-                                        <h5  class="font-weight-medium" v-text="cateogary.name"></h5>
+                                        <h6  v-text="cateogary.product_name.substring(0,50)+'....'"></h6>
                                         <div class="emb-meta-info layout align-center my-1">
                                             <div class="inline-block">
                                                 <h6 class="accent--text font-weight-medium">
-                                                    <emb-currency-sign></emb-currency-sign>{{cateogary.price}}
+                                                    <emb-currency-sign></emb-currency-sign>{{cateogary.sell_price}}
                                                 </h6>
                                             </div>
-                                            <div class="inline-block ">
-                                                <v-rating
-                                                    v-model="cateogary.rate"
-                                                    readonly
-                                                    background-color="grey"
-                                                    color="#edb876"
-                                                >
-                                                </v-rating>
-                                            </div>
+<!--                                            <div class="inline-block ">-->
+<!--                                                <v-rating-->
+<!--                                                    v-model="cateogary.rate"-->
+<!--                                                    readonly-->
+<!--                                                    background-color="grey"-->
+<!--                                                    color="#edb876"-->
+<!--                                                >-->
+<!--                                                </v-rating>-->
+<!--                                            </div>-->
                                         </div>
                                     </div>
                                 </div>
@@ -88,7 +89,7 @@
         },
         data() {
             return {
-                selectedTab: 'All',
+                selectedTab: 0,
                 activeTab: null,
                 slickOptions: {
                     autoplay: true,
@@ -119,10 +120,11 @@
                             }
                         }
                     ]
-                }
+                },
             };
         },
         methods: {
+
             changeSelectedProduct(cateogary) {
                 this.$store.dispatch("changeSelectedProduct", cateogary);
             },
