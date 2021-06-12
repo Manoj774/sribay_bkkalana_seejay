@@ -89,12 +89,19 @@ __webpack_require__.r(__webpack_exports__);
           id: "cards"
         }]
       },
-      selectedTab: 0
+      selectedTab: 0,
+      user: null
     };
   },
   mounted: function mounted() {
     if (JSON.parse(sessionStorage.getItem('user')) != null) {
-      if (JSON.parse(sessionStorage.getItem('user')).role == 3) {
+      this.user = JSON.parse(sessionStorage.getItem('user'));
+    } else if (JSON.parse(sessionStorage.getItem('admin-user')) != null) {
+      this.user = JSON.parse(sessionStorage.getItem('admin-user'));
+    }
+
+    if (JSON.parse(sessionStorage.getItem('user')) != null || JSON.parse(sessionStorage.getItem('admin-user')) != null) {
+      if (JSON.parse(sessionStorage.getItem('user')).role === 3 || JSON.parse(sessionStorage.getItem('admin-user')).role === 1) {
         this.settings = {
           affiliate: [{
             title: "Affiliate Program",
@@ -235,7 +242,26 @@ var render = function() {
             "div",
             { staticClass: "container grid-list-xl" },
             [
-              _vm._m(0),
+              _c(
+                "div",
+                { staticClass: "layout justify-start mt-0 mb-4 mx-0" },
+                [
+                  _vm._m(0),
+                  _vm._v(" "),
+                  _c("div", { staticClass: "px-4" }, [
+                    _c("h4", [
+                      _vm._v(
+                        "Hi, " +
+                          _vm._s(_vm.user.first_name + " " + _vm.user.last_name)
+                      )
+                    ]),
+                    _vm._v(" "),
+                    _c("div", { staticClass: "text-muted text-xl" }, [
+                      _vm._v(_vm._s(_vm.user.email))
+                    ])
+                  ])
+                ]
+              ),
               _vm._v(" "),
               _c(
                 "v-layout",
@@ -369,24 +395,14 @@ var staticRenderFns = [
     var _vm = this
     var _h = _vm.$createElement
     var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "layout justify-start mt-0 mb-4 mx-0" }, [
-      _c("div", { staticClass: "login-user-img" }, [
-        _c("img", {
-          attrs: {
-            src: "/static/images/user-3.jpg",
-            width: "70",
-            alt: "Active User"
-          }
-        })
-      ]),
-      _vm._v(" "),
-      _c("div", { staticClass: "px-4" }, [
-        _c("h4", [_vm._v("Hi, Alex Doe")]),
-        _vm._v(" "),
-        _c("div", { staticClass: "text-muted text-xl" }, [
-          _vm._v("alexdoe@deo.com")
-        ])
-      ])
+    return _c("div", { staticClass: "login-user-img" }, [
+      _c("img", {
+        attrs: {
+          src: "/static/images/user-3.jpg",
+          width: "70",
+          alt: "Active User"
+        }
+      })
     ])
   }
 ]

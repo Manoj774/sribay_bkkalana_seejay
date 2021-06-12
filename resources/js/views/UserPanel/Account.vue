@@ -9,8 +9,8 @@
 								<img src="/static/images/user-3.jpg" width="70" alt="Active User">
 							</div>
 							<div class="px-4">
-								<h4>Hi, Alex Doe</h4>
-								<div class="text-muted text-xl">alexdoe@deo.com</div>
+								<h4>Hi, {{user.first_name +" "+ user.last_name}}</h4>
+								<div class="text-muted text-xl">{{user.email}}</div>
 							</div>
 						</div>
 						<v-layout row wrap fill-height profile-list>
@@ -86,11 +86,20 @@ export default {
 				]
 			},
 			selectedTab: 0,
+            user:null,
 		}
+
 	},
     mounted() {
-        if (JSON.parse(sessionStorage.getItem('user')) != null){
-            if (JSON.parse(sessionStorage.getItem('user')).role == 3){
+
+	    if (JSON.parse(sessionStorage.getItem('user')) != null){
+	        this.user = JSON.parse(sessionStorage.getItem('user'));
+        }else if (JSON.parse(sessionStorage.getItem('admin-user')) != null){
+            this.user = JSON.parse(sessionStorage.getItem('admin-user'));
+        }
+
+        if (JSON.parse(sessionStorage.getItem('user')) != null || JSON.parse(sessionStorage.getItem('admin-user')) != null){
+            if (JSON.parse(sessionStorage.getItem('user')).role === 3 || JSON.parse(sessionStorage.getItem('admin-user')).role === 1){
                 this.settings = {
                     affiliate :[
                         {
