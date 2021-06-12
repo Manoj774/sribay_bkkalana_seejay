@@ -128,24 +128,40 @@
             changeSelectedProduct(cateogary) {
                 this.$store.dispatch("changeSelectedProduct", cateogary);
             },
-            /**
-             * method for adding item to cart
-             */
-            addProductToCart(newItem) {
-                this.$snotify.success("Product adding to the cart", {
+            addProductToCart(item) {
+                console.log(item)
+                this.$snotify.success('Product adding to the cart',{
                     closeOnClick: false,
                     pauseOnHover: false,
-                    timeout: 1000
+                    timeout: 1000,
+                    showProgressBar:false,
                 });
                 setTimeout(() => {
-                    this.$store.dispatch("addProductToCart", newItem);
-                }, 100);
-            },
-            /**
-             * method for to change item
-             */
-            onTabChange(key) {
-                this.selectedTab = key;
+                    let newProduct = {
+                        id: item.id,
+                        image: item.image_url,
+                        name: item.product_name,
+                        price: item.sell_price,
+                        quantity: 1,
+                        total: item.sell_price *  1,
+                        aff_user_id: null
+                    }
+                    axios.post('/api/cart/add-to-cart',newProduct).then(response => {
+                        window.location.href = this.$router.history.current.path;
+                        // console.log(this.$router.history.current);
+                        // console.log(response.data.message)
+                    }, response => {
+                        const errors = response.data.message;
+                        var html = '';
+                        for (const i in errors){
+                            html += errors[i];
+                        }
+                        this.$toast.open({
+                            message: html,
+                            type: 'error',
+                        });
+                    });
+                }, 50);
             },
             /**
              * method for checking if item exists in cart
@@ -160,20 +176,21 @@
                 return exists;
             },
             // this method is use to add a product in wishlist
-            addItemToWishlist(item) {
-                if (this.ifItemExistInWishlist(item)) {
-                    this.$snotify.error("Product already exist in the wishlist", {
-                        showProgressBar: false
+            addItemToWishlist(data) {
+                if(this.ifItemExistInWishlist(data)) {
+                    this.$snotify.error('Product already exist in the wishlist',{
+                        showProgressBar:false,
                     });
-                } else {
-                    this.$snotify.success("Product adding to the wishlist", {
+                }
+                else {
+                    this.$snotify.success('Product adding to the wishlist',{
                         closeOnClick: false,
                         pauseOnHover: false,
                         timeout: 1000,
-                        showProgressBar: false
+                        showProgressBar:false,
                     });
                     setTimeout(() => {
-                        this.$store.dispatch("addItemToWishlist", item);
+                        this.$store.dispatch("addItemToWishlist", data);
                     }, 2000);
                 }
             },
@@ -189,7 +206,14 @@
                     }
                 }
                 return exists;
-            }
+            },
+            /**
+             * method for to change item
+             */
+            onTabChange(key) {
+                this.selectedTab = key;
+            },
+
         }
     };
 </script>

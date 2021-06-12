@@ -479,28 +479,43 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     changeSelectedProduct: function changeSelectedProduct(cateogary) {
       this.$store.dispatch("changeSelectedProduct", cateogary);
     },
-
-    /**
-     * method for adding item to cart
-     */
-    addProductToCart: function addProductToCart(newItem) {
+    addProductToCart: function addProductToCart(item) {
       var _this = this;
 
-      this.$snotify.success("Product adding to the cart", {
+      console.log(item);
+      this.$snotify.success('Product adding to the cart', {
         closeOnClick: false,
         pauseOnHover: false,
-        timeout: 1000
+        timeout: 1000,
+        showProgressBar: false
       });
       setTimeout(function () {
-        _this.$store.dispatch("addProductToCart", newItem);
-      }, 100);
-    },
+        var newProduct = {
+          id: item.id,
+          image: item.image_url,
+          name: item.product_name,
+          price: item.sell_price,
+          quantity: 1,
+          total: item.sell_price * 1,
+          aff_user_id: null
+        };
+        axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
+          window.location.href = _this.$router.history.current.path; // console.log(this.$router.history.current);
+          // console.log(response.data.message)
+        }, function (response) {
+          var errors = response.data.message;
+          var html = '';
 
-    /**
-     * method for to change item
-     */
-    onTabChange: function onTabChange(key) {
-      this.selectedTab = key;
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
+        });
+      }, 50);
     },
 
     /**
@@ -529,22 +544,22 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       return exists;
     },
     // this method is use to add a product in wishlist
-    addItemToWishlist: function addItemToWishlist(item) {
+    addItemToWishlist: function addItemToWishlist(data) {
       var _this2 = this;
 
-      if (this.ifItemExistInWishlist(item)) {
-        this.$snotify.error("Product already exist in the wishlist", {
+      if (this.ifItemExistInWishlist(data)) {
+        this.$snotify.error('Product already exist in the wishlist', {
           showProgressBar: false
         });
       } else {
-        this.$snotify.success("Product adding to the wishlist", {
+        this.$snotify.success('Product adding to the wishlist', {
           closeOnClick: false,
           pauseOnHover: false,
           timeout: 1000,
           showProgressBar: false
         });
         setTimeout(function () {
-          _this2.$store.dispatch("addItemToWishlist", item);
+          _this2.$store.dispatch("addItemToWishlist", data);
         }, 2000);
       }
     },
@@ -574,6 +589,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return exists;
+    },
+
+    /**
+     * method for to change item
+     */
+    onTabChange: function onTabChange(key) {
+      this.selectedTab = key;
     }
   }
 });

@@ -100,7 +100,13 @@ Vue.config.productionTip = false
 
 
 function loggedIn(){
-    return localStorage.getItem('token')
+    let session = localStorage.getItem('token');
+
+    if (session == null) {
+        return false;
+    }else{
+        return session
+    }
 }
 
 
@@ -128,17 +134,15 @@ router.beforeEach((to, from, next) => {
             } else {
                 next()
             }
-        } else if(to.matched.some(record => record.meta.guest)) {
-             if (loggedIn()) {
-                 next({
-                     path: '/',
-                     query: { redirect: to.fullPath }
-                 })
-             } else {
-                 next()
-             }
-         }
-    }else{
+        }
+    }else if(to.matched.some(record => record.meta.guest)) {
+        if (loggedIn()) {
+            next()
+        } else {
+            next()
+        }
+    }
+    else{
         next()
     }
 })

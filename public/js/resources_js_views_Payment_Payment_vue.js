@@ -368,10 +368,12 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           payment_stat: 2
         };
         axios.post('/api/orders/create', paymentInfo).then(function (response) {
-          console.log(response.data); // this.$toast.open({
-          //     message: response.data.message,
-          //     type: 'success',
-          // });
+          _this4.$toast.open({
+            message: response.data.message,
+            type: 'success'
+          });
+
+          setTimeout(function () {}, 50);
         })["catch"](function (error) {
           _this4.$toast.open({
             message: error.data.message,

@@ -35,6 +35,9 @@ export default {
 	path: '/',
 	component: UserPanel,
 	redirect:'/',
+    meta:{
+        guest:true
+    },
 	children:[
 		{
 			path: '/',

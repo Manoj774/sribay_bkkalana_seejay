@@ -306,11 +306,13 @@ export default {
                 }
 
                 axios.post('/api/orders/create', paymentInfo).then(response => {
-                    console.log(response.data)
-                    // this.$toast.open({
-                    //     message: response.data.message,
-                    //     type: 'success',
-                    // });
+                    this.$toast.open({
+                        message: response.data.message,
+                        type: 'success',
+                    });
+                    setTimeout(() => {
+
+                    }, 50);
                 }).catch(error => {
                     this.$toast.open({
                         message: error.data.message,

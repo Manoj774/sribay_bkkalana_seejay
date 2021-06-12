@@ -7,15 +7,12 @@
 					<img alt="product" :src="data.image_url" style="max-height: 280px;min-height: 280px;">
 				</router-link>
 				<div class="wishlist-icon">
-
 					<v-btn @click="addItemToWishlist(data)" icon >
 						<v-icon class="grey--text">mdi-cards-heart </v-icon>
 					</v-btn>
 				</div>
 				<div class="add-to-cart">
-
 					<v-btn
-
 						class="accent"
 						small icon
 						@click="addProductToCart(data)"
