@@ -247,6 +247,13 @@ class ProductController extends Controller
         return response()->json(['cart_items' => $cart_items], 201);
     }
 
+    public function removeAllCartItems(Request $request)
+    {
+//        $cart_items = $request->session()->get('cart');
+        $request->session()->remove('cart');
+        return true;
+    }
+
 
     /**
      * Store a newly created Tags in storage.

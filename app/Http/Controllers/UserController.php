@@ -90,6 +90,43 @@ class UserController extends Controller
 
     }
 
+    public function createMembershipUser(Request $request){
+        $validator = Validator::make($request->all(), [
+            'first_name' => 'required|max:50',
+            'last_name' => 'required|max:50',
+            'phone_number' => 'required|max:50',
+            'email' => 'required|email',
+            'password' => 'required|min:6',
+            'confirm_password' => 'required|same:password',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['error' => $validator->errors()], 401);
+        }
+
+        $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password','referral']);
+        $data['password'] = bcrypt($data['password']);
+
+        $user = new User($data);
+
+        if (!$user->save()){
+            return response()->json(['message' => 'Register failed. Internal Server Error'],500 );
+        }
+
+//        if(!Auth::attempt($request->only('email','password'))){
+//            return response()->json([
+//                'status' => 401,
+//                'message' => "Unauthorized"
+//            ],401);
+//        }
+//        $user = User::where("email",$request->email)->first();
+//        $token = $user->createToken('user-token')->plainTextToken;
+//        Arr::add($user,'token',$token);
+        return response()->json(['user'=> $user],200);
+//        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],200);
+    }
+
+
     /**
      * Store a newly register as member in storage.
      *
@@ -155,10 +192,6 @@ class UserController extends Controller
 
 
     }
-
-
-
-
 
 
     /**
@@ -233,7 +266,6 @@ class UserController extends Controller
         return response()->json(['message' => 'User has been updated'],201 );
 
     }
-
 
     /**
      * Logout form system.

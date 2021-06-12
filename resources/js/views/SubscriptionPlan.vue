@@ -403,7 +403,7 @@
             registerUser() {
                 this.$refs.register_form.validate();
                 if (this.register_valid === true) {
-                    axios.post('/api/register', this.register).then(response => {
+                    axios.post('/api/create-member-user', this.register).then(response => {
                         // sessionStorage.setItem('token', response.data.token)
                         // sessionStorage.setItem('role', response.data.role)
                         // sessionStorage.setItem('user', JSON.stringify(response.data.user))

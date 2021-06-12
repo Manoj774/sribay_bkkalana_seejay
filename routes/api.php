@@ -9,6 +9,7 @@ use App\Http\Controllers\MembershipPlanController;
 use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\OrderController;
+use App\Http\Controllers\ShoppingCartController;
 
 /*
 |--------------------------------------------------------------------------
@@ -35,18 +36,28 @@ Route::get('/product/{id}',[ProductController::class,'show']);
 Route::get('/product-by-category/{id}',[ProductController::class,'productsByCategory']);
 Route::post('/product/link-generate',[ProductController::class,'productsAffiliateLink']);
 Route::get('/product/{product}/{user}',[ProductController::class,'show']);
-Route::post('/cart/add-to-cart',[ProductController::class,'addToCart']);
-Route::get('/cart/get-cart-items',[ProductController::class,'getCartItems']);
-Route::delete('/cart/remove-cart-item/{id}',[ProductController::class,'removeFromCart']);
+
+
+//shopping cart
+Route::post('/cart/add-to-cart',[ShoppingCartController::class,'store']);
+Route::post('/cart/update-cart',[ShoppingCartController::class,'update']);
+Route::get('/cart/get-cart-items',[ShoppingCartController::class,'index']);
+Route::delete('/cart/remove-cart-item/{id}',[ShoppingCartController::class,'destroyCartItem']);
+Route::delete('/cart/remove-all-item/',[ShoppingCartController::class,'destroy']);
+
 
 // membership
 Route::get('/membership',[MembershipPlanController::class,'index']);
 Route::post('/users/register-membership',[UserController::class,'registerMembership']);
-
+Route::post('/users/create-member-user', [UserController::class,'createMembershipUser']);
 //category
 Route::get('/category',[CategoryController::class,'index']);
 Route::get('/category/tree-view',[CategoryController::class,'getCategoryForTreeView']);
 Route::get('/category/tree-select',[CategoryController::class,'getCategoriesForTreeSelect']);
+
+
+
+
 
 Route::middleware('auth:sanctum')->get('/user/profile', function (Request $request) {
     return $request->user();

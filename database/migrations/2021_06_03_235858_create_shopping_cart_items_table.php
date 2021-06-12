@@ -17,8 +17,12 @@ class CreateShoppingCartItemsTable extends Migration
             $table->increments('id');
             $table->foreignId('shopping_cart_id');
             $table->foreignId('product_id');
+            $table->string('name');
+            $table->text('image');
+            $table->double('price');
             $table->integer('quantity');
             $table->double('total');
+            $table->foreignId('aff_user_id');
             $table->timestamps();
         });
     }

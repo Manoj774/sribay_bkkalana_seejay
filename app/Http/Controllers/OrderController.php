@@ -330,6 +330,10 @@ class OrderController extends Controller
                 }
 
             }
+            $product = new ShoppingCartController();
+            if ($product->destroy($request)){
+                dd('done');
+            }
             return response()->json(['message' => "Order Successful",'order_no'=> sprintf("%05d", $order->id)], 200);
         }
 

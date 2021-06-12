@@ -86,7 +86,11 @@ export default {
 				]
 			},
 			selectedTab: 0,
-            user:null,
+            user:{
+                first_name: '',
+                last_name: '',
+                role: 2,
+            },
 		}
 
 	},
@@ -98,8 +102,8 @@ export default {
             this.user = JSON.parse(sessionStorage.getItem('admin-user'));
         }
 
-        if (JSON.parse(sessionStorage.getItem('user')) != null || JSON.parse(sessionStorage.getItem('admin-user')) != null){
-            if (JSON.parse(sessionStorage.getItem('user')).role === 3 || JSON.parse(sessionStorage.getItem('admin-user')).role === 1){
+        if (this.user != null){
+            if (this.user.role === 3 || this.user.role === 1){
                 this.settings = {
                     affiliate :[
                         {

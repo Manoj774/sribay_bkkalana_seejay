@@ -136,7 +136,7 @@ export default {
         let recaptchaScript = document.createElement('script')
         recaptchaScript.setAttribute('src', 'https://cdn.directpay.lk/dev/v1/directpayCardPayment.js?v=1')
         document.head.appendChild(recaptchaScript)
-        this.user = JSON.parse(localStorage.getItem('user'));
+        this.user = JSON.parse(sessionStorage.getItem('user'));
     },
 	// components:{
 	// 	shippingAddress:ShippingAddress,
@@ -311,8 +311,8 @@ export default {
                         type: 'success',
                     });
                     setTimeout(() => {
-
-                    }, 50);
+                    window.location.href = '/products';
+                    }, 500);
                 }).catch(error => {
                     this.$toast.open({
                         message: error.data.message,

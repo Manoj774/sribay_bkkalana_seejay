@@ -645,7 +645,7 @@
                 });
                 setTimeout(() => {
                     let newProduct = {
-                        id: item.id,
+                        product_id: item.id,
                         image: item.images[0].image_url,
                         name: item.product_name,
                         price: item.sell_price,

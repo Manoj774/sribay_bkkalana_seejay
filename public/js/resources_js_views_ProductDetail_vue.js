@@ -697,7 +697,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
       setTimeout(function () {
         var newProduct = {
-          id: item.id,
+          product_id: item.id,
           image: item.images[0].image_url,
           name: item.product_name,
           price: item.sell_price,

@@ -161,7 +161,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     var recaptchaScript = document.createElement('script');
     recaptchaScript.setAttribute('src', 'https://cdn.directpay.lk/dev/v1/directpayCardPayment.js?v=1');
     document.head.appendChild(recaptchaScript);
-    this.user = JSON.parse(localStorage.getItem('user'));
+    this.user = JSON.parse(sessionStorage.getItem('user'));
   },
   // components:{
   // 	shippingAddress:ShippingAddress,
@@ -373,7 +373,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
             type: 'success'
           });
 
-          setTimeout(function () {}, 50);
+          setTimeout(function () {
+            window.location.href = '/products';
+          }, 500);
         })["catch"](function (error) {
           _this4.$toast.open({
             message: error.data.message,

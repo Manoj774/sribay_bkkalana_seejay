@@ -332,10 +332,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     };
   },
   mounted: function mounted() {
-    if (JSON.parse(localStorage.getItem('user')) != null) {
-      this.user = JSON.parse(localStorage.getItem('user'));
-    } else if (JSON.parse(localStorage.getItem('admin-user')) != null) {
-      this.user = JSON.parse(localStorage.getItem('admin-user'));
+    if (JSON.parse(sessionStorage.getItem('user')) != null) {
+      this.user = JSON.parse(sessionStorage.getItem('user'));
+    } else if (JSON.parse(sessionStorage.getItem('admin-user')) != null) {
+      this.user = JSON.parse(sessionStorage.getItem('admin-user'));
     }
 
     this.getCartItems();
@@ -403,10 +403,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$refs.register_form.validate();
 
       if (this.register_valid === true) {
-        axios.post(this.$serverUrl + 'api/register', this.register).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/register', this.register).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this.user = response.data.user;
           window.location.href = '/checkout/payment'; //   this.$router.push('/checkout/payment');
         })["catch"](function (error) {
@@ -423,10 +423,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$refs.login_form.validate();
 
       if (this.login_valid === true) {
-        axios.post(this.$serverUrl + 'api/login', this.login).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/login', this.login).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this2.user = response.data.user;
           window.location.href = '/checkout/payment'; //   this.$router.push('/checkout/payment');
         })["catch"](function (error) {
@@ -440,7 +440,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     updateCartItem: function updateCartItem(product) {
       var _this3 = this;
 
-      axios.post('/api/cart/add-to-cart', product).then(function (response) {
+      axios.post('/api/cart/update-cart', product).then(function (response) {
         console.log(response.data.message);
       }, function (response) {
         var errors = response.data.message;
@@ -463,8 +463,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this4.cart = [];
 
         for (var i in response.data.cart_items) {
-          console.log(response.data.cart_items[i]);
-
           _this4.cart.push(response.data.cart_items[i]);
         }
       }, function (response) {
@@ -494,8 +492,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         pauseOnHover: false,
         timeout: 1000
       });
-      axios["delete"]('/api/cart/remove-cart-item/' + this.selectDeletedProduct.id).then(function (response) {
-        _this5.getCartItems();
+      axios["delete"]('/api/cart/remove-cart-item/' + this.selectDeletedProduct.product_id).then(function (response) {
+        window.location.href = "/cart";
       }, function (response) {
         var errors = response.data.message;
         var html = '';

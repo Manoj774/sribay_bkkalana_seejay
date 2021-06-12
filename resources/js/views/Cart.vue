@@ -300,10 +300,10 @@ export default {
   },
 
   mounted() {
-      if (JSON.parse(localStorage.getItem('user')) != null){
-          this.user = JSON.parse(localStorage.getItem('user'));
-      }else if (JSON.parse(localStorage.getItem('admin-user')) != null) {
-          this.user = JSON.parse(localStorage.getItem('admin-user'));
+      if (JSON.parse(sessionStorage.getItem('user')) != null){
+          this.user = JSON.parse(sessionStorage.getItem('user'));
+      }else if (JSON.parse(sessionStorage.getItem('admin-user')) != null) {
+          this.user = JSON.parse(sessionStorage.getItem('admin-user'));
       }
     this.getCartItems();
   },
@@ -346,10 +346,10 @@ export default {
       registerUser(){
           this.$refs.register_form.validate();
           if(this.register_valid === true){
-              axios.post(this.$serverUrl+'api/register', this.register).then(response => {
-                  localStorage.setItem('token', response.data.token)
-                  localStorage.setItem('role', response.data.role)
-                  localStorage.setItem('user', JSON.stringify(response.data.user))
+              axios.post('/api/register', this.register).then(response => {
+                  sessionStorage.setItem('token', response.data.token)
+                  sessionStorage.setItem('role', response.data.role)
+                  sessionStorage.setItem('user', JSON.stringify(response.data.user))
                   this.user = response.data.user;
                   window.location.href = '/checkout/payment';
                 //   this.$router.push('/checkout/payment');
@@ -364,10 +364,10 @@ export default {
       loginUser(){
           this.$refs.login_form.validate();
           if(this.login_valid === true){
-              axios.post(this.$serverUrl+'api/login', this.login).then(response => {
-                  localStorage.setItem('token', response.data.token)
-                  localStorage.setItem('role', response.data.role)
-                  localStorage.setItem('user', JSON.stringify(response.data.user))
+              axios.post('/api/login', this.login).then(response => {
+                  sessionStorage.setItem('token', response.data.token)
+                  sessionStorage.setItem('role', response.data.role)
+                  sessionStorage.setItem('user', JSON.stringify(response.data.user))
                   this.user = response.data.user;
                   window.location.href = '/checkout/payment';
                 //   this.$router.push('/checkout/payment');
@@ -380,7 +380,7 @@ export default {
           }
       },
      updateCartItem(product){
-         axios.post('/api/cart/add-to-cart',product).then(response => {
+         axios.post('/api/cart/update-cart',product).then(response => {
              console.log(response.data.message)
          }, response => {
              const errors = response.data.message;
@@ -398,7 +398,6 @@ export default {
           axios.get('/api/cart/get-cart-items').then(response => {
               this.cart = [];
               for (const i in response.data.cart_items){
-                  console.log(response.data.cart_items[i]);
                   this.cart.push(response.data.cart_items[i]);
               }
           }, response => {
@@ -424,8 +423,8 @@ export default {
         pauseOnHover: false,
         timeout: 1000
       });
-        axios.delete('/api/cart/remove-cart-item/'+this.selectDeletedProduct.id).then(response => {
-            this.getCartItems();
+        axios.delete('/api/cart/remove-cart-item/'+this.selectDeletedProduct.product_id).then(response => {
+            window.location.href = "/cart";
         }, response => {
             const errors = response.data.message;
             var html = '';
