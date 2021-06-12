@@ -543,8 +543,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this.$router.push({
           path: '/checkout/payment'
         });
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (error) {
+        var errors = error.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -574,7 +574,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           window.location.href = '/checkout/payment'; // this.$router.push({path:'/checkout/payment'});
         })["catch"](function (error) {
           _this2.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -597,7 +597,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           window.location.href = '/checkout/payment'; // this.$router.push({path:'/checkout/payment'});
         })["catch"](function (error) {
           _this3.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -613,8 +613,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         productId: this.selectedProduct.id
       }).then(function (response) {
         _this4.generateLink = decodeURIComponent(response.data.generateLink);
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (error) {
+        var errors = error.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -635,8 +635,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this5.selectedProduct = productDetails;
         _this5.selectedProduct.quantity = 1;
         _this5.selectedImage = productDetails.images[0].image_url;
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (error) {
+        var errors = error.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -657,8 +657,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         _this6.selectedProduct = productDetails;
         _this6.selectedProduct.quantity = 1;
         _this6.selectedImage = productDetails.images[0].image_url;
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (error) {
+        var errors = error.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -708,8 +708,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
           window.location.href = _this7.$router.history.current.path; // console.log(this.$router.history.current);
           // console.log(response.data.message)
-        }, function (response) {
-          var errors = response.data.message;
+        }, function (error) {
+          var errors = error.response.data.message;
           var html = '';
 
           for (var i in errors) {

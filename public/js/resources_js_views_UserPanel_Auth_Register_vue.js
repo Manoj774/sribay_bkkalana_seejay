@@ -121,7 +121,7 @@ __webpack_require__.r(__webpack_exports__);
           _this.$router.push('/');
         })["catch"](function (error) {
           _this.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });

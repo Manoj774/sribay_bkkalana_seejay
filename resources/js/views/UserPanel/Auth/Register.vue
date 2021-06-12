@@ -102,7 +102,7 @@
                         this.$router.push('/')
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });

@@ -514,8 +514,8 @@
                 }
                 axios.post('/api/cart/add-to-cart', newProduct).then(response => {
                     this.$router.push({path: '/checkout/payment'});
-                }, response => {
-                    const errors = response.data.message;
+                }, error => {
+                    const errors = error.response.data.message;
                     var html = '';
                     for (const i in errors) {
                         html += errors[i];
@@ -539,7 +539,7 @@
                         // this.$router.push({path:'/checkout/payment'});
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });
@@ -558,7 +558,7 @@
                         // this.$router.push({path:'/checkout/payment'});
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });
@@ -571,8 +571,8 @@
             toggleGenerate() {
                 axios.post( '/api/product/link-generate', {productId: this.selectedProduct.id}).then(response => {
                     this.generateLink = decodeURIComponent(response.data.generateLink);
-                }, response => {
-                    const errors = response.data.message;
+                }, error => {
+                    const errors = error.response.data.message;
                     var html = '';
                     for (const i in errors) {
                         html += errors[i];
@@ -591,8 +591,8 @@
                     this.selectedProduct = productDetails;
                     this.selectedProduct.quantity = 1;
                     this.selectedImage = productDetails.images[0].image_url
-                }, response => {
-                    const errors = response.data.message;
+                }, error => {
+                    const errors = error.response.data.message;
                     var html = '';
                     for (const i in errors) {
                         html += errors[i];
@@ -610,8 +610,8 @@
                     this.selectedProduct = productDetails;
                     this.selectedProduct.quantity = 1;
                     this.selectedImage = productDetails.images[0].image_url
-                }, response => {
-                    const errors = response.data.message;
+                }, error => {
+                    const errors = error.response.data.message;
                     var html = '';
                     for (const i in errors) {
                         html += errors[i];
@@ -657,8 +657,8 @@
                         window.location.href = this.$router.history.current.path;
                         // console.log(this.$router.history.current);
                         // console.log(response.data.message)
-                    }, response => {
-                        const errors = response.data.message;
+                    }, error => {
+                        const errors = error.response.data.message;
                         var html = '';
                         for (const i in errors) {
                             html += errors[i];

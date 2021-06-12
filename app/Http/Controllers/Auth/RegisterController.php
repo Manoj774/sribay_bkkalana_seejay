@@ -36,7 +36,7 @@ class RegisterController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password']);
+        $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password','referral']);
         $data['password'] = bcrypt($data['password']);
 
         $user = new User($data);
@@ -45,20 +45,17 @@ class RegisterController extends Controller
             return response()->json(['message' => 'Register failed. Internal Server Error'],500 );
         }
 
-        if(!Auth::attempt($request->only('email','password'))){
-            return response()->json([
-                'status' => 401,
-                'message' => "Unauthorized"
-            ],401);
-        }
-        //$user = User::where("email",$request->email)->first();
-        $user = User::where("email",$request->email)->first();
-        $token = $user->createToken('user-token')->plainTextToken;
-        Arr::add($user,'token',$token);
-        //$user = User::where("email",$request->email)->first();
-        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],'200');
-
-        // return response()->json(['token' => $user->createToken('user-token')->plainTextToken,'role'=>$user->role,'user'=>$user]);
+//        if(!Auth::attempt($request->only('email','password'))){
+//            return response()->json([
+//                'status' => 401,
+//                'message' => "Unauthorized"
+//            ],401);
+//        }
+//        $user = User::where("email",$request->email)->first();
+//        $token = $user->createToken('user-token')->plainTextToken;
+//        Arr::add($user,'token',$token);
+        return response()->json(['user'=> $user],200);
+//        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],200);
     }
 
 }

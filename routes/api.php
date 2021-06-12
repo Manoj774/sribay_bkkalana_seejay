@@ -21,11 +21,13 @@ use App\Http\Controllers\OrderController;
 |
 */
 
+
+//auth
 Route::post('login', [LoginController::class,'login'])->middleware('throttle:api');
 Route::post('logout', [LoginController::class,'logOut'])->middleware('auth:sanctum');
 Route::post('register', [RegisterController::class,'register']);
 
-
+//product
 Route::get('/product',[ProductController::class,'index']);
 Route::get('/product/feature-products',[ProductController::class,'getFeaturesProduct']);
 Route::get('/product/filter', [ProductController::class,'search']);
@@ -37,8 +39,11 @@ Route::post('/cart/add-to-cart',[ProductController::class,'addToCart']);
 Route::get('/cart/get-cart-items',[ProductController::class,'getCartItems']);
 Route::delete('/cart/remove-cart-item/{id}',[ProductController::class,'removeFromCart']);
 
+// membership
 Route::get('/membership',[MembershipPlanController::class,'index']);
+Route::post('/users/register-membership',[UserController::class,'registerMembership']);
 
+//category
 Route::get('/category',[CategoryController::class,'index']);
 Route::get('/category/tree-view',[CategoryController::class,'getCategoryForTreeView']);
 Route::get('/category/tree-select',[CategoryController::class,'getCategoriesForTreeSelect']);
@@ -54,16 +59,9 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/create-shipping-address',[UserController::class,'createUserShippingAddress']);
     Route::post('/users/create',[UserController::class,'create']);
     Route::put('/users/{id}',[UserController::class,'update']);
-    Route::post('/users/register-membership',[UserController::class,'registerMembership']);
+
 
     Route::post('/orders/create',[OrderController::class,'create']);
-
-
-//    Route::get('users/{user}/orders','UserController@showOrders');
-//    Route::patch('products/{product}/units/add','ProductController@updateUnits');
-//    Route::patch('orders/{order}/deliver','OrderController@deliverOrder');
-//    Route::resource('/orders', 'OrderController');
-//    Route::resource('/products', 'ProductController')->except(['index','show']);
 
 
 
@@ -77,15 +75,13 @@ Route::middleware(['auth:sanctum'])->group(function () {
     // Route::delete('/category/{id}',[CategoryController::class,'destroy']);
 
 
-
+    //admin product
     Route::post('/product/create', [ProductController::class,'create']);
     Route::get('/product/{id}/edit',[ProductController::class,'edit']);
     Route::put('/product/{id}',[ProductController::class,'update']);
     Route::delete('/category/{id}',[CategoryController::class,'destroy']);
 
-    //membership plan
-
-
+    //admin membership plan
     //// Route::get('/membership/filter', [MembershipPlanController::class,'search']);
     //// Route::get('/membership/all', [MembershipPlanController::class,'all']);
     Route::post('/membership/create', [MembershipPlanController::class,'create']);

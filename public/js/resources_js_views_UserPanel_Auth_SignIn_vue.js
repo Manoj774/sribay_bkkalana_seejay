@@ -85,14 +85,14 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.login_form.validate();
 
       if (this.login_valid === true) {
-        axios.post(this.$serverUrl + 'api/login', this.login).then(function (response) {
+        axios.post('/api/login', this.login).then(function (response) {
           sessionStorage.setItem('token', response.data.token);
           sessionStorage.setItem('role', response.data.role);
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
           window.location.href = '/';
         })["catch"](function (error) {
           _this.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -115,7 +115,7 @@ __webpack_require__.r(__webpack_exports__);
         location.reload();
       })["catch"](function (error) {
         _this2.$toast.open({
-          message: error,
+          message: error.response.data.message,
           type: 'error'
         });
       });

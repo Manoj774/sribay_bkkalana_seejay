@@ -41,24 +41,17 @@ class LoginController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json([
-                'status' => 400,
-                'message' => $validator
-            ],400);
+            return response()->json(['status' => 400,'message' => $validator],400);
         }
-
 
         if(!Auth::attempt($request->only('email','password'))){
-            return response()->json([
-                'status' => 401,
-                'message' => "Unauthorized"
-            ],401);
+            return response()->json(['status' => 401,'message' => "Username or Password is incorrect"],401);
         }
+
         $user = User::where("email",$request->email)->first();
         $token = $user->createToken('user-token')->plainTextToken;
         Arr::add($user,'token',$token);
-        //$user = User::where("email",$request->email)->first();
-        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],'200');
+        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],200);
 
     }
 

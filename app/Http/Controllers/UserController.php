@@ -136,7 +136,7 @@ class UserController extends Controller
                 if (!$user->update()){
                     return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
                 }
-                return response()->json(['userData' => $user], 200);
+                return response()->json(['message' => 'Membership purchasing successfully'], 200);
             }
             return response()->json(['message' => 'User Membership update failed. Internal Server Error'], 500);
         }
@@ -155,6 +155,11 @@ class UserController extends Controller
 
 
     }
+
+
+
+
+
 
     /**
      * Store a newly created Admin User in storage.

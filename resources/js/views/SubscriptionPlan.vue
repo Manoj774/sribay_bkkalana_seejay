@@ -9,7 +9,7 @@
                         :complete="e1 > 1"
                         step="1"
                     >
-                       Choose Subscription Plan
+                        Choose Subscription Plan
                     </v-stepper-step>
 
                     <v-divider></v-divider>
@@ -27,11 +27,6 @@
                         Payment
                     </v-stepper-step>
 
-                    <v-divider></v-divider>
-
-                    <v-stepper-step step="4">
-                        Finish
-                    </v-stepper-step>
 
                 </v-stepper-header>
 
@@ -55,10 +50,14 @@
 
                                         <div class="price-card--price">
                                             <div class="price-card--price-text">
-                                                <div class="price-card--price-number toggle-price-content odometer" data-price-yearly="900">{{item.price}}</div>
+                                                <div class="price-card--price-number toggle-price-content odometer"
+                                                     data-price-yearly="900">{{item.price}}
+                                                </div>
                                             </div>
                                             <div class="price-card--price-conditions">
-                                                <div class="toggle-price-content" data-price-monthly="Billed Monthly" data-price-yearly="Billed Annually">Billed Annually</div>
+                                                <div class="toggle-price-content" data-price-monthly="Billed Monthly"
+                                                     data-price-yearly="Billed Annually">Billed Annually
+                                                </div>
                                             </div>
                                         </div>
 
@@ -66,7 +65,8 @@
                                             <v-btn
                                                 color="teal lighten-1"
                                                 @click="chooseSubscriptionPlan(item.id,item.price)"
-                                            >Get Started</v-btn>
+                                            >Get Started
+                                            </v-btn>
                                         </div>
 
                                         <div class="price-card--features">
@@ -108,7 +108,7 @@
                                                         label
                                                         text-color="white"
                                                     >
-                                                        Rs.  {{item.monthly_income.toFixed(2)}}
+                                                        Rs. {{item.monthly_income.toFixed(2)}}
                                                     </v-chip>
                                                 </li>
                                                 <li class="price-card--features--item ">Monthly Income with Bonus
@@ -149,30 +149,30 @@
 
                         <v-row style="justify-content: center">
 
-                            <v-col cols="12" sm="12" md="5" lg="5">
-                                <div class="emb-card sign-in-form form-margin d-block white pa-6">
-                                    <h4>Login Your Account</h4>
-                                    <v-form ref="login_form" v-model="login_valid">
-                                        <v-text-field
-                                            type="email"
-                                            placeholder="Email*"
-                                            v-model="login.email"
-                                            :rules="emailRules"
-                                        >
-                                        </v-text-field>
-                                        <v-text-field
-                                            type="password"
-                                            placeholder="Password*"
-                                            v-model="login.password"
-                                            :rules="inputRules.basictextRules"
-                                        >
-                                        </v-text-field>
-                                        <v-btn class="accent mb-3 ma-0" large @click="loginUser">
-                                            Sign In
-                                        </v-btn>
-                                    </v-form>
-                                </div>
-                            </v-col>
+                            <!--                            <v-col cols="12" sm="12" md="5" lg="5">-->
+                            <!--                                <div class="emb-card sign-in-form form-margin d-block white pa-6">-->
+                            <!--                                    <h4>Login Your Account</h4>-->
+                            <!--                                    <v-form ref="login_form" v-model="login_valid">-->
+                            <!--                                        <v-text-field-->
+                            <!--                                            type="email"-->
+                            <!--                                            placeholder="Email*"-->
+                            <!--                                            v-model="login.email"-->
+                            <!--                                            :rules="emailRules"-->
+                            <!--                                        >-->
+                            <!--                                        </v-text-field>-->
+                            <!--                                        <v-text-field-->
+                            <!--                                            type="password"-->
+                            <!--                                            placeholder="Password*"-->
+                            <!--                                            v-model="login.password"-->
+                            <!--                                            :rules="inputRules.basictextRules"-->
+                            <!--                                        >-->
+                            <!--                                        </v-text-field>-->
+                            <!--                                        <v-btn class="accent mb-3 ma-0" large @click="loginUser">-->
+                            <!--                                            Sign In-->
+                            <!--                                        </v-btn>-->
+                            <!--                                    </v-form>-->
+                            <!--                                </div>-->
+                            <!--                            </v-col>-->
                             <v-col cols="12" sm="12" md="6" lg="6">
                                 <div class="emb-card sign-in-form form-margin d-block white pa-6">
                                     <h4>Enter Your Details</h4>
@@ -217,12 +217,18 @@
                                             v-model="register.confirm_password"
                                             class="mb-4"
                                             type="password"
-                                            placeholder="Retype Passowrd*"
+                                            placeholder="Retype Password*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
-                                        <v-btn class="accent mx-0 mb-4" large  @click.stop.prevent="registerUser">
-                                            Sign Up
+                                        <v-text-field
+                                            v-model="register.referral"
+                                            type="text"
+                                            placeholder="Referral ID"
+                                        >
+                                        </v-text-field>
+                                        <v-btn class="accent mx-0 mb-4" large @click.stop.prevent="registerUser">
+                                            Create
                                         </v-btn>
 
                                     </v-form>
@@ -232,7 +238,7 @@
 
                         <v-btn text class="mt-4">
                             Back
-                       </v-btn>
+                        </v-btn>
                     </v-stepper-content>
 
                     <v-stepper-content step="3">
@@ -264,7 +270,8 @@
                                                                white pa-6
                                                                text-center"
                                                         >
-                                                            <h4 class="px-6 pb-2 text-center">For every thing you had done with Embryo</h4>
+                                                            <h4 class="px-6 pb-2 text-center">For every thing you had
+                                                                done with Embryo</h4>
                                                             <v-divider class="pt-2 pb-4"></v-divider>
                                                             <div class="mx-auto text-center">
                                                                 <p class="mb-4">Spread The Word</p>
@@ -272,7 +279,9 @@
                                                                     <emb-social-share></emb-social-share>
                                                                 </div>
                                                             </div>
-                                                            <v-btn block class="accent elevation-5 my-0" height="50">Buy Embryo Now</v-btn>
+                                                            <v-btn block class="accent elevation-5 my-0" height="50">Buy
+                                                                Embryo Now
+                                                            </v-btn>
                                                         </div>
                                                     </v-flex>
                                                 </div>
@@ -306,24 +315,25 @@
     export default {
         name: "SubscriptionPlan",
         data: () => ({
-            memberships:[],
+            memberships: [],
             e1: 1,
             planId: 0,
-            planPrice:0,
+            planPrice: 0,
             userId: 0,
-            login:{
-              email: null,
-              password: null
+            login: {
+                email: null,
+                password: null
             },
-            register:{
+            register: {
                 first_name: null,
                 last_name: null,
-                phone_number:null,
+                phone_number: null,
                 email: null,
                 password: null,
-                confirm_password: null
+                confirm_password: null,
+                referral: null
             },
-            user:null,
+            user: null,
             login_valid: false,
             register_valid: false,
             emailRules: [
@@ -342,15 +352,15 @@
             recaptchaScript.setAttribute('src', 'https://cdn.directpay.lk/dev/v1/directpayCardPayment.js?v=1')
             document.head.appendChild(recaptchaScript)
         },
-        methods:{
-            getSubscriptionPlans(){
+        methods: {
+            getSubscriptionPlans() {
                 axios.get('/api/membership').then(response => {
                     const responseData = response.data.membershipPlans;
                     this.memberships = responseData;
-                }, response => {
-                    const errors = response.data.message;
+                }, error => {
+                    const errors = error.response.data.message
                     var html = '';
-                    for (const i in errors){
+                    for (const i in errors) {
                         html += errors[i];
                     }
                     this.$toast.open({
@@ -360,59 +370,65 @@
                 });
             },
 
-            chooseSubscriptionPlan(planId,price){
+            chooseSubscriptionPlan(planId, price) {
                 this.planId = planId;
                 this.planPrice = price;
                 if (sessionStorage.getItem('token') != null) {
                     this.user = JSON.parse(sessionStorage.getItem('user'));
                     this.initPayment();
                     this.e1 = 3;
-                }else {
+                } else {
                     this.e1 = 2;
                 }
 
             },
-            loginUser(){
-                this.$refs.login_form.validate();
-                if(this.login_valid === true){
-                    axios.post('/api/login', this.login).then(response => {
-                        sessionStorage.setItem('token', response.data.token)
-                        sessionStorage.setItem('role', response.data.role)
-                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
-                        this.user = response.data.user;
-                        this.initPayment();
-                        this.e1 = 3;
-                    }).catch(error => {
-                        this.$toast.open({
-                            message: error.message,
-                            type: 'error',
-                        });
-                    });
-                }
-            },
-            registerUser(){
+            // loginUser(){
+            //     this.$refs.login_form.validate();
+            //     if(this.login_valid === true){
+            //         axios.post('/api/login', this.login).then(response => {
+            //             sessionStorage.setItem('token', response.data.token)
+            //             sessionStorage.setItem('role', response.data.role)
+            //             sessionStorage.setItem('user', JSON.stringify(response.data.user))
+            //             this.user = response.data.user;
+            //             this.initPayment();
+            //             this.e1 = 3;
+            //         }).catch(error => {
+            //             this.$toast.open({
+            //                 message: error.response.data.message,
+            //                 type: 'error',
+            //             });
+            //         });
+            //     }
+            // },
+            registerUser() {
                 this.$refs.register_form.validate();
-                if(this.register_valid === true){
+                if (this.register_valid === true) {
                     axios.post('/api/register', this.register).then(response => {
-                        sessionStorage.setItem('token', response.data.token)
-                        sessionStorage.setItem('role', response.data.role)
-                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
+                        // sessionStorage.setItem('token', response.data.token)
+                        // sessionStorage.setItem('role', response.data.role)
+                        // sessionStorage.setItem('user', JSON.stringify(response.data.user))
+                        this.$toast.open({
+                            message: "User Account Successfully Created..",
+                            type: 'success',
+                        });
                         this.user = response.data.user;
                         this.initPayment();
                         this.e1 = 3;
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });
                 }
             },
-            initPayment(){
+            initPayment() {
                 let referenceNo = Math.floor(1000 + Math.random() * 9000);
                 let user_id = this.user.id;
                 let planId = this.planId;
                 let planPrice = this.planPrice;
+                let toast = this.$toast;
+
 
                 DirectPayCardPayment.init({
                     container: 'card_container',
@@ -443,31 +459,37 @@
                 });
 
                 function responseCallback(result) {
-                        const payment = {
-                            user : user_id,
-                            subscription_plan : planId,
-                            payment_method : "CARD",
-                            card_number : result.data.card.number,
-                            received_date : result.data.dateTime,
-                            transaction_id : result.data.transactionId,
-                            amount : planPrice,
-                            payment_stat : 2,
-                        }
-                        axios.post('/api/users/register-membership', payment).then(response => {
-                            this.user = response.data.userData;
-                            sessionStorage.removeItem('role')
-                            sessionStorage.removeItem('user')
-                            sessionStorage.setItem('role', this.user.role)
-                            sessionStorage.setItem('user', JSON.stringify(this.user))
-                            setTimeout(() => {
-                                this.$router.push({path:'/account/affiliate-dashboard'})
-                            },100);
-                        }).catch(error => {
-                            this.$toast.open({
-                                message: error.data.message,
-                                type: 'error',
-                            });
+                    const payment = {
+                        user: user_id,
+                        subscription_plan: planId,
+                        payment_method: "CARD",
+                        card_number: result.data.card.number,
+                        received_date: result.data.dateTime,
+                        transaction_id: result.data.transactionId,
+                        amount: planPrice,
+                        payment_stat: 2,
+                    }
+                    axios.post('/api/users/register-membership', payment).then(response => {
+                        // this.user = response.data.userData;
+                        // sessionStorage.removeItem('role')
+                        // sessionStorage.removeItem('user')
+                        // sessionStorage.setItem('role', this.user.role)
+                        // sessionStorage.setItem('user', JSON.stringify(this.user))
+                        toast.open({
+                            message: response.data.message,
+                            type: 'success',
                         });
+                        setTimeout(
+                            function () {
+                                window.location.href = '/session/signin';
+                            }, 4000);
+
+                    }).catch(error => {
+                        toast.open({
+                            message: error.response.data.message,
+                            type: 'error',
+                        });
+                    });
 
                 }
 
@@ -480,19 +502,18 @@
                 }
 
             },
-            finish(){
+            finish() {
                 this.intervalid1 = setInterval(() => {
                     this.$router.go(this.$router.currentRoute)
                 }, 2000);
             },
-            back(){
+            back() {
                 let b = this.e1 - 1;
                 this.e1 = b;
             }
 
         }
     }
-
 
 
 </script>

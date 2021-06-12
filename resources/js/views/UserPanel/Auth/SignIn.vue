@@ -67,14 +67,14 @@
             loginUser(){
                 this.$refs.login_form.validate();
                 if(this.login_valid === true){
-                    axios.post(this.$serverUrl+'api/login', this.login).then(response => {
+                    axios.post('/api/login', this.login).then(response => {
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
                         sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         window.location.href = '/';
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });
@@ -93,7 +93,7 @@
                     location.reload();
                 }).catch(error => {
                     this.$toast.open({
-                        message: error,
+                        message: error.response.data.message,
                         type: 'error',
                     });
 

@@ -315,6 +315,15 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "SubscriptionPlan",
   data: function data() {
@@ -334,7 +343,8 @@ __webpack_require__.r(__webpack_exports__);
         phone_number: null,
         email: null,
         password: null,
-        confirm_password: null
+        confirm_password: null,
+        referral: null
       },
       user: null,
       login_valid: false,
@@ -366,8 +376,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/api/membership').then(function (response) {
         var responseData = response.data.membershipPlans;
         _this.memberships = responseData;
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (error) {
+        var errors = error.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -392,16 +402,39 @@ __webpack_require__.r(__webpack_exports__);
         this.e1 = 2;
       }
     },
-    loginUser: function loginUser() {
+    // loginUser(){
+    //     this.$refs.login_form.validate();
+    //     if(this.login_valid === true){
+    //         axios.post('/api/login', this.login).then(response => {
+    //             sessionStorage.setItem('token', response.data.token)
+    //             sessionStorage.setItem('role', response.data.role)
+    //             sessionStorage.setItem('user', JSON.stringify(response.data.user))
+    //             this.user = response.data.user;
+    //             this.initPayment();
+    //             this.e1 = 3;
+    //         }).catch(error => {
+    //             this.$toast.open({
+    //                 message: error.response.data.message,
+    //                 type: 'error',
+    //             });
+    //         });
+    //     }
+    // },
+    registerUser: function registerUser() {
       var _this2 = this;
 
-      this.$refs.login_form.validate();
+      this.$refs.register_form.validate();
 
-      if (this.login_valid === true) {
-        axios.post('/api/login', this.login).then(function (response) {
-          sessionStorage.setItem('token', response.data.token);
-          sessionStorage.setItem('role', response.data.role);
-          sessionStorage.setItem('user', JSON.stringify(response.data.user));
+      if (this.register_valid === true) {
+        axios.post('/api/register', this.register).then(function (response) {
+          // sessionStorage.setItem('token', response.data.token)
+          // sessionStorage.setItem('role', response.data.role)
+          // sessionStorage.setItem('user', JSON.stringify(response.data.user))
+          _this2.$toast.open({
+            message: "User Account Successfully Created..",
+            type: 'success'
+          });
+
           _this2.user = response.data.user;
 
           _this2.initPayment();
@@ -409,30 +442,7 @@ __webpack_require__.r(__webpack_exports__);
           _this2.e1 = 3;
         })["catch"](function (error) {
           _this2.$toast.open({
-            message: error.message,
-            type: 'error'
-          });
-        });
-      }
-    },
-    registerUser: function registerUser() {
-      var _this3 = this;
-
-      this.$refs.register_form.validate();
-
-      if (this.register_valid === true) {
-        axios.post('/api/register', this.register).then(function (response) {
-          sessionStorage.setItem('token', response.data.token);
-          sessionStorage.setItem('role', response.data.role);
-          sessionStorage.setItem('user', JSON.stringify(response.data.user));
-          _this3.user = response.data.user;
-
-          _this3.initPayment();
-
-          _this3.e1 = 3;
-        })["catch"](function (error) {
-          _this3.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -443,6 +453,7 @@ __webpack_require__.r(__webpack_exports__);
       var user_id = this.user.id;
       var planId = this.planId;
       var planPrice = this.planPrice;
+      var toast = this.$toast;
       DirectPayCardPayment.init({
         container: 'card_container',
         merchantId: 'IC02070',
@@ -472,8 +483,6 @@ __webpack_require__.r(__webpack_exports__);
       });
 
       function responseCallback(result) {
-        var _this4 = this;
-
         var payment = {
           user: user_id,
           subscription_plan: planId,
@@ -485,19 +494,21 @@ __webpack_require__.r(__webpack_exports__);
           payment_stat: 2
         };
         axios.post('/api/users/register-membership', payment).then(function (response) {
-          _this4.user = response.data.userData;
-          sessionStorage.removeItem('role');
-          sessionStorage.removeItem('user');
-          sessionStorage.setItem('role', _this4.user.role);
-          sessionStorage.setItem('user', JSON.stringify(_this4.user));
+          // this.user = response.data.userData;
+          // sessionStorage.removeItem('role')
+          // sessionStorage.removeItem('user')
+          // sessionStorage.setItem('role', this.user.role)
+          // sessionStorage.setItem('user', JSON.stringify(this.user))
+          toast.open({
+            message: response.data.message,
+            type: 'success'
+          });
           setTimeout(function () {
-            _this4.$router.push({
-              path: '/account/affiliate-dashboard'
-            });
-          }, 100);
+            window.location.href = '/session/signin';
+          }, 4000);
         })["catch"](function (error) {
-          _this4.$toast.open({
-            message: error.data.message,
+          toast.open({
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -512,10 +523,10 @@ __webpack_require__.r(__webpack_exports__);
       }
     },
     finish: function finish() {
-      var _this5 = this;
+      var _this3 = this;
 
       this.intervalid1 = setInterval(function () {
-        _this5.$router.go(_this5.$router.currentRoute);
+        _this3.$router.go(_this3.$router.currentRoute);
       }, 2000);
     },
     back: function back() {
@@ -642,7 +653,7 @@ var render = function() {
                     { attrs: { complete: _vm.e1 > 1, step: "1" } },
                     [
                       _vm._v(
-                        "\n                   Choose Subscription Plan\n                "
+                        "\n                    Choose Subscription Plan\n                "
                       )
                     ]
                   ),
@@ -665,13 +676,7 @@ var render = function() {
                     "v-stepper-step",
                     { attrs: { complete: _vm.e1 > 3, step: "3" } },
                     [_vm._v("\n                    Payment\n                ")]
-                  ),
-                  _vm._v(" "),
-                  _c("v-divider"),
-                  _vm._v(" "),
-                  _c("v-stepper-step", { attrs: { step: "4" } }, [
-                    _vm._v("\n                    Finish\n                ")
-                  ])
+                  )
                 ],
                 1
               ),
@@ -715,7 +720,12 @@ var render = function() {
                                               "data-price-yearly": "900"
                                             }
                                           },
-                                          [_vm._v(_vm._s(item.price))]
+                                          [
+                                            _vm._v(
+                                              _vm._s(item.price) +
+                                                "\n                                            "
+                                            )
+                                          ]
                                         )
                                       ]
                                     ),
@@ -738,7 +748,11 @@ var render = function() {
                                                 "Billed Annually"
                                             }
                                           },
-                                          [_vm._v("Billed Annually")]
+                                          [
+                                            _vm._v(
+                                              "Billed Annually\n                                            "
+                                            )
+                                          ]
                                         )
                                       ]
                                     )
@@ -762,7 +776,11 @@ var render = function() {
                                           }
                                         }
                                       },
-                                      [_vm._v("Get Started")]
+                                      [
+                                        _vm._v(
+                                          "Get Started\n                                        "
+                                        )
+                                      ]
                                     )
                                   ],
                                   1
@@ -905,7 +923,7 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  "\n                                                    Rs.  " +
+                                                  "\n                                                    Rs. " +
                                                     _vm._s(
                                                       item.monthly_income.toFixed(
                                                         2
@@ -1016,86 +1034,6 @@ var render = function() {
                         "v-row",
                         { staticStyle: { "justify-content": "center" } },
                         [
-                          _c(
-                            "v-col",
-                            {
-                              attrs: { cols: "12", sm: "12", md: "5", lg: "5" }
-                            },
-                            [
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "emb-card sign-in-form form-margin d-block white pa-6"
-                                },
-                                [
-                                  _c("h4", [_vm._v("Login Your Account")]),
-                                  _vm._v(" "),
-                                  _c(
-                                    "v-form",
-                                    {
-                                      ref: "login_form",
-                                      model: {
-                                        value: _vm.login_valid,
-                                        callback: function($$v) {
-                                          _vm.login_valid = $$v
-                                        },
-                                        expression: "login_valid"
-                                      }
-                                    },
-                                    [
-                                      _c("v-text-field", {
-                                        attrs: {
-                                          type: "email",
-                                          placeholder: "Email*",
-                                          rules: _vm.emailRules
-                                        },
-                                        model: {
-                                          value: _vm.login.email,
-                                          callback: function($$v) {
-                                            _vm.$set(_vm.login, "email", $$v)
-                                          },
-                                          expression: "login.email"
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c("v-text-field", {
-                                        attrs: {
-                                          type: "password",
-                                          placeholder: "Password*",
-                                          rules: _vm.inputRules.basictextRules
-                                        },
-                                        model: {
-                                          value: _vm.login.password,
-                                          callback: function($$v) {
-                                            _vm.$set(_vm.login, "password", $$v)
-                                          },
-                                          expression: "login.password"
-                                        }
-                                      }),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-btn",
-                                        {
-                                          staticClass: "accent mb-3 ma-0",
-                                          attrs: { large: "" },
-                                          on: { click: _vm.loginUser }
-                                        },
-                                        [
-                                          _vm._v(
-                                            "\n                                        Sign In\n                                    "
-                                          )
-                                        ]
-                                      )
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              )
-                            ]
-                          ),
-                          _vm._v(" "),
                           _c(
                             "v-col",
                             {
@@ -1220,7 +1158,7 @@ var render = function() {
                                         staticClass: "mb-4",
                                         attrs: {
                                           type: "password",
-                                          placeholder: "Retype Passowrd*",
+                                          placeholder: "Retype Password*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1234,6 +1172,24 @@ var render = function() {
                                           },
                                           expression:
                                             "register.confirm_password"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("v-text-field", {
+                                        attrs: {
+                                          type: "text",
+                                          placeholder: "Referral ID"
+                                        },
+                                        model: {
+                                          value: _vm.register.referral,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.register,
+                                              "referral",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "register.referral"
                                         }
                                       }),
                                       _vm._v(" "),
@@ -1255,7 +1211,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                        Sign Up\n                                    "
+                                            "\n                                        Create\n                                    "
                                           )
                                         ]
                                       )
@@ -1276,7 +1232,7 @@ var render = function() {
                         { staticClass: "mt-4", attrs: { text: "" } },
                         [
                           _vm._v(
-                            "\n                        Back\n                   "
+                            "\n                        Back\n                    "
                           )
                         ]
                       )
@@ -1405,7 +1361,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "For every thing you had done with Embryo"
+                                                              "For every thing you had\n                                                            done with Embryo"
                                                             )
                                                           ]
                                                         ),
@@ -1463,7 +1419,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "Buy Embryo Now"
+                                                              "Buy\n                                                            Embryo Now\n                                                        "
                                                             )
                                                           ]
                                                         )
