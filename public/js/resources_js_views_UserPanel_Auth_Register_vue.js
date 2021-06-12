@@ -113,10 +113,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.register_form.validate();
 
       if (this.register_valid === true) {
-        axios.post(this.$serverUrl + 'api/register', this.register).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/register', this.register).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
 
           _this.$router.push('/');
         })["catch"](function (error) {

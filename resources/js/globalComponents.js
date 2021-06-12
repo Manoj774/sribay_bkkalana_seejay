@@ -7,7 +7,7 @@ import FooterV1 from './components/Layouts/Footer/FooterV1.vue';
 import SocialShare from './components/Global/SocialShare';
 import CurrencySign from './components/Global/CurrencySign';
 import DeleteConfirmationDialog from './components/Global/DeleteConfirmationDialog';
-import GoogleMap from "./components/Global/GoogleMap";
+// import GoogleMap from "./components/Global/GoogleMap";
 import PageTitle from './components/Global/PageTitle';
 import ReviewPopup from './components/Global/ReviewPopup';
 import Sidebar from './components/Layouts/Sidebar/Sidebar';
@@ -26,7 +26,7 @@ const GlobalComponents = {
       Vue.component('embSocialShare', SocialShare);
       Vue.component('embCurrencySign', CurrencySign);
       Vue.component('embDeleteConfirmation', DeleteConfirmationDialog);
-      Vue.component('embGoogleMap', GoogleMap);
+      // Vue.component('embGoogleMap', GoogleMap);
       Vue.component('embPageTitle', PageTitle);
       Vue.component('embReviewPopup', ReviewPopup);
       Vue.component('embSidebar', Sidebar);

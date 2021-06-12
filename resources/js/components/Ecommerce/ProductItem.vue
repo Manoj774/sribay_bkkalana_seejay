@@ -50,7 +50,7 @@ import { mapGetters } from "vuex";
 
 export default {
 
-	props: ['data','colxs','colsm','colmd','collg','colxl'],
+	props: ['data'],
 	computed: {
 	  ...mapGetters(["wishlist"])
 	},

@@ -18,8 +18,8 @@
 								<div class="notifications d-inline-flex align-items-center">
 									<emb-cart></emb-cart>
 									<emb-wishlist></emb-wishlist>
-                                    <div v-if="user == null" class="ml-5">
-                                        <v-toolbar-title v-on="on">
+                                    <div v-if="user == null " class="ml-5">
+                                        <v-toolbar-title>
                                             <a href="/session/signup" class="white--text font-weight-regular text-capitalize">Sign Up</a>
                                             <span>/</span>
                                             <a href="/session/signin" class="white--text font-weight-regular text-capitalize">Sign In</a>
@@ -97,8 +97,9 @@ export default {
 		embSearch:Search,
 	},
     beforeMount() {
-        this.user = JSON.parse(localStorage.getItem('user'));
-
+	    if (JSON.parse(sessionStorage.getItem('user')) != null){
+            this.user = JSON.parse(sessionStorage.getItem('user'));
+        }
     },
 	mounted() {
 		this.fixedHeader();

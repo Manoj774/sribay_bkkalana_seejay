@@ -451,7 +451,7 @@
                 this.getProductDetails(this.$router.history.current.params.id);
             }
             if (JSON.parse(localStorage.getItem('user')) != null) {
-                this.user = JSON.parse(localStorage.getItem('user'));
+                this.user = JSON.parse(sessionStorage.getItem('user'));
             }
         },
         data() {
@@ -463,7 +463,7 @@
                 selectedProduct: null,
                 generateLink: null,
                 model: 'tab-2',
-                role: localStorage.getItem('role'),
+                role: sessionStorage.getItem('role'),
                 dialog: false,
                 login: {
                     email: null,
@@ -530,9 +530,9 @@
                 this.$refs.register_form.validate();
                 if (this.register_valid === true) {
                     axios.post(this.$serverUrl + 'api/register', this.register).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.buyNowAndCart()
                         window.location.href = '/checkout/payment';
@@ -548,10 +548,10 @@
             loginUser() {
                 this.$refs.login_form.validate();
                 if (this.login_valid === true) {
-                    axios.post(this.$serverUrl + 'api/login', this.login).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                    axios.post('/api/login', this.login).then(response => {
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.buyNowAndCart()
                         window.location.href = '/checkout/payment';
@@ -569,7 +569,7 @@
             },
 
             toggleGenerate() {
-                axios.post(this.$serverUrl + 'api/product/link-generate', {productId: this.selectedProduct.id}).then(response => {
+                axios.post( '/api/product/link-generate', {productId: this.selectedProduct.id}).then(response => {
                     this.generateLink = decodeURIComponent(response.data.generateLink);
                 }, response => {
                     const errors = response.data.message;
@@ -586,7 +586,7 @@
 
             getProductDetails(id) {
 
-                axios.get(this.$serverUrl + 'api/product/' + id + '',).then(response => {
+                axios.get('/api/product/' + id + '',).then(response => {
                     const productDetails = response.data.product;
                     this.selectedProduct = productDetails;
                     this.selectedProduct.quantity = 1;
@@ -605,7 +605,7 @@
             },
 
             getProductDetailWithUser(id, user) {
-                axios.get(this.$serverUrl + 'api/product/' + id + '/' + user + '').then(response => {
+                axios.get('/api/product/' + id + '/' + user + '').then(response => {
                     const productDetails = response.data.product;
                     this.selectedProduct = productDetails;
                     this.selectedProduct.quantity = 1;

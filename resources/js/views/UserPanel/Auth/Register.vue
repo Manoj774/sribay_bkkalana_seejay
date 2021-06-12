@@ -95,10 +95,10 @@
             registerUser(){
                 this.$refs.register_form.validate();
                 if(this.register_valid === true){
-                    axios.post(this.$serverUrl+'api/register', this.register).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                    axios.post('/api/register', this.register).then(response => {
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.$router.push('/')
                     }).catch(error => {
                         this.$toast.open({

@@ -161,10 +161,10 @@ export default {
                     path: '/logout',
                     beforeEnter: (to, from, next) => {
                         axios.post('api/logout').then(response => {
-                            localStorage.removeItem('token')
-                            localStorage.removeItem('role')
-                            localStorage.removeItem('user')
-                            localStorage.removeItem('admin-user')
+                            sessionStorage.removeItem('token')
+                            sessionStorage.removeItem('role')
+                            sessionStorage.removeItem('user')
+                            sessionStorage.removeItem('admin-user')
                         }).catch(error => {
 
                         });

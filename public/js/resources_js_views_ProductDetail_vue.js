@@ -474,7 +474,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     }
 
     if (JSON.parse(localStorage.getItem('user')) != null) {
-      this.user = JSON.parse(localStorage.getItem('user'));
+      this.user = JSON.parse(sessionStorage.getItem('user'));
     }
   },
   data: function data() {
@@ -486,7 +486,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       selectedProduct: null,
       generateLink: null,
       model: 'tab-2',
-      role: localStorage.getItem('role'),
+      role: sessionStorage.getItem('role'),
       dialog: false,
       login: {
         email: null,
@@ -564,9 +564,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 
       if (this.register_valid === true) {
         axios.post(this.$serverUrl + 'api/register', this.register).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this2.user = response.data.user;
 
           _this2.buyNowAndCart();
@@ -586,10 +586,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$refs.login_form.validate();
 
       if (this.login_valid === true) {
-        axios.post(this.$serverUrl + 'api/login', this.login).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/login', this.login).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this3.user = response.data.user;
 
           _this3.buyNowAndCart();
@@ -609,7 +609,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     toggleGenerate: function toggleGenerate() {
       var _this4 = this;
 
-      axios.post(this.$serverUrl + 'api/product/link-generate', {
+      axios.post('/api/product/link-generate', {
         productId: this.selectedProduct.id
       }).then(function (response) {
         _this4.generateLink = decodeURIComponent(response.data.generateLink);
@@ -630,7 +630,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getProductDetails: function getProductDetails(id) {
       var _this5 = this;
 
-      axios.get(this.$serverUrl + 'api/product/' + id + '').then(function (response) {
+      axios.get('/api/product/' + id + '').then(function (response) {
         var productDetails = response.data.product;
         _this5.selectedProduct = productDetails;
         _this5.selectedProduct.quantity = 1;
@@ -652,7 +652,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     getProductDetailWithUser: function getProductDetailWithUser(id, user) {
       var _this6 = this;
 
-      axios.get(this.$serverUrl + 'api/product/' + id + '/' + user + '').then(function (response) {
+      axios.get('/api/product/' + id + '/' + user + '').then(function (response) {
         var productDetails = response.data.product;
         _this6.selectedProduct = productDetails;
         _this6.selectedProduct.quantity = 1;
