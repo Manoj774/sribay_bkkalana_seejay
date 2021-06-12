@@ -76,7 +76,7 @@ export default {
 		}
 	},
 	beforeMount() {
-		this.user = JSON.parse(localStorage.getItem('admin-user'));
+		this.user = JSON.parse(sessionStorage.getItem('admin-user'));
 	},
 	methods:{
 

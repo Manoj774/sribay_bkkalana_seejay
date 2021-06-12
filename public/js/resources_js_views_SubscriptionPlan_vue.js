@@ -363,12 +363,7 @@ __webpack_require__.r(__webpack_exports__);
     getSubscriptionPlans: function getSubscriptionPlans() {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/membership', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('bigStore.jwt')
-        }
-      }).then(function (response) {
+      axios.get('/api/membership').then(function (response) {
         var responseData = response.data.membershipPlans;
         _this.memberships = responseData;
       }, function (response) {
@@ -389,8 +384,8 @@ __webpack_require__.r(__webpack_exports__);
       this.planId = planId;
       this.planPrice = price;
 
-      if (localStorage.getItem('token') != null) {
-        this.user = JSON.parse(localStorage.getItem('user'));
+      if (sessionStorage.getItem('token') != null) {
+        this.user = JSON.parse(sessionStorage.getItem('user'));
         this.initPayment();
         this.e1 = 3;
       } else {
@@ -403,10 +398,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.login_form.validate();
 
       if (this.login_valid === true) {
-        axios.post('api/login', this.login).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/login', this.login).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this2.user = response.data.user;
 
           _this2.initPayment();
@@ -426,10 +421,10 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.register_form.validate();
 
       if (this.register_valid === true) {
-        axios.post('api/register', this.register).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+        axios.post('/api/register', this.register).then(function (response) {
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this3.user = response.data.user;
 
           _this3.initPayment();
@@ -489,10 +484,12 @@ __webpack_require__.r(__webpack_exports__);
           amount: planPrice,
           payment_stat: 2
         };
-        axios.post('api/users/register-membership', payment).then(function (response) {
+        axios.post('/api/users/register-membership', payment).then(function (response) {
           _this4.user = response.data.userData;
-          localStorage.setItem('role', _this4.user.role);
-          localStorage.setItem('user', JSON.stringify(_this4.user));
+          sessionStorage.removeItem('role');
+          sessionStorage.removeItem('user');
+          sessionStorage.setItem('role', _this4.user.role);
+          sessionStorage.setItem('user', JSON.stringify(_this4.user));
           setTimeout(function () {
             _this4.$router.push({
               path: '/account/affiliate-dashboard'

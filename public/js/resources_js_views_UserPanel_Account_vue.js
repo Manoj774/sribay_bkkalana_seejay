@@ -93,8 +93,8 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    if (JSON.parse(localStorage.getItem('user')) != null) {
-      if (JSON.parse(localStorage.getItem('user')).role == 3) {
+    if (JSON.parse(sessionStorage.getItem('user')) != null) {
+      if (JSON.parse(sessionStorage.getItem('user')).role == 3) {
         this.settings = {
           affiliate: [{
             title: "Affiliate Program",
@@ -127,7 +127,6 @@ __webpack_require__.r(__webpack_exports__);
             id: "cards"
           }]
         };
-        console.log(this.settings);
       }
     }
   },

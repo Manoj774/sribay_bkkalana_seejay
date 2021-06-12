@@ -11,7 +11,7 @@ window.Vue = require('vue').default;
 import 'babel-polyfill'
 import Vue from 'vue'
 import vuetify from './plugins/vuetify'
-import * as VueGoogleMaps from 'vue2-google-maps'
+// import * as VueGoogleMaps from 'vue2-google-maps'
 import Nprogress from 'nprogress'
 import VueI18n from 'vue-i18n'
 import Snotify, { SnotifyPosition } from 'vue-snotify'
@@ -65,13 +65,13 @@ Vue.use(VueQuillEditor)
 Vue.use(VueI18n)
 Vue.use(Snotify, options)
 
-
-Vue.use(VueGoogleMaps, {
-    load: {
-        key: "AIzaSyDC6tKEbtRlB6B0HgrFEN9P6ztTSJ89xt8",
-        libraries: "places"
-    }
-});
+//
+// Vue.use(VueGoogleMaps, {
+//     load: {
+//         key: "AIzaSyDC6tKEbtRlB6B0HgrFEN9P6ztTSJ89xt8",
+//         libraries: "places"
+//     }
+// });
 Vue.use(GlobalComponents)
 // router navigation guards
 router.beforeEach((to, from, next) => {
@@ -100,7 +100,7 @@ Vue.config.productionTip = false
 
 
 function loggedIn(){
-    let session = localStorage.getItem('token');
+    let session = sessionStorage.getItem('token');
 
     if (session == null) {
         return false;

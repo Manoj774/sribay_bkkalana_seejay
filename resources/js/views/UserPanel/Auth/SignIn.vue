@@ -59,7 +59,7 @@
             }
         },
         created() {
-            if (JSON.parse(localStorage.getItem('user')) != null){
+            if (JSON.parse(sessionStorage.getItem('user')) != null){
                 this.logout();
             }
         },
@@ -68,9 +68,9 @@
                 this.$refs.login_form.validate();
                 if(this.login_valid === true){
                     axios.post(this.$serverUrl+'api/login', this.login).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         window.location.href = '/';
                     }).catch(error => {
                         this.$toast.open({
@@ -82,10 +82,10 @@
             },
             logout(){
                 axios.post('/api/logout').then(response => {
-                    localStorage.setItem('token', null)
-                    localStorage.setItem('role', null)
-                    localStorage.setItem('user', null)
-                    localStorage.setItem('admin-user', null)
+                    sessionStorage.removeItem('token')
+                    sessionStorage.removeItem('role')
+                    sessionStorage.removeItem('user')
+                    sessionStorage.removeItem('admin-user')
                     this.$toast.open({
                         message: "Successfully logout",
                         type: 'success',

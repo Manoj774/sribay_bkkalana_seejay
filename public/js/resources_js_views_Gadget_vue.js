@@ -85,7 +85,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
-  props: ['data', 'colxs', 'colsm', 'colmd', 'collg', 'colxl'],
+  props: ['data'],
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["wishlist"])),
   methods: {
     /**

@@ -74,7 +74,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    if (JSON.parse(localStorage.getItem('user')) != null) {
+    if (JSON.parse(sessionStorage.getItem('user')) != null) {
       this.logout();
     }
   },
@@ -86,9 +86,9 @@ __webpack_require__.r(__webpack_exports__);
 
       if (this.login_valid === true) {
         axios.post(this.$serverUrl + 'api/login', this.login).then(function (response) {
-          localStorage.setItem('token', response.data.token);
-          localStorage.setItem('role', response.data.role);
-          localStorage.setItem('user', JSON.stringify(response.data.user));
+          sessionStorage.setItem('token', response.data.token);
+          sessionStorage.setItem('role', response.data.role);
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           window.location.href = '/';
         })["catch"](function (error) {
           _this.$toast.open({
@@ -102,10 +102,10 @@ __webpack_require__.r(__webpack_exports__);
       var _this2 = this;
 
       axios.post('/api/logout').then(function (response) {
-        localStorage.setItem('token', null);
-        localStorage.setItem('role', null);
-        localStorage.setItem('user', null);
-        localStorage.setItem('admin-user', null);
+        sessionStorage.removeItem('token');
+        sessionStorage.removeItem('role');
+        sessionStorage.removeItem('user');
+        sessionStorage.removeItem('admin-user');
 
         _this2.$toast.open({
           message: "Successfully logout",

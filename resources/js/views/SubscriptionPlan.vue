@@ -344,9 +344,7 @@
         },
         methods:{
             getSubscriptionPlans(){
-                axios.get(this.$serverUrl+'api/membership',{
-                    headers: {'Content-Type':'application/json','Authorization': 'Bearer ' + localStorage.getItem('bigStore.jwt')}
-                }).then(response => {
+                axios.get('/api/membership').then(response => {
                     const responseData = response.data.membershipPlans;
                     this.memberships = responseData;
                 }, response => {
@@ -365,9 +363,8 @@
             chooseSubscriptionPlan(planId,price){
                 this.planId = planId;
                 this.planPrice = price;
-                if (localStorage.getItem('token') != null) {
-                    this.user = JSON.parse(localStorage.getItem('user'));
-
+                if (sessionStorage.getItem('token') != null) {
+                    this.user = JSON.parse(sessionStorage.getItem('user'));
                     this.initPayment();
                     this.e1 = 3;
                 }else {
@@ -378,10 +375,10 @@
             loginUser(){
                 this.$refs.login_form.validate();
                 if(this.login_valid === true){
-                    axios.post('api/login', this.login).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                    axios.post('/api/login', this.login).then(response => {
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.initPayment();
                         this.e1 = 3;
@@ -396,10 +393,10 @@
             registerUser(){
                 this.$refs.register_form.validate();
                 if(this.register_valid === true){
-                    axios.post('api/register', this.register).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                    axios.post('/api/register', this.register).then(response => {
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.initPayment();
                         this.e1 = 3;
@@ -456,10 +453,12 @@
                             amount : planPrice,
                             payment_stat : 2,
                         }
-                        axios.post('api/users/register-membership', payment).then(response => {
+                        axios.post('/api/users/register-membership', payment).then(response => {
                             this.user = response.data.userData;
-                            localStorage.setItem('role', this.user.role)
-                            localStorage.setItem('user', JSON.stringify(this.user))
+                            sessionStorage.removeItem('role')
+                            sessionStorage.removeItem('user')
+                            sessionStorage.setItem('role', this.user.role)
+                            sessionStorage.setItem('user', JSON.stringify(this.user))
                             setTimeout(() => {
                                 this.$router.push({path:'/account/affiliate-dashboard'})
                             },100);
