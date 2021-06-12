@@ -362,8 +362,8 @@ __webpack_require__.r(__webpack_exports__);
     getProductsData: function getProductsData() {
       var _this = this;
 
-      this.$http.get(this.$serverUrl + 'api/product').then(function (response) {
-        _this.products = response.body.products;
+      axios.get('/api/product').then(function (response) {
+        _this.products = response.data.products;
         var count = 1;
 
         for (var categoryKey in _this.products) {
@@ -377,14 +377,14 @@ __webpack_require__.r(__webpack_exports__);
     getParentCategories: function getParentCategories() {
       var _this2 = this;
 
-      this.$http.get(this.$serverUrl + 'api/category/tree-view').then(function (response) {
-        var responseData = response.body.categories;
+      axios.get('/api/category/tree-view').then(function (response) {
+        var responseData = response.data.categories;
 
         for (var i in responseData) {
           _this2.productCategories.push(responseData[i]);
         }
       }, function (response) {
-        var errors = response.body.message;
+        var errors = response.data.message;
         var html = '';
 
         for (var i in errors) {

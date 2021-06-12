@@ -36,7 +36,7 @@
                                                 <h4>Enter Contact Information</h4>
                                                 <v-layout row wrap>
                                                     <v-flex lg6 xl6 md6 sm12>
-                                                        <v-text-field  v-model="userInfo.phone_number" :rules="inputRules.basictextRules" label="Mobile*" required></v-text-field>
+                                                        <v-text-field  v-model="userInfo.phone_number" :rules="inputRules.basictextRules" max="10" label="Mobile*" required></v-text-field>
                                                     </v-flex>
                                                     <v-flex lg6 xl6 md6 sm12>
                                                         <v-text-field v-model="userInfo.email" :rules="inputRules.emailRules"  label="Email*" required>

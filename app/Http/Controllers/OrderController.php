@@ -35,6 +35,25 @@ class OrderController extends Controller
     }
 
     /**
+     * Display a listing of the orders by user.
+     *
+     * @param Request $request
+     * @return Response json
+     */
+    public function getUserOrders(Request $request){
+        $orders = DB::table('orders')
+            ->select('orders.id','net_amount','orders.order_stat','orders.created_at','address','city','state','zip_code')
+            ->join('customer_shipping_addresses','orders.shipping_address','=','customer_shipping_addresses.id')
+            ->where('orders.user_id','=',$request->user()->id)
+            ->get();
+        if (!$orders) {
+            return response()->json(['message' => 'orders not found'], 404);
+        }
+        return response()->json(['orders' => $orders], 200);
+    }
+
+
+    /**
      * Display a specific order by id.
      *
      * @param $id
@@ -55,17 +74,17 @@ class OrderController extends Controller
         return response()->json(['order' => $order], 200);
     }
 
-    public function getUserOrders($id){
-        $orders = DB::table('orders')
-            ->join('users','orders.user_id','=','users.id')
-            ->join('payments','orders.id','=','payment.order')
-            ->where('users.id','=',$id)
-            ->get();
-        if (!$orders) {
-            return response()->json(['message' => 'orders not found'], 404);
-        }
-        return response()->json(['orders' => $orders], 200);
-    }
+//    public function getUserOrders($id){
+//        $orders = DB::table('orders')
+//            ->join('users','orders.user_id','=','users.id')
+//            ->join('payments','orders.id','=','payment.order')
+//            ->where('users.id','=',$id)
+//            ->get();
+//        if (!$orders) {
+//            return response()->json(['message' => 'orders not found'], 404);
+//        }
+//        return response()->json(['orders' => $orders], 200);
+//    }
 
     public function create(Request $request){
 
@@ -292,41 +311,44 @@ class OrderController extends Controller
                                 $total_paid_commission += $total_direct_commission;
 
                             }
+
+
+                            $oiAffiliateCommission =  new OIAffiliateCommission([
+                                'order_item_id' => $orderItems->id,
+                                'affiliate_user_id' => $product['aff_user_id'],
+                                'direct_commission_pre_product' => $direct_commission_pre_product,
+                                'total_direct_commission' => $total_direct_commission,
+                                'level_three_user_id' => $level_three_user_id,
+                                'level_three_commission' => $level_three_total_commission,
+                                'level_two_user_id' => $level_two_user_id,
+                                'level_two_commission' => $level_two_commission,
+                                'level_one_user_id' => $level_one_user_id,
+                                'level_one_commission' => $level_one_commission,
+                            ]);
+
+                            if (!$oiAffiliateCommission->save()){
+                                Log::error("Order item affiliate commission save failed.");
+                            }
+
                         }
 
-                        $profit_pre_product = ($productData->buying_price - $productData->selling_margin) - $paid_commission_pre_product;
-                        $total_profit = (($productData->buying_price - $productData->selling_margin) * $product['quantity']) - $total_paid_commission;
+                    }
 
-                        $orderItems->profit_pre_product = $profit_pre_product;
-                        $orderItems->total_profit = $total_profit;
-                        $orderItems->paid_commission_pre_product = $paid_commission_pre_product;
-                        $orderItems->total_paid_commission = $total_paid_commission;
+                    $profit_pre_product = ($productData->buying_price - $productData->selling_margin) - $paid_commission_pre_product;
+                    $total_profit = (($productData->buying_price - $productData->selling_margin) * $product['quantity']) - $total_paid_commission;
 
-                        if($orderItems->update()){
+                    $orderItems->profit_pre_product = $profit_pre_product;
+                    $orderItems->total_profit = $total_profit;
+                    $orderItems->paid_commission_pre_product = $paid_commission_pre_product;
+                    $orderItems->total_paid_commission = $total_paid_commission;
 
-                            $productData->quantity = $productData->quantity - $product['quantity'];
-
-                            if ($productData->update()){
-
-                                $oiAffiliateCommission =  new OIAffiliateCommission([
-                                    'order_item_id' => $orderItems->id,
-                                    'affiliate_user_id' => $product['aff_user_id'],
-                                    'direct_commission_pre_product' => $direct_commission_pre_product,
-                                    'total_direct_commission' => $total_direct_commission,
-                                    'level_three_user_id' => $level_three_user_id,
-                                    'level_three_commission' => $level_three_total_commission,
-                                    'level_two_user_id' => $level_two_user_id,
-                                    'level_two_commission' => $level_two_commission,
-                                    'level_one_user_id' => $level_one_user_id,
-                                    'level_one_commission' => $level_one_commission,
-                                ]);
-
-                                if (!$oiAffiliateCommission->save()){
-                                    Log::error("Order item affiliate commission save failed.");
-                                }
-                            }
+                    if($orderItems->update()){
+                        $productData->quantity = $productData->quantity - $product['quantity'];
+                        if (!$productData->update()){
+                            Log::error("product Data update failed.");
                         }
                     }
+
                 }
 
             }

@@ -53,10 +53,49 @@ __webpack_require__.r(__webpack_exports__);
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty';
         }]
-      }
+      },
+      billingAddress: [],
+      shippingAddress: []
     };
   },
+  created: function created() {
+    this.getAddressData();
+  },
   methods: {
+    getAddressData: function getAddressData() {
+      var _this = this;
+
+      axios.get('/api/user/profile').then(function (response) {
+        _this.billingAddress = response.data;
+      }, function (response) {
+        var errors = response.body.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+      axios.get('/api/users/shipping-address').then(function (response) {
+        _this.shippingAddress = response.data.shipping_address;
+      }, function (response) {
+        var errors = response.body.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
     saveDetails: function saveDetails() {
       this.$refs.form.validate();
 
@@ -178,15 +217,31 @@ var render = function() {
                 { staticClass: "pt-4" },
                 [
                   _c("address", { staticClass: "mb-6" }, [
-                    _vm._v("\n                  2735  Sherman Street"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.billingAddress.address)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  Hodour Sheridan Plaza"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.billingAddress.city)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  New Jersey"),
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          _vm.billingAddress.first_name +
+                            " " +
+                            _vm.billingAddress.last_name
+                        )
+                    ),
                     _c("br"),
-                    _vm._v("\n                  Zip - 6739HG1"),
+                    _vm._v(
+                      "\n                Zip - " +
+                        _vm._s(_vm.billingAddress.zip_code)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  USA"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.billingAddress.state)
+                    ),
                     _c("br")
                   ]),
                   _vm._v(" "),
@@ -221,15 +276,31 @@ var render = function() {
                 { staticClass: "pt-4" },
                 [
                   _c("address", { staticClass: "mb-6" }, [
-                    _vm._v("\n                  2735  Sherman Street"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.shippingAddress.address)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  Hodour Sheridan Plaza"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.shippingAddress.city)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  New Jersey"),
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          _vm.shippingAddress.first_name +
+                            " " +
+                            _vm.shippingAddress.last_name
+                        )
+                    ),
                     _c("br"),
-                    _vm._v("\n                  Zip - 6739HG1"),
+                    _vm._v(
+                      "\n                Zip - " +
+                        _vm._s(_vm.shippingAddress.zip_code)
+                    ),
                     _c("br"),
-                    _vm._v("\n                  USA"),
+                    _vm._v(
+                      "\n                " + _vm._s(_vm.shippingAddress.state)
+                    ),
                     _c("br")
                   ]),
                   _vm._v(" "),

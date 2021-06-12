@@ -819,6 +819,7 @@ var render = function() {
                                                           rules:
                                                             _vm.inputRules
                                                               .basictextRules,
+                                                          max: "10",
                                                           label: "Mobile*",
                                                           required: ""
                                                         },

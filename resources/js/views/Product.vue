@@ -140,9 +140,9 @@ export default {
         },
 
         getProductsData() {
-            this.$http.get(this.$serverUrl+'api/product'
+            axios.get('/api/product'
             ).then(response => {
-                this.products = response.body.products;
+                this.products = response.data.products;
                 let count = 1;
                 for (let categoryKey in this.products) {
                     this.listData.push(this.products[categoryKey]);
@@ -155,13 +155,13 @@ export default {
         },
 
         getParentCategories: function() {
-            this.$http.get(this.$serverUrl+'api/category/tree-view').then(response => {
-                const responseData = response.body.categories;
+            axios.get('/api/category/tree-view').then(response => {
+                const responseData = response.data.categories;
                 for(const i in responseData) {
                     this.productCategories.push(responseData[i]);
                 }
             }, response => {
-                const errors = response.body.message;
+                const errors = response.data.message;
                 var html = '';
                 for (const i in errors){
                     html += errors[i];

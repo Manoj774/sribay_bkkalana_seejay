@@ -6,11 +6,11 @@
             <h5>Billing Address</h5>
             <div class="pt-4">
                <address class="mb-6">
-                     2735  Sherman Street<br>
-                     Hodour Sheridan Plaza<br>
-                     New Jersey<br>
-                     Zip - 6739HG1<br>
-                     USA<br>
+                   {{billingAddress.address}}<br>
+                   {{billingAddress.city}}<br>
+                   {{billingAddress.first_name +' '+ billingAddress.last_name}}<br>
+                   Zip - {{billingAddress.zip_code}}<br>
+                   {{billingAddress.state}}<br>
                </address>
                  <router-link :to="{name: 'EditAddress', query: {type: 'address'}}" > <v-btn class="accent mx-0">Edit</v-btn></router-link>
             </div>
@@ -19,11 +19,11 @@
             <h5>Shipping Address</h5>
             <div class="pt-4">
                <address class="mb-6">
-                     2735  Sherman Street<br>
-                     Hodour Sheridan Plaza<br>
-                     New Jersey<br>
-                     Zip - 6739HG1<br>
-                     USA<br>
+                   {{shippingAddress.address}}<br>
+                   {{shippingAddress.city}}<br>
+                   {{shippingAddress.first_name +' '+ shippingAddress.last_name}}<br>
+                   Zip - {{shippingAddress.zip_code}}<br>
+                   {{shippingAddress.state}}<br>
                </address>
                <router-link :to="{name: 'EditAddress', query: {type: 'ship-address'}}" ><v-btn class="accent mx-0" >Edit</v-btn></router-link>
             </div>
@@ -40,14 +40,50 @@
           	inputRules: {
                basictextRules: [v => !!v || 'This field should not be empty']
             },
-			}
+            billingAddress:[],
+            shippingAddress:[]
+		}
       },
-		methods: {
+        created() {
+   	        this.getAddressData();
+        },
+        methods: {
+            getAddressData: function() {
+
+                    axios.get('/api/user/profile').then(response => {
+                        this.billingAddress = response.data;
+                    }, response => {
+                        const errors = response.body.message;
+                        var html = '';
+                        for (const i in errors){
+                            html += errors[i];
+                        }
+                        this.$toast.open({
+                            message: html,
+                            type: 'error',
+                        });
+                    });
+
+                    axios.get('/api/users/shipping-address').then(response => {
+                        this.shippingAddress = response.data.shipping_address;
+                    }, response => {
+                        const errors = response.body.message;
+                        var html = '';
+                        for (const i in errors){
+                            html += errors[i];
+                        }
+                        this.$toast.open({
+                            message: html,
+                            type: 'error',
+                        });
+                    });
+
+            },
 			saveDetails(){
 				this.$refs.form.validate()
 				if(this.valid == true){
 					this.$store.dispatch("addUserDetails", this.userInfo);
-				}				
+				}
 			}
 		}
    }

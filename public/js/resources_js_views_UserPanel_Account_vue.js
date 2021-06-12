@@ -81,13 +81,15 @@ __webpack_require__.r(__webpack_exports__);
           icon: "mdi-map-marker ",
           path: "/account/address",
           id: "addresses"
-        }],
-        cards: [{
-          title: "Saved Cards",
-          icon: "mdi-credit-card ",
-          path: "/account/cards",
-          id: "cards"
-        }]
+        }] // cards:[
+        // 	{
+        // 		title:"Saved Cards",
+        // 		icon:"mdi-credit-card ",
+        // 		path:"/account/cards",
+        // 		id:"cards"
+        // 	},
+        // ]
+
       },
       selectedTab: 0,
       user: {
@@ -130,13 +132,15 @@ __webpack_require__.r(__webpack_exports__);
             icon: "mdi-map-marker ",
             path: "/account/address",
             id: "addresses"
-          }],
-          cards: [{
-            title: "Saved Cards",
-            icon: "mdi-credit-card ",
-            path: "/account/cards",
-            id: "cards"
-          }]
+          }] // cards:[
+          //     {
+          //         title:"Saved Cards",
+          //         icon:"mdi-credit-card ",
+          //         path:"/account/cards",
+          //         id:"cards"
+          //     },
+          // ]
+
         };
       }
     }

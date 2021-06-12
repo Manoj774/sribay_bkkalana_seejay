@@ -28,6 +28,7 @@ Route::post('login', [LoginController::class,'login'])->middleware('throttle:api
 Route::post('logout', [LoginController::class,'logOut'])->middleware('auth:sanctum');
 Route::post('register', [RegisterController::class,'register']);
 
+
 //product
 Route::get('/product',[ProductController::class,'index']);
 Route::get('/product/feature-products',[ProductController::class,'getFeaturesProduct']);
@@ -50,13 +51,12 @@ Route::delete('/cart/remove-all-item/',[ShoppingCartController::class,'destroy']
 Route::get('/membership',[MembershipPlanController::class,'index']);
 Route::post('/users/register-membership',[UserController::class,'registerMembership']);
 Route::post('/users/create-member-user', [UserController::class,'createMembershipUser']);
+
+
 //category
 Route::get('/category',[CategoryController::class,'index']);
 Route::get('/category/tree-view',[CategoryController::class,'getCategoryForTreeView']);
 Route::get('/category/tree-select',[CategoryController::class,'getCategoriesForTreeSelect']);
-
-
-
 
 
 Route::middleware('auth:sanctum')->get('/user/profile', function (Request $request) {
@@ -71,7 +71,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/create',[UserController::class,'create']);
     Route::put('/users/{id}',[UserController::class,'update']);
 
-
+    Route::get('/orders',[OrderController::class,'index']);
+    Route::get('/orders/user-orders',[OrderController::class,'getUserOrders']);
     Route::post('/orders/create',[OrderController::class,'create']);
 
 
@@ -100,6 +101,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/membership/{id}/edit',[MembershipPlanController::class,'edit']);
     Route::put('/membership/{id}',[MembershipPlanController::class,'update']);
     Route::delete('/membership/{id}',[MembershipPlanController::class,'destroy']);
+
 });
 
 

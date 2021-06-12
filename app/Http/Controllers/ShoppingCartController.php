@@ -163,8 +163,6 @@ class ShoppingCartController extends Controller
 
     }
 
-
-
     /**
      * Remove a cart item.
      *
@@ -193,11 +191,11 @@ class ShoppingCartController extends Controller
                     if ($shoppingCart->delete()){
                         return response()->json(['message' => 'Success'], 201);
                     }
-                    return response()->json(['message' => 'Error'], 501);
+                    return response()->json(['message' => 'Error'], 500);
                 }
                 return response()->json(['message' => 'Success'], 201);
             }
-            return response()->json(['message' => 'Error'], 501);
+            return response()->json(['message' => 'Error'], 500);
         }
 
 

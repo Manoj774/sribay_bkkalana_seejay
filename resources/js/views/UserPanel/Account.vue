@@ -76,14 +76,14 @@ export default {
 						id:"addresses"
 					}
 				],
-				cards:[
-					{
-						title:"Saved Cards",
-						icon:"mdi-credit-card ",
-						path:"/account/cards",
-						id:"cards"
-					},
-				]
+				// cards:[
+				// 	{
+				// 		title:"Saved Cards",
+				// 		icon:"mdi-credit-card ",
+				// 		path:"/account/cards",
+				// 		id:"cards"
+				// 	},
+				// ]
 			},
 			selectedTab: 0,
             user:{
@@ -137,14 +137,14 @@ export default {
                             id:"addresses"
                         }
                     ],
-                    cards:[
-                        {
-                            title:"Saved Cards",
-                            icon:"mdi-credit-card ",
-                            path:"/account/cards",
-                            id:"cards"
-                        },
-                    ]
+                    // cards:[
+                    //     {
+                    //         title:"Saved Cards",
+                    //         icon:"mdi-credit-card ",
+                    //         path:"/account/cards",
+                    //         id:"cards"
+                    //     },
+                    // ]
                 };
             }
         }

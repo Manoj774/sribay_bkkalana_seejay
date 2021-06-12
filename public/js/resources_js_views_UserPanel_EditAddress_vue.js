@@ -51,6 +51,12 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -58,28 +64,125 @@ __webpack_require__.r(__webpack_exports__);
       inputRules: {
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty';
+        }],
+        emailRules: [function (v) {
+          return !!v || 'E-mail is required';
+        }, function (v) {
+          return /.+@.+/.test(v) || 'E-mail must be valid';
         }]
+      },
+      profileData: {
+        first_name: '',
+        last_name: '',
+        address: '',
+        city: '',
+        state: '',
+        zip_code: ''
       }
     };
   },
+  created: function created() {
+    this.getAddressData();
+  },
   methods: {
-    saveDetails: function saveDetails() {
+    getAddressData: function getAddressData() {
       var _this = this;
+
+      if (this.$route.query.type === 'address') {
+        axios.get('/api/user/profile').then(function (response) {
+          _this.profileData = response.data;
+        }, function (response) {
+          var errors = response.body.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
+        });
+      } else {
+        axios.get('/api/users/shipping-address').then(function (response) {
+          _this.profileData = response.data.shipping_address;
+        }, function (response) {
+          var errors = response.body.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
+        });
+      }
+    },
+    saveDetails: function saveDetails() {
+      var _this2 = this;
 
       this.$refs.form.validate();
 
       if (this.valid == true) {
-        this.$snotify.success('Your account Information Updated succesfully', {
-          closeOnClick: false,
-          pauseOnHover: false,
-          timeout: 1000,
-          showProgressBar: false
-        });
-        setTimeout(function () {
-          _this.$router.push({
-            path: '/account/address'
+        if (this.$route.query.type === 'address') {
+          axios.put('/api/users/' + this.profileData.id, this.profileData).then(function (response) {
+            _this2.$snotify.success("Billing address update successful", {
+              closeOnClick: false,
+              pauseOnHover: false,
+              timeout: 1000,
+              showProgressBar: false
+            });
+
+            setTimeout(function () {
+              _this2.$router.push({
+                path: '/account/address'
+              });
+            }, 50);
+          }, function (error) {
+            var errors = error.response.data.message;
+            var html = '';
+
+            for (var i in errors) {
+              html += errors[i];
+            }
+
+            _this2.$toast.open({
+              message: html,
+              type: 'error'
+            });
           });
-        }, 50);
+        } else {
+          axios.post('/api/users/create-shipping-address', this.profileData).then(function (response) {
+            _this2.$snotify.success("Shipping address update successful", {
+              closeOnClick: false,
+              pauseOnHover: false,
+              timeout: 1000,
+              showProgressBar: false
+            });
+
+            setTimeout(function () {
+              _this2.$router.push({
+                path: '/account/address'
+              });
+            }, 50);
+          }, function (error) {
+            var errors = error.response.data.message;
+            var html = '';
+
+            for (var i in errors) {
+              html += errors[i];
+            }
+
+            _this2.$toast.open({
+              message: html,
+              type: 'error'
+            });
+          });
+        }
       }
     }
   }
@@ -219,6 +322,78 @@ var render = function() {
                           "v-layout",
                           { attrs: { row: "", wrap: "" } },
                           [
+                            _vm.$route.query.type == "ship-address"
+                              ? _c(
+                                  "v-flex",
+                                  {
+                                    attrs: {
+                                      xs12: "",
+                                      sm12: "",
+                                      md12: "",
+                                      lg12: "",
+                                      xl12: "",
+                                      "py-2": ""
+                                    }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        label: "First Name",
+                                        rules: _vm.inputRules.basictextRules
+                                      },
+                                      model: {
+                                        value: _vm.profileData.first_name,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            _vm.profileData,
+                                            "first_name",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "profileData.first_name"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
+                            _vm.$route.query.type == "ship-address"
+                              ? _c(
+                                  "v-flex",
+                                  {
+                                    attrs: {
+                                      xs12: "",
+                                      sm12: "",
+                                      md12: "",
+                                      lg12: "",
+                                      xl12: "",
+                                      "py-2": ""
+                                    }
+                                  },
+                                  [
+                                    _c("v-text-field", {
+                                      attrs: {
+                                        label: "Last Name",
+                                        rules: _vm.inputRules.basictextRules
+                                      },
+                                      model: {
+                                        value: _vm.profileData.last_name,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            _vm.profileData,
+                                            "last_name",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "profileData.last_name"
+                                      }
+                                    })
+                                  ],
+                                  1
+                                )
+                              : _vm._e(),
+                            _vm._v(" "),
                             _c(
                               "v-flex",
                               {
@@ -236,6 +411,13 @@ var render = function() {
                                   attrs: {
                                     label: "Address",
                                     rules: _vm.inputRules.basictextRules
+                                  },
+                                  model: {
+                                    value: _vm.profileData.address,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.profileData, "address", $$v)
+                                    },
+                                    expression: "profileData.address"
                                   }
                                 })
                               ],
@@ -257,31 +439,15 @@ var render = function() {
                               [
                                 _c("v-text-field", {
                                   attrs: {
-                                    label: "Buidling Name",
+                                    label: "City",
                                     rules: _vm.inputRules.basictextRules
-                                  }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-flex",
-                              {
-                                attrs: {
-                                  xs12: "",
-                                  sm12: "",
-                                  md12: "",
-                                  lg12: "",
-                                  xl12: "",
-                                  "py-2": ""
-                                }
-                              },
-                              [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    label: "Street no",
-                                    rules: _vm.inputRules.basictextRules
+                                  },
+                                  model: {
+                                    value: _vm.profileData.city,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.profileData, "city", $$v)
+                                    },
+                                    expression: "profileData.city"
                                   }
                                 })
                               ],
@@ -305,6 +471,13 @@ var render = function() {
                                   attrs: {
                                     label: "State",
                                     rules: _vm.inputRules.basictextRules
+                                  },
+                                  model: {
+                                    value: _vm.profileData.state,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.profileData, "state", $$v)
+                                    },
+                                    expression: "profileData.state"
                                   }
                                 })
                               ],
@@ -326,8 +499,15 @@ var render = function() {
                               [
                                 _c("v-text-field", {
                                   attrs: {
-                                    label: "Zip Code/Pin Code ",
+                                    label: "Zip Code",
                                     rules: _vm.inputRules.basictextRules
+                                  },
+                                  model: {
+                                    value: _vm.profileData.zip_code,
+                                    callback: function($$v) {
+                                      _vm.$set(_vm.profileData, "zip_code", $$v)
+                                    },
+                                    expression: "profileData.zip_code"
                                   }
                                 })
                               ],
@@ -347,12 +527,64 @@ var render = function() {
                                 }
                               },
                               [
-                                _c("v-text-field", {
-                                  attrs: {
-                                    label: "Country",
-                                    rules: _vm.inputRules.basictextRules
-                                  }
-                                })
+                                _vm.$route.query.type == "ship-address"
+                                  ? _c("v-text-field", {
+                                      attrs: {
+                                        type: "email",
+                                        label: "Email",
+                                        rules: _vm.inputRules.emailRules
+                                      },
+                                      model: {
+                                        value: _vm.profileData.email,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            _vm.profileData,
+                                            "email",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "profileData.email"
+                                      }
+                                    })
+                                  : _vm._e()
+                              ],
+                              1
+                            ),
+                            _vm._v(" "),
+                            _c(
+                              "v-flex",
+                              {
+                                attrs: {
+                                  xs12: "",
+                                  sm12: "",
+                                  md12: "",
+                                  lg12: "",
+                                  xl12: "",
+                                  "py-2": ""
+                                }
+                              },
+                              [
+                                _vm.$route.query.type == "ship-address"
+                                  ? _c("v-text-field", {
+                                      attrs: {
+                                        type: "tel",
+                                        max: "10",
+                                        label: "Phone Number",
+                                        rules: _vm.inputRules.basictextRules
+                                      },
+                                      model: {
+                                        value: _vm.profileData.phone_number,
+                                        callback: function($$v) {
+                                          _vm.$set(
+                                            _vm.profileData,
+                                            "phone_number",
+                                            $$v
+                                          )
+                                        },
+                                        expression: "profileData.phone_number"
+                                      }
+                                    })
+                                  : _vm._e()
                               ],
                               1
                             ),

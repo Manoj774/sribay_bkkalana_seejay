@@ -33,16 +33,19 @@ __webpack_require__.r(__webpack_exports__);
         text: 'No',
         align: 'left',
         sortable: false,
-        value: 'srno'
+        value: 'count'
       }, {
         text: 'Order Id',
         value: 'orderId'
       }, {
-        text: 'Product Name',
-        value: 'name'
+        text: 'Shipping Address',
+        value: 'address'
       }, {
-        text: 'Price',
-        value: 'price'
+        text: 'Net Amount',
+        value: 'net_amount'
+      }, {
+        text: 'Order Date',
+        value: 'created_at'
       }, {
         text: 'Status',
         value: 'status'
@@ -52,6 +55,44 @@ __webpack_require__.r(__webpack_exports__);
       }],
       tableData: []
     };
+  },
+  mounted: function mounted() {},
+  created: function created() {
+    this.getUserOrderData(); // this.getUserOrderData();
+  },
+  methods: {
+    getUserOrderData: function getUserOrderData() {
+      var _this = this;
+
+      axios.get('/api/orders/user-orders').then(function (response) {
+        var orderdata = response.data.orders;
+        var count = 1;
+
+        for (var key in orderdata) {
+          _this.tableData.push({
+            'count': count,
+            'orderId': _this.leftPad(orderdata[key].id, 6),
+            'address': orderdata[key].address + ', ' + orderdata[key].city + ', ' + orderdata[key].state + ', ' + orderdata[key].zip_code,
+            'net_amount': orderdata[key].net_amount.toFixed(2),
+            'created_at': orderdata[key].created_at,
+            'status': orderdata[key].order_stat
+          });
+
+          count++;
+        }
+      })["catch"](function (error) {
+        console.log(error.response.data.message);
+      });
+    },
+    leftPad: function leftPad(number, targetLength) {
+      var output = number + '';
+
+      while (output.length < targetLength) {
+        output = '0' + output;
+      }
+
+      return output;
+    }
   }
 });
 

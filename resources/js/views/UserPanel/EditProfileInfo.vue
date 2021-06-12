@@ -79,32 +79,28 @@
         saveDetails(){
             this.$refs.form.validate()
             if(this.valid == true){
-               this.$snotify.success('Your account Information Updated succesfully',{
-                  closeOnClick: false,
-                  pauseOnHover: false,
-                  timeout: 1000,
-                  showProgressBar:false,
-               });
-               setTimeout(() => {
-                   axios.put('/api/users/'+this.profileData.id, this.profileData).then(response => {
-                       this.$toast.open({
-                           message: response.data.message,
-                           type: 'success',
-                       });
+                axios.put('/api/users/'+this.profileData.id, this.profileData).then(response => {
+                    this.$snotify.success(response.data.message,{
+                        closeOnClick: false,
+                        pauseOnHover: false,
+                        timeout: 1000,
+                        showProgressBar:false,
+                    });
+                    setTimeout(() => {
+                        this.$router.push({path:'/account/profile'})
+                    }, 50);
+                }, response => {
+                    const errors = response.error;
+                    var html = '';
+                    for (const i in errors){
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
 
-                   }, response => {
-                       const errors = response.error;
-                       var html = '';
-                       for (const i in errors){
-                           html += errors[i];
-                       }
-                       this.$toast.open({
-                           message: html,
-                           type: 'error',
-                       });
-                   });
-               }, 50);
-                this.$router.push({path:'/account/profile'})
             }
          },
          save (date) {

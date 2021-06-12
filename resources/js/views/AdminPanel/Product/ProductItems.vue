@@ -79,11 +79,11 @@ export default {
           for (let categoryKey in this.products) {
 			  this.listData.push(
 					  {
-						  'count':count++,
+						  'count': count++,
 						  'image': this.products[categoryKey].image_url,
-						  'name': this.products[categoryKey].product_name,
+						  'name' : this.products[categoryKey].product_name,
 						  'price': this.products[categoryKey].sell_price,
-                          'id': this.products[categoryKey].id
+                          'id'   : this.products[categoryKey].id
 					  }
 			  );
           }

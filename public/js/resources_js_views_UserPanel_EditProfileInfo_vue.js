@@ -99,34 +99,31 @@ __webpack_require__.r(__webpack_exports__);
       this.$refs.form.validate();
 
       if (this.valid == true) {
-        this.$snotify.success('Your account Information Updated succesfully', {
-          closeOnClick: false,
-          pauseOnHover: false,
-          timeout: 1000,
-          showProgressBar: false
-        });
-        setTimeout(function () {
-          axios.put('/api/users/' + _this2.profileData.id, _this2.profileData).then(function (response) {
-            _this2.$toast.open({
-              message: response.data.message,
-              type: 'success'
-            });
-          }, function (response) {
-            var errors = response.error;
-            var html = '';
-
-            for (var i in errors) {
-              html += errors[i];
-            }
-
-            _this2.$toast.open({
-              message: html,
-              type: 'error'
-            });
+        axios.put('/api/users/' + this.profileData.id, this.profileData).then(function (response) {
+          _this2.$snotify.success(response.data.message, {
+            closeOnClick: false,
+            pauseOnHover: false,
+            timeout: 1000,
+            showProgressBar: false
           });
-        }, 50);
-        this.$router.push({
-          path: '/account/profile'
+
+          setTimeout(function () {
+            _this2.$router.push({
+              path: '/account/profile'
+            });
+          }, 50);
+        }, function (response) {
+          var errors = response.error;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this2.$toast.open({
+            message: html,
+            type: 'error'
+          });
         });
       }
     },

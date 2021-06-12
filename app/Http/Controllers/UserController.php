@@ -44,6 +44,7 @@ class UserController extends Controller
      * @return Response json
      */
     public function createUserShippingAddress(Request $request){
+
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
@@ -55,7 +56,7 @@ class UserController extends Controller
             'zip_code' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
         $userShipping = CustomerShippingAddress::find($request->id);
         if (!$userShipping){
@@ -101,7 +102,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
 
         $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password','referral']);
@@ -148,7 +149,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
 
         $payment = new Payment([
@@ -211,7 +212,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
 
         $user = new User([
@@ -231,7 +232,7 @@ class UserController extends Controller
 
 
     /**
-     * Store a newly update User data in storage.
+     * update User data in storage.
      *
      * @param Request $request
      * @return Response json
@@ -247,7 +248,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['error' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()], 401);
         }
         $user = User::find($request->user()->id);
         if (!$user) {
@@ -259,6 +260,9 @@ class UserController extends Controller
         $user->phone_number = $request->phone_number;
         $user->profile_picture = $request->profile_picture;
         $user->address = $request->address;
+        $user->city = $request->city;
+        $user->state = $request->state;
+        $user->zip_code = $request->zip_code;
 
         if (!$user->update()){
             return response()->json(['message' => 'User not updated. Internal Server Error'],500 );
