@@ -89,6 +89,7 @@ __webpack_require__.r(__webpack_exports__);
           sessionStorage.setItem('token', response.data.token);
           sessionStorage.setItem('role', response.data.role);
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
+          sessionStorage.removeItem('admin-user');
           window.location.href = '/';
         })["catch"](function (error) {
           _this.$toast.open({

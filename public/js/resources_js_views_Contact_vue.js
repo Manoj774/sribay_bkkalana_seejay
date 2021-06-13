@@ -208,9 +208,7 @@ var render = function() {
       }),
       _vm._v(" "),
       _c("div", { staticClass: "emb-contact-content" }, [
-        _c("div", { staticClass: "Contact-page" }, [
-          _c("div", { staticClass: "contact-map" }, [_c("emb-google-map")], 1)
-        ]),
+        _c("div", { staticClass: "Contact-page" }),
         _vm._v(" "),
         _c(
           "div",

@@ -95,39 +95,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       console.log(item);
-      this.$snotify.success('Product adding to the cart', {
-        closeOnClick: false,
-        pauseOnHover: false,
-        timeout: 1000,
-        showProgressBar: false
-      });
-      setTimeout(function () {
-        var newProduct = {
-          id: item.id,
-          image: item.image_url,
-          name: item.product_name,
-          price: item.sell_price,
-          quantity: 1,
-          total: item.sell_price * 1,
-          aff_user_id: null
-        };
-        axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
-          window.location.href = _this.$router.history.current.path; // console.log(this.$router.history.current);
-          // console.log(response.data.message)
-        }, function (response) {
-          var errors = response.data.message;
-          var html = '';
-
-          for (var i in errors) {
-            html += errors[i];
-          }
-
-          _this.$toast.open({
-            message: html,
-            type: 'error'
-          });
+      var newProduct = {
+        product_id: item.id,
+        image: item.image_url,
+        name: item.product_name,
+        price: item.sell_price,
+        quantity: item.quantity ? item.quantity : 1,
+        total: item.sell_price * (item.quantity ? item.quantity : 1),
+        aff_user_id: item.user
+      };
+      axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
+        _this.$snotify.success('Product adding to the cart', {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
         });
-      }, 50);
+
+        setTimeout(function () {
+          window.location.href = _this.$router.history.current.path;
+        }, 50); // console.log(this.$router.history.current);
+        // console.log(response.data.message)
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     },
 
     /**
@@ -224,6 +225,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var instantsearch_css_themes_algolia_min_css__WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! instantsearch.css/themes/algolia-min.css */ "./node_modules/instantsearch.css/themes/algolia-min.css");
 /* harmony import */ var instantsearch_css_themes_algolia_min_css__WEBPACK_IMPORTED_MODULE_1___default = /*#__PURE__*/__webpack_require__.n(instantsearch_css_themes_algolia_min_css__WEBPACK_IMPORTED_MODULE_1__);
 /* harmony import */ var _components_Ecommerce_ProductItem__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! ../components/Ecommerce/ProductItem */ "./resources/js/components/Ecommerce/ProductItem.vue");
+//
 //
 //
 //
@@ -753,309 +755,187 @@ var render = function() {
         "div",
         { staticClass: "gadget-content section-gap" },
         [
+          _c("ais-instant-search", {
+            attrs: { "search-client": _vm.searchClient, "index-name": "ikea" }
+          }),
+          _vm._v(" "),
           _c(
-            "ais-instant-search",
-            {
-              attrs: { "search-client": _vm.searchClient, "index-name": "ikea" }
-            },
+            "v-container",
+            { attrs: { "grid-list-xl": "", "py-0": "" } },
             [
               _c(
-                "v-container",
-                { attrs: { "grid-list-xl": "", "py-0": "" } },
+                "v-layout",
+                { attrs: { row: "", wrap: "" } },
                 [
                   _c(
-                    "v-layout",
-                    { attrs: { row: "", wrap: "" } },
+                    "v-flex",
+                    {
+                      attrs: { xs12: "", sm12: "", md4: "", lg4: "", xl3: "" }
+                    },
                     [
-                      _c(
-                        "v-flex",
-                        {
-                          attrs: {
-                            xs12: "",
-                            sm12: "",
-                            md4: "",
-                            lg4: "",
-                            xl3: ""
-                          }
-                        },
-                        [
-                          [
-                            _c("div", { staticClass: "sidebar-filter-wrap" }, [
+                      [
+                        _c("div", { staticClass: "sidebar-filter-wrap" }, [
+                          _c("div", {
+                            staticClass: "search-box emb-card white mb-6 pa-6"
+                          }),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            {
+                              staticClass:
+                                "cateogary-block emb-card white mb-6 pa-6"
+                            },
+                            [
+                              _c("h5", [_vm._v("CATEGORIES")]),
+                              _vm._v(" "),
+                              _c("v-treeview", {
+                                attrs: {
+                                  items: _vm.productCategories,
+                                  "selection-type": _vm.selectionType,
+                                  selectable: "",
+                                  "return-object": "",
+                                  "open-all": ""
+                                },
+                                model: {
+                                  value: _vm.product.product_categories,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.product,
+                                      "product_categories",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "product.product_categories"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "div",
+                            { staticClass: "emb-card white mb-6 pa-6" },
+                            [_c("h5", [_vm._v("PRICE")])]
+                          ),
+                          _vm._v(" "),
+                          _c("div", { staticClass: "emb-card white pa-6" }, [
+                            _c("div", { staticClass: "ais-ClearRefinements" }, [
                               _c(
-                                "div",
+                                "button",
                                 {
                                   staticClass:
-                                    "search-box emb-card white mb-6 pa-6"
+                                    "v-btn v-btn--contained cpx-0 v-size--large font-weight-medium accent ais-ClearRefinements-button"
                                 },
                                 [
-                                  _c("ais-search-box", {
-                                    attrs: { placeholder: "Search a product" }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                {
-                                  staticClass:
-                                    "cateogary-block emb-card white mb-6 pa-6"
-                                },
-                                [
-                                  _c("h5", [_vm._v("CATEGORIES")]),
-                                  _vm._v(" "),
-                                  _c("v-treeview", {
-                                    attrs: {
-                                      items: _vm.productCategories,
-                                      "selection-type": _vm.selectionType,
-                                      selectable: "",
-                                      "return-object": "",
-                                      "open-all": ""
-                                    },
-                                    model: {
-                                      value: _vm.product.product_categories,
-                                      callback: function($$v) {
-                                        _vm.$set(
-                                          _vm.product,
-                                          "product_categories",
-                                          $$v
-                                        )
-                                      },
-                                      expression: "product.product_categories"
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "emb-card white mb-6 pa-6" },
-                                [
-                                  _c("h5", [_vm._v("PRICE")]),
-                                  _vm._v(" "),
-                                  _c("ais-range-input", {
-                                    attrs: { attribute: "price" }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "div",
-                                { staticClass: "emb-card white pa-6" },
-                                [
-                                  _c(
-                                    "div",
-                                    { staticClass: "ais-ClearRefinements" },
-                                    [
-                                      _c(
-                                        "button",
-                                        {
-                                          staticClass:
-                                            "v-btn v-btn--contained cpx-0 v-size--large font-weight-medium accent ais-ClearRefinements-button"
-                                        },
-                                        [
-                                          _vm._v(
-                                            "\n                                                Clear all filters\n                                            "
-                                          )
-                                        ]
-                                      )
-                                    ]
+                                  _vm._v(
+                                    "\n                                            Clear all filters\n                                        "
                                   )
                                 ]
                               )
                             ])
-                          ]
-                        ],
-                        2
-                      ),
-                      _vm._v(" "),
+                          ])
+                        ])
+                      ]
+                    ],
+                    2
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-flex",
+                    {
+                      attrs: { xs12: "", sm12: "", md8: "", lg8: "", xl9: "" }
+                    },
+                    [
                       _c(
-                        "v-flex",
-                        {
-                          attrs: {
-                            xs12: "",
-                            sm12: "",
-                            md8: "",
-                            lg8: "",
-                            xl9: ""
-                          }
-                        },
+                        "div",
+                        { staticClass: "shop-content-wrap" },
                         [
                           _c(
                             "div",
-                            { staticClass: "shop-content-wrap" },
+                            { staticClass: "shop-header" },
                             [
                               _c(
-                                "div",
-                                { staticClass: "shop-header" },
+                                "v-layout",
+                                {
+                                  attrs: {
+                                    row: "",
+                                    wrap: "",
+                                    "my-0": "",
+                                    "align-center": ""
+                                  }
+                                },
                                 [
+                                  _c("v-flex", {
+                                    attrs: {
+                                      xs12: "",
+                                      sm12: "",
+                                      md12: "",
+                                      lg7: "",
+                                      xl7: "",
+                                      "py-0": "",
+                                      "cpx-7": "",
+                                      "mb-4": ""
+                                    }
+                                  }),
+                                  _vm._v(" "),
                                   _c(
-                                    "v-layout",
+                                    "v-flex",
                                     {
                                       attrs: {
-                                        row: "",
-                                        wrap: "",
-                                        "my-0": "",
-                                        "align-center": ""
+                                        xs12: "",
+                                        sm12: "",
+                                        md12: "",
+                                        lg5: "",
+                                        xl5: "",
+                                        "cpx-7": "",
+                                        "py-0": "",
+                                        "pr-0": "",
+                                        "mb-4": ""
                                       }
                                     },
                                     [
-                                      _c(
-                                        "v-flex",
-                                        {
-                                          attrs: {
-                                            xs12: "",
-                                            sm12: "",
-                                            md12: "",
-                                            lg7: "",
-                                            xl7: "",
-                                            "py-0": "",
-                                            "cpx-7": "",
-                                            "mb-4": ""
-                                          }
-                                        },
-                                        [
-                                          _c(
-                                            "div",
-                                            { staticClass: "d-sm-flex" },
-                                            [
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "app-selectbox-sm"
-                                                },
-                                                [
-                                                  _c("ais-sort-by", {
-                                                    attrs: {
-                                                      items: [
-                                                        {
-                                                          value: "ikea",
-                                                          label: "Default"
-                                                        },
-                                                        {
-                                                          value:
-                                                            "ikea_price_asc",
-                                                          label: "Lowest price"
-                                                        },
-                                                        {
-                                                          value:
-                                                            "ikea_price_desc",
-                                                          label: "Highest price"
-                                                        }
-                                                      ]
-                                                    }
-                                                  })
-                                                ],
-                                                1
-                                              ),
-                                              _vm._v(" "),
-                                              _c(
-                                                "div",
-                                                {
-                                                  staticClass:
-                                                    "app-selectbox-sm ml-sm-4 mt-sm-0 mt-6"
-                                                },
-                                                [
-                                                  _c("ais-hits-per-page", {
-                                                    attrs: {
-                                                      items: [
-                                                        {
-                                                          label:
-                                                            "8 hits per page",
-                                                          value: 8,
-                                                          default: true
-                                                        },
-                                                        {
-                                                          label:
-                                                            "12 hits per page",
-                                                          value: 12
-                                                        },
-                                                        {
-                                                          label:
-                                                            "15 hits per page",
-                                                          value: 16
-                                                        }
-                                                      ]
-                                                    }
-                                                  })
-                                                ],
-                                                1
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      ),
-                                      _vm._v(" "),
-                                      _c(
-                                        "v-flex",
-                                        {
-                                          attrs: {
-                                            xs12: "",
-                                            sm12: "",
-                                            md12: "",
-                                            lg5: "",
-                                            xl5: "",
-                                            "cpx-7": "",
-                                            "py-0": "",
-                                            "pr-0": "",
-                                            "mb-4": ""
-                                          }
-                                        },
-                                        [
-                                          _c(
-                                            "div",
-                                            { staticClass: "text-lg-right" },
-                                            [_c("ais-stats")],
-                                            1
-                                          )
-                                        ]
-                                      )
-                                    ],
-                                    1
+                                      _c("div", {
+                                        staticClass: "text-lg-right"
+                                      })
+                                    ]
                                   )
                                 ],
                                 1
-                              ),
-                              _vm._v(" "),
-                              [
-                                _c(
-                                  "v-row",
-                                  _vm._l(_vm.listData, function(
-                                    product,
-                                    index
-                                  ) {
-                                    return _c(
-                                      "v-col",
-                                      {
-                                        key: index,
-                                        attrs: {
-                                          cols: "12",
-                                          sm: "6",
-                                          md: "4",
-                                          lg: "4"
-                                        }
-                                      },
-                                      [
-                                        _c("product-item", {
-                                          attrs: { data: product }
-                                        })
-                                      ],
-                                      1
-                                    )
-                                  }),
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          [
+                            _c(
+                              "v-row",
+                              _vm._l(_vm.listData, function(product, index) {
+                                return _c(
+                                  "v-col",
+                                  {
+                                    key: index,
+                                    attrs: {
+                                      cols: "12",
+                                      sm: "6",
+                                      md: "4",
+                                      lg: "4"
+                                    }
+                                  },
+                                  [
+                                    _c("product-item", {
+                                      attrs: { data: product }
+                                    })
+                                  ],
                                   1
                                 )
-                              ]
-                            ],
-                            2
-                          )
-                        ]
+                              }),
+                              1
+                            )
+                          ]
+                        ],
+                        2
                       )
-                    ],
-                    1
+                    ]
                   )
                 ],
                 1

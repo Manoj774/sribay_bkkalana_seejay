@@ -95,8 +95,8 @@
 		},
         mounted() {
             this.getCartItems();
-            if (JSON.parse(localStorage.getItem('user')) != null){
-                this.user = JSON.parse(localStorage.getItem('user'));
+            if (JSON.parse(sessionStorage.getItem('user')) != null){
+                this.user = JSON.parse(sessionStorage.getItem('user'));
             }
 		},
         methods: {
@@ -111,11 +111,11 @@
                 this.$refs.register_form.validate();
                 if(this.register_valid === true){
                     axios.post(this.$serverUrl+'api/register', this.register).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
-                        this.$router.push({path:'/checkout/payment'});
+                        //this.$router.push({path:'/checkout/payment'});
                     }).catch(error => {
                         this.$toast.open({
                             message: error.message,
@@ -128,9 +128,9 @@
                 this.$refs.login_form.validate();
                 if(this.login_valid === true){
                     axios.post(this.$serverUrl+'api/login', this.login).then(response => {
-                        localStorage.setItem('token', response.data.token)
-                        localStorage.setItem('role', response.data.role)
-                        localStorage.setItem('user', JSON.stringify(response.data.user))
+                        sessionStorage.setItem('token', response.data.token)
+                        sessionStorage.setItem('role', response.data.role)
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.$router.push({path:'/checkout/payment'});
                     }).catch(error => {

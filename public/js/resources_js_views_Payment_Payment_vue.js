@@ -322,6 +322,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var orderTotal = this.totalPrice;
       var shipping_cost = this.shipping;
       var tax = this.tax;
+      var toast = this.$toast;
       DirectPayCardPayment.init({
         container: 'payment_container',
         merchantId: 'IC02070',
@@ -351,8 +352,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       });
 
       function responseCallback(result) {
-        var _this4 = this;
-
         var paymentInfo = {
           user: userData,
           cart: cartData,
@@ -368,16 +367,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           payment_stat: 2
         };
         axios.post('/api/orders/create', paymentInfo).then(function (response) {
-          _this4.$toast.open({
+          toast.open({
             message: response.data.message,
             type: 'success'
           });
-
           setTimeout(function () {
-            window.location.href = '/products';
+            window.location.href = '/account/order-history';
           }, 500);
         })["catch"](function (error) {
-          _this4.$toast.open({
+          toast.open({
             message: error.data.message,
             type: 'error'
           });
@@ -385,7 +383,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       function errorCallback(result) {
-        this.$toast.open({
+        toast.open({
           message: result.data.description,
           type: 'error'
         });

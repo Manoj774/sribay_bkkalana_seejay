@@ -504,16 +504,16 @@
 
             buyNowAndCart() {
                 let newProduct = {
-                    id: this.buyNowItem.id,
+                    product_id: this.buyNowItem.id,
                     image: this.buyNowItem.images[0].image_url,
                     name: this.buyNowItem.product_name,
                     price: this.buyNowItem.sell_price,
                     quantity: this.buyNowItem.quantity ? this.buyNowItem.quantity : 1,
                     total: this.buyNowItem.sell_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
-                    user: this.buyNowItem.user
+                    aff_user_id: this.selectedProduct.user
                 }
                 axios.post('/api/cart/add-to-cart', newProduct).then(response => {
-                    this.$router.push({path: '/checkout/payment'});
+                    window.location.href = '/checkout/payment';
                 }, error => {
                     const errors = error.response.data.message;
                     var html = '';
@@ -529,13 +529,13 @@
             registerUser() {
                 this.$refs.register_form.validate();
                 if (this.register_valid === true) {
-                    axios.post(this.$serverUrl + 'api/register', this.register).then(response => {
+                    axios.post('/api/register', this.register).then(response => {
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
                         sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         this.user = response.data.user;
                         this.buyNowAndCart()
-                        window.location.href = '/checkout/payment';
+                        //window.location.href = '/checkout/payment';
                         // this.$router.push({path:'/checkout/payment'});
                     }).catch(error => {
                         this.$toast.open({

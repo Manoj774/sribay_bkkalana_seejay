@@ -259,6 +259,7 @@ export default {
             let orderTotal = this.totalPrice;
             let shipping_cost = this.shipping;
             let tax = this.tax;
+            let toast = this.$toast;
 
             DirectPayCardPayment.init({
                 container: 'payment_container',
@@ -306,15 +307,15 @@ export default {
                 }
 
                 axios.post('/api/orders/create', paymentInfo).then(response => {
-                    this.$toast.open({
+                    toast.open({
                         message: response.data.message,
                         type: 'success',
                     });
                     setTimeout(() => {
-                    window.location.href = '/products';
+                    window.location.href = '/account/order-history';
                     }, 500);
                 }).catch(error => {
-                    this.$toast.open({
+                    toast.open({
                         message: error.data.message,
                         type: 'error',
                     });
@@ -323,7 +324,7 @@ export default {
             }
 
             function errorCallback(result) {
-                this.$toast.open({
+                toast.open({
                     message: result.data.description,
                     type: 'error',
                 });

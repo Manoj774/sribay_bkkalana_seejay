@@ -46,7 +46,7 @@ export default {
         admin:true,
 	},
     beforeEnter: (to, from, next) => {
-        let user = JSON.parse(localStorage.getItem('admin-user'));
+        let user = JSON.parse(sessionStorage.getItem('admin-user'));
         if (user === null) {
             next('/login');
         }else{

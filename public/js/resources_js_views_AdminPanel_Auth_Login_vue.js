@@ -78,16 +78,17 @@ __webpack_require__.r(__webpack_exports__);
       if (this.password.length > 0) {
         var email = this.email;
         var password = this.password;
-        axios.post('api/login', {
+        axios.post('/api/login', {
           email: email,
           password: password
         }).then(function (response) {
           sessionStorage.setItem('token', response.data.token);
           sessionStorage.setItem('role', response.data.role);
           sessionStorage.setItem('admin-user', JSON.stringify(response.data.user));
+          sessionStorage.removeItem('user');
           var role = response.data.role;
 
-          if (localStorage.getItem('token') != null) {
+          if (sessionStorage.getItem('token') != null) {
             _this.$emit('loggedInAdmin');
 
             if (_this.$route.params.nextUrl != null) {
@@ -98,7 +99,7 @@ __webpack_require__.r(__webpack_exports__);
           }
         })["catch"](function (error) {
           _this.$toast.open({
-            message: error.message,
+            message: error.response.data.message,
             type: 'error'
           });
         });
@@ -107,10 +108,11 @@ __webpack_require__.r(__webpack_exports__);
     logout: function logout() {
       var _this2 = this;
 
-      axios.post(this.$serverUrl + 'api/logout').then(function (response) {
+      axios.post('/api/logout').then(function (response) {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('role');
         sessionStorage.removeItem('admin-user');
+        sessionStorage.removeItem('user');
 
         _this2.$toast.open({
           message: "Successfully logout",

@@ -58,41 +58,43 @@ export default {
 		/**
 		 * method for adding item to cart
 		*/
-		addProductToCart(item) {
-			console.log(item)
-			this.$snotify.success('Product adding to the cart',{
-				closeOnClick: false,
-				pauseOnHover: false,
-				timeout: 1000,
-				showProgressBar:false,
-			});
-			setTimeout(() => {
-                let newProduct = {
-                    id: item.id,
-                    image: item.image_url,
-                    name: item.product_name,
-                    price: item.sell_price,
-                    quantity: 1,
-                    total: item.sell_price *  1,
-                    aff_user_id: null
-                }
-                axios.post('/api/cart/add-to-cart',newProduct).then(response => {
-                    window.location.href = this.$router.history.current.path;
-                    // console.log(this.$router.history.current);
-                    // console.log(response.data.message)
-                }, response => {
-                    const errors = response.data.message;
-                    var html = '';
-                    for (const i in errors){
-                        html += errors[i];
-                    }
-                    this.$toast.open({
-                        message: html,
-                        type: 'error',
-                    });
+        addProductToCart(item) {
+            console.log(item);
+            let newProduct = {
+                product_id: item.id,
+                image: item.image_url,
+                name: item.product_name,
+                price: item.sell_price,
+                quantity: item.quantity ? item.quantity : 1,
+                total: item.sell_price * (item.quantity ? item.quantity : 1),
+                aff_user_id: item.user
+            }
+            axios.post('/api/cart/add-to-cart', newProduct).then(response => {
+                this.$snotify.success('Product adding to the cart', {
+                    closeOnClick: false,
+                    pauseOnHover: false,
+                    timeout: 1000,
+                    showProgressBar: false,
                 });
-			}, 50);
-		},
+                setTimeout(() => {
+                    window.location.href = this.$router.history.current.path;
+                }, 50);
+
+                // console.log(this.$router.history.current);
+                // console.log(response.data.message)
+            }, error => {
+                const errors = error.response.data.message;
+                var html = '';
+                for (const i in errors) {
+                    html += errors[i];
+                }
+                this.$toast.open({
+                    message: html,
+                    type: 'error',
+                });
+            });
+
+        },
 		/**
 		 * method for checking if item exists in cart
 		*/

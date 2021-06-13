@@ -4,10 +4,9 @@
     <div class="headers">
       <emb-header-v1  v-if="$route.meta.header != 2 && $route.meta.header != 3 "></emb-header-v1>
     </div>
-
     <!-- Menu for mobile -->
     <v-navigation-drawer v-model="mobileMenu" temporary absolute dark class="sidebar-bg">
-      <emb-sidebar></emb-sidebar>
+    <emb-sidebar></emb-sidebar>
     </v-navigation-drawer>
     <router-view></router-view>
     <emb-footer-V1

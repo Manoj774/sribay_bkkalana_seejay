@@ -71,6 +71,7 @@
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
                         sessionStorage.setItem('user', JSON.stringify(response.data.user))
+                        sessionStorage.removeItem('admin-user')
                         window.location.href = '/';
                     }).catch(error => {
                         this.$toast.open({

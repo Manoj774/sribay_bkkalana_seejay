@@ -134,6 +134,21 @@ class OrderController extends Controller
 
                 if($orderItems->save()){
 
+                    $direct_commission_pre_product = 0.0;
+                    $total_direct_commission = 0.0;
+                    $level_three_user_id = null;
+                    $level_three_commission_pre_product = 0.0;
+                    $level_three_total_commission = 0.0;
+                    $level_two_user_id = null;
+                    $level_two_commission = 0.0;
+                    $level_one_user_id = null;
+                    $level_one_commission = 0.0;
+                    $profit_pre_product = 0.0;
+                    $total_profit = 0.0;
+                    $paid_commission_pre_product = 0.0;
+                    $total_paid_commission = 0.0;
+
+
                     if (isset($product['aff_user_id'])){
 
                         $afiliate_user_data = DB::table('users')
@@ -141,17 +156,6 @@ class OrderController extends Controller
 
                         $direct_commission_pre_product = $productData->sell_price * $productData->selling_margin / 100;
                         $total_direct_commission = $direct_commission_pre_product * $product['quantity'];
-                        $level_three_user_id = null;
-                        $level_three_commission_pre_product = 0.0;
-                        $level_three_total_commission = 0.0;
-                        $level_two_user_id = null;
-                        $level_two_commission = 0.0;
-                        $level_one_user_id = null;
-                        $level_one_commission = 0.0;
-                        $profit_pre_product = 0.0;
-                        $total_profit = 0.0;
-                        $paid_commission_pre_product = 0.0;
-                        $total_paid_commission = 0.0;
 
                         $afiliate_user = new MemberEarnHistory([
                             'user_id' => $product['aff_user_id'],

@@ -531,18 +531,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var _this = this;
 
       var newProduct = {
-        id: this.buyNowItem.id,
+        product_id: this.buyNowItem.id,
         image: this.buyNowItem.images[0].image_url,
         name: this.buyNowItem.product_name,
         price: this.buyNowItem.sell_price,
         quantity: this.buyNowItem.quantity ? this.buyNowItem.quantity : 1,
         total: this.buyNowItem.sell_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
-        user: this.buyNowItem.user
+        aff_user_id: this.selectedProduct.user
       };
       axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
-        _this.$router.push({
-          path: '/checkout/payment'
-        });
+        window.location.href = '/checkout/payment';
       }, function (error) {
         var errors = error.response.data.message;
         var html = '';
@@ -563,15 +561,15 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.$refs.register_form.validate();
 
       if (this.register_valid === true) {
-        axios.post(this.$serverUrl + 'api/register', this.register).then(function (response) {
+        axios.post('/api/register', this.register).then(function (response) {
           sessionStorage.setItem('token', response.data.token);
           sessionStorage.setItem('role', response.data.role);
           sessionStorage.setItem('user', JSON.stringify(response.data.user));
           _this2.user = response.data.user;
 
-          _this2.buyNowAndCart();
+          _this2.buyNowAndCart(); //window.location.href = '/checkout/payment';
+          // this.$router.push({path:'/checkout/payment'});
 
-          window.location.href = '/checkout/payment'; // this.$router.push({path:'/checkout/payment'});
         })["catch"](function (error) {
           _this2.$toast.open({
             message: error.response.data.message,

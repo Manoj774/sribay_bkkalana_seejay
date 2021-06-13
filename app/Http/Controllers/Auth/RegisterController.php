@@ -10,6 +10,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class RegisterController extends Controller
@@ -52,6 +53,12 @@ class RegisterController extends Controller
             ],401);
         }
         $user = User::where("email",$request->email)->first();
+
+        $loginController = new LoginController();
+        if (!$loginController->addSessionCartDataToUser($request,$user)){
+            Log::error('cart data adding failed..');
+        }
+
         $token = $user->createToken('user-token')->plainTextToken;
         Arr::add($user,'token',$token);
        // return response()->json(['user'=> $user],200);

@@ -65,12 +65,13 @@
                     let email = this.email
                     let password = this.password
 
-                    axios.post('api/login', {email, password}).then(response => {
+                    axios.post('/api/login', {email, password}).then(response => {
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
                         sessionStorage.setItem('admin-user', JSON.stringify(response.data.user))
+                        sessionStorage.removeItem('user')
                         let role = response.data.role
-                         if (localStorage.getItem('token') != null) {
+                         if (sessionStorage.getItem('token') != null) {
                              this.$emit('loggedInAdmin')
                              if (this.$route.params.nextUrl != null) {
                                  this.$router.push(this.$route.params.nextUrl)
@@ -80,17 +81,18 @@
                          }
                     }).catch(error => {
                         this.$toast.open({
-                            message: error.message,
+                            message: error.response.data.message,
                             type: 'error',
                         });
                     });
                 }
             },
             logout(){
-                axios.post(this.$serverUrl+'api/logout').then(response => {
+                axios.post('/api/logout').then(response => {
                     sessionStorage.removeItem('token')
                     sessionStorage.removeItem('role')
                     sessionStorage.removeItem('admin-user')
+                    sessionStorage.removeItem('user')
                     this.$toast.open({
                         message: "Successfully logout",
                         type: 'success',

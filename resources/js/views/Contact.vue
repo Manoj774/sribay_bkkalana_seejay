@@ -7,9 +7,9 @@
 		</emb-page-title>
 		<div class="emb-contact-content">
          <div class="Contact-page">
-            <div class="contact-map">
-					<emb-google-map></emb-google-map>
-            </div>
+<!--            <div class="contact-map">-->
+<!--					<emb-google-map></emb-google-map>-->
+<!--            </div>-->
 			</div>
 			<div class="contact-info-wrapper">
 				<v-container grid-list-xl py-0>
