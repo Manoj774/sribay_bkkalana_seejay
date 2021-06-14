@@ -189,7 +189,7 @@ export default {
 			name:'PrivacyPolicy'
 		},
 		{
-			path: '/session/signup',
+			path: '/session/register',
 			component: Register,
 			name:'Register'
 		},

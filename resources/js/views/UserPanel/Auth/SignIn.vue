@@ -28,7 +28,7 @@
                                     <v-btn class="accent mb-3 ma-0" large @click="loginUser">
                                         Sign In
                                     </v-btn>
-                                    <p>Don't Have account? <router-link to="/session/signup" class="accent--text">Click here to create one</router-link></p>
+                                    <p>Don't Have account? <router-link to="/session/register" class="accent--text">Click here to create one</router-link></p>
                                 </v-form>
 							</div>
 						</v-flex>

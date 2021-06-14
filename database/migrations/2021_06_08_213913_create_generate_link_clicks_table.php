@@ -17,7 +17,7 @@ class CreateGenerateLinkClicksTable extends Migration
             $table->increments('id');
             $table->foreignId('user_id')->nullable(false);
             $table->string('click_link')->nullable(false);
-            $table->text('user_agent')->nullable(false);
+            $table->string('user_agent')->nullable(false);
             $table->string('ip_address')->nullable(false);
             $table->timestamps();
         });

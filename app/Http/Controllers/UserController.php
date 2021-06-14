@@ -7,6 +7,8 @@ use App\Models\CustomerShippingAddress;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\UserHasMemberShip;
+use Carbon\Carbon;
+use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -22,7 +24,7 @@ class UserController extends Controller
     public function index()
     {
         $users = DB::table('users')
-            ->whereNotIn('id',[Auth::id()])->get();
+            ->whereNotIn('id', [Auth::id()])->get();
         return response()->json(['users' => $users], 200);
     }
 
@@ -31,9 +33,10 @@ class UserController extends Controller
      *
      * @return Response json
      */
-    public function getUserShippingAddress(){
+    public function getUserShippingAddress()
+    {
         $shipping_address = DB::table('customer_shipping_addresses')
-            ->where('user_id','=',[Auth::id()])->first();
+            ->where('user_id', '=', [Auth::id()])->first();
         return response()->json(['shipping_address' => $shipping_address], 200);
     }
 
@@ -43,7 +46,8 @@ class UserController extends Controller
      * @param Request $request
      * @return Response json
      */
-    public function createUserShippingAddress(Request $request){
+    public function createUserShippingAddress(Request $request)
+    {
 
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:50',
@@ -59,20 +63,20 @@ class UserController extends Controller
             return response()->json(['message' => $validator->errors()], 401);
         }
         $userShipping = CustomerShippingAddress::find($request->id);
-        if (!$userShipping){
+        if (!$userShipping) {
             $userShipping = new CustomerShippingAddress([
-                'first_name'=> $request->first_name,
-                'last_name'=> $request->last_name,
-                'email'=> $request->email,
-                'phone_number'=> $request->phone_number,
-                'address'=> $request->address,
-                'city'=> $request->city,
-                'state'=> $request->state,
-                'zip_code'=> $request->zip_code,
-                'user_id'=>$request->user()->id
+                'first_name' => $request->first_name,
+                'last_name' => $request->last_name,
+                'email' => $request->email,
+                'phone_number' => $request->phone_number,
+                'address' => $request->address,
+                'city' => $request->city,
+                'state' => $request->state,
+                'zip_code' => $request->zip_code,
+                'user_id' => $request->user()->id
             ]);
-            if (!$userShipping->save()){
-                return response()->json(['message' => 'Shipping Address not created. Internal Server Error'],500 );
+            if (!$userShipping->save()) {
+                return response()->json(['message' => 'Shipping Address not created. Internal Server Error'], 500);
             }
             return response()->json(['shipping_address' => $userShipping], 200);
         }
@@ -84,14 +88,15 @@ class UserController extends Controller
         $userShipping->city = $request->city;
         $userShipping->state = $request->state;
         $userShipping->zip_code = $request->zip_code;
-        if (!$userShipping->update()){
-            return response()->json(['message' => 'Shipping address not update. Internal Server Error'],500 );
+        if (!$userShipping->update()) {
+            return response()->json(['message' => 'Shipping address not update. Internal Server Error'], 500);
         }
         return response()->json(['shipping_address' => $userShipping], 200);
 
     }
 
-    public function createMembershipUser(Request $request){
+    public function createMembershipUser(Request $request)
+    {
         $validator = Validator::make($request->all(), [
             'first_name' => 'required|max:50',
             'last_name' => 'required|max:50',
@@ -105,13 +110,13 @@ class UserController extends Controller
             return response()->json(['message' => $validator->errors()], 401);
         }
 
-        $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password','referral']);
+        $data = $request->only(['first_name', 'last_name', 'phone_number', 'email', 'password', 'referral']);
         $data['password'] = bcrypt($data['password']);
 
         $user = new User($data);
 
-        if (!$user->save()){
-            return response()->json(['message' => 'Register failed. Internal Server Error'],500 );
+        if (!$user->save()) {
+            return response()->json(['message' => 'Register failed. Internal Server Error'], 500);
         }
 
 //        if(!Auth::attempt($request->only('email','password'))){
@@ -123,7 +128,7 @@ class UserController extends Controller
 //        $user = User::where("email",$request->email)->first();
 //        $token = $user->createToken('user-token')->plainTextToken;
 //        Arr::add($user,'token',$token);
-        return response()->json(['user'=> $user],200);
+        return response()->json(['user' => $user], 200);
 //        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],200);
     }
 
@@ -153,25 +158,25 @@ class UserController extends Controller
         }
 
         $payment = new Payment([
-            'payment_stat'=> $request->payment_stat,
-            'payment_method'=> $request->payment_method,
-            'amount'=> $request->amount,
-            'transaction_id'=> $request->transaction_id,
-            'card_no'=> $request->card_number,
-            'received_date'=> $request->received_date,
-            'membership'=> $request->subscription_plan,
-            'user_id'=> $request->user,
+            'payment_stat' => $request->payment_stat,
+            'payment_method' => $request->payment_method,
+            'amount' => $request->amount,
+            'transaction_id' => $request->transaction_id,
+            'card_no' => $request->card_number,
+            'received_date' => $request->received_date,
+            'membership' => $request->subscription_plan,
+            'user_id' => $request->user,
         ]);
 
-        if ($payment->save()){
+        if ($payment->save()) {
             $userHasMembership = new UserHasMemberShip([
-                'user_id'=> $request->user,
-                'membership_id'=> $request->subscription_plan,
+                'user_id' => $request->user,
+                'membership_id' => $request->subscription_plan,
             ]);
-            if ($userHasMembership->save()){
+            if ($userHasMembership->save()) {
                 $user = User::find($request->user);
                 $user->role = 3;
-                if (!$user->update()){
+                if (!$user->update()) {
                     return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
                 }
                 return response()->json(['message' => 'Membership purchasing successfully'], 200);
@@ -189,7 +194,6 @@ class UserController extends Controller
      */
     public function registerMembershipError(Request $request)
     {
-
 
 
     }
@@ -216,17 +220,17 @@ class UserController extends Controller
         }
 
         $user = new User([
-            'first_name'=> $request->first_name,
-            'last_name'=> $request->last_name,
-            'email'=> $request->email,
-            'password'=> bcrypt($request->password),
-            'is_admin'=> $request->is_admin
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'is_admin' => $request->is_admin
         ]);
 
-        if (!$user->save()){
-            return response()->json(['message' => 'User not created. Internal Server Error'],500 );
+        if (!$user->save()) {
+            return response()->json(['message' => 'User not created. Internal Server Error'], 500);
         }
-        return response()->json(['message' => 'User has been created'],201 );
+        return response()->json(['message' => 'User has been created'], 201);
 
     }
 
@@ -264,31 +268,18 @@ class UserController extends Controller
         $user->state = $request->state;
         $user->zip_code = $request->zip_code;
 
-        if (!$user->update()){
-            return response()->json(['message' => 'User not updated. Internal Server Error'],500 );
+        if (!$user->update()) {
+            return response()->json(['message' => 'User not updated. Internal Server Error'], 500);
         }
-        return response()->json(['message' => 'User has been updated'],201 );
+        return response()->json(['message' => 'User has been updated'], 201);
 
-    }
-
-    /**
-     * Logout form system.
-     *
-     * @return \Illuminate\Http\JsonResponse
-     */
-    public function logout()
-    {
-        Auth::logout();
-        return response()
-            ->json([
-                'logout' => true
-            ]);
     }
 
 
     /**
      * Display a specific user by user object.
      *
+     * @param User $user
      * @return \Illuminate\Http\JsonResponse
      */
     public function show(User $user)
@@ -297,8 +288,94 @@ class UserController extends Controller
     }
 
 
-    public function showOrders(User $user)
+    public function getAffiliateDashboardData(Request $request)
     {
-        return response()->json($user->orders()->with(['product'])->get());
+
+        $currentMonthStart = Carbon::now()->startOfMonth()->toDateString();
+        $currentMonthEnd = Carbon::now()->endOfMonth()->toDateString();
+        $lastMonthStart = Carbon::now()->subMonth()->startOfMonth()->toDateString();
+        $lastMonthEnd = Carbon::now()->subMonth()->endOfMonth()->toDateString();
+
+        $currentMonthCommission = DB::table('member_earn_histories')
+            ->where('user_id', '=', $request->user()->id)
+            ->whereBetween('created_at', [$currentMonthStart, $currentMonthEnd])
+            ->sum('earn_amount');
+
+
+        $lastMonthCommission = DB::table('member_earn_histories')
+            ->where('user_id', '=', $request->user()->id)
+            ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
+            ->sum('earn_amount');
+
+        $accountBalance = DB::table('user_has_member_ships')
+            ->select('account_amount','membership_plans.name AS membership_name')
+            ->join('membership_plans','membership_plans.id','=','user_has_member_ships.membership_id')
+            ->where('user_id', '=', $request->user()->id)
+            ->first();
+
+
+        $generateLinkTotalUniqueClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->groupBy('ip_address')
+            ->get()
+            ->count();
+
+        $generateLinkTotalClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->get()
+            ->count();
+
+        $generateLinkTotalDesktopClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->where('user_agent', '=', 'Desktop')
+            ->get()
+            ->count();
+
+        $generateLinkTotalMobileClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->where('user_agent', '=', 'Mobile')
+            ->get()
+            ->count();
+
+        $generateLinkTotalTabletClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->where('user_agent', '=', 'Tablet')
+            ->get()
+            ->count();
+
+        $generateLinkTotalOtherClick = DB::table('generate_link_clicks')
+            ->where('user_id', '=', $request->user()->id)
+            ->where('user_agent', '=', 'Other')
+            ->get()
+            ->count();
+
+        $earnHistory = DB::table('member_earn_histories')
+            ->where('user_id', '=', $request->user()->id)
+            ->get();
+
+        $affiliateUserData = [
+            'currentMonthCommission' => $currentMonthCommission,
+            'lastMonthCommission' => $lastMonthCommission,
+            'membership_name' => $accountBalance->membership_name,
+            'accountBalance' => $accountBalance->account_amount,
+            'generateLinkTotalUniqueClick' => $generateLinkTotalUniqueClick,
+            'generateLinkTotalClick' => $generateLinkTotalClick,
+            'generateLinkTotalDesktopClick' => $generateLinkTotalDesktopClick,
+            'generateLinkTotalMobileClick' => $generateLinkTotalMobileClick,
+            'generateLinkTotalTabletClick' => $generateLinkTotalTabletClick,
+            'generateLinkTotalOtherClick' => $generateLinkTotalOtherClick,
+            'earnHistory' => $earnHistory,
+        ];
+
+        return response()->json($affiliateUserData);
+
     }
+
+    public function getGenerateReferralLink(Request $request){
+        $hash = new Hashids('', 5);
+        $url = url('/session/register') . "/" . $hash->encode($request->user()->id) . "";
+        return response()->json(['referralLink' => urlencode($url)], 200);
+    }
+
+
 }

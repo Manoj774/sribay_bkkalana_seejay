@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Models\ShoppingCart;
 use App\Models\ShoppingCartItems;
 use App\Models\User;
+use App\Models\UserHasMemberShip;
 use App\Providers\RouteServiceProvider;
 use Illuminate\Foundation\Auth\AuthenticatesUsers;
 use Illuminate\Http\JsonResponse;
@@ -57,6 +58,10 @@ class LoginController extends Controller
             Log::error('cart data adding failed..');
         }
 
+        if ($user->role == 3){
+            $membership = UserHasMemberShip::where("user_id",$user->id)->first();
+            $user->membership = $membership->membership_id;
+        }
         $token = $user->createToken('user-token')->plainTextToken;
         Arr::add($user,'token',$token);
 

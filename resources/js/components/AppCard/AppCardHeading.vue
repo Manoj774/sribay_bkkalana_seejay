@@ -6,7 +6,8 @@
 				<v-icon>mdi-sync</v-icon>
 			</v-btn>
 			<template v-if="!withTabs">
-				<div class="app-contextual-link" v-if="settings || reloadable || removePanel || viewMore">
+<!--				<div class="app-contextual-link" v-if="settings || reloadable || removePanel || viewMore">-->
+                <div class="app-contextual-link" v-if="settings || removePanel || viewMore">
 					<v-menu transition="scale-transition" origin="right top" bottom left>
 						<template v-slot:activator="{ on }">
 							<v-btn class="ma-0" icon v-on="on">

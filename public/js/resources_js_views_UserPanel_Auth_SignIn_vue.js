@@ -339,7 +339,7 @@ var render = function() {
                                       "router-link",
                                       {
                                         staticClass: "accent--text",
-                                        attrs: { to: "/session/signup" }
+                                        attrs: { to: "/session/register" }
                                       },
                                       [_vm._v("Click here to create one")]
                                     )

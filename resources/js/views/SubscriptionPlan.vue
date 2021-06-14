@@ -65,6 +65,7 @@
                                             <v-btn
                                                 color="teal lighten-1"
                                                 @click="chooseSubscriptionPlan(item.id,item.price)"
+                                                :disabled="user != null && user.membership === item.id"
                                             >Get Started
                                             </v-btn>
                                         </div>
@@ -333,7 +334,7 @@
                 confirm_password: null,
                 referral: null
             },
-            user: null,
+            user: JSON.parse(sessionStorage.getItem('user')),
             login_valid: false,
             register_valid: false,
             emailRules: [

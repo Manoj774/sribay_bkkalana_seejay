@@ -20,7 +20,7 @@
 									<emb-wishlist></emb-wishlist>
                                     <div v-if="user == null " class="ml-5">
                                         <v-toolbar-title>
-                                            <a href="/session/signup" class="white--text font-weight-regular text-capitalize">Sign Up</a>
+                                            <a href="/session/register" class="white--text font-weight-regular text-capitalize">Sign Up</a>
                                             <span>/</span>
                                             <a href="/session/signin" class="white--text font-weight-regular text-capitalize">Sign In</a>
                                         </v-toolbar-title>

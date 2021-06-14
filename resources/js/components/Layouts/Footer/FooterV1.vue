@@ -112,7 +112,7 @@ export default {
 				},
 				{
 					menuItem:"message.register",
-					path:'/session/signup',
+					path:'/session/register',
 				},
 				{
 					menuItem:"message.forgotPassword",

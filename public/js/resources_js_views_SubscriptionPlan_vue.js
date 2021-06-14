@@ -324,6 +324,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "SubscriptionPlan",
   data: function data() {
@@ -346,7 +347,7 @@ __webpack_require__.r(__webpack_exports__);
         confirm_password: null,
         referral: null
       },
-      user: null,
+      user: JSON.parse(sessionStorage.getItem('user')),
       login_valid: false,
       register_valid: false,
       emailRules: [function (v) {
@@ -766,7 +767,12 @@ var render = function() {
                                     _c(
                                       "v-btn",
                                       {
-                                        attrs: { color: "teal lighten-1" },
+                                        attrs: {
+                                          color: "teal lighten-1",
+                                          disabled:
+                                            _vm.user != null &&
+                                            _vm.user.membership === item.id
+                                        },
                                         on: {
                                           click: function($event) {
                                             return _vm.chooseSubscriptionPlan(

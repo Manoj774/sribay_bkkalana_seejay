@@ -70,6 +70,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/create-shipping-address',[UserController::class,'createUserShippingAddress']);
     Route::post('/users/create',[UserController::class,'create']);
     Route::put('/users/{id}',[UserController::class,'update']);
+    Route::get('/users/affiliate',[UserController::class,'getAffiliateDashboardData']);
+    Route::get('/users/referral-link',[UserController::class,'getGenerateReferralLink']);
 
     Route::get('/orders',[OrderController::class,'index']);
     Route::get('/orders/user-orders',[OrderController::class,'getUserOrders']);
@@ -101,6 +103,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/membership/{id}/edit',[MembershipPlanController::class,'edit']);
     Route::put('/membership/{id}',[MembershipPlanController::class,'update']);
     Route::delete('/membership/{id}',[MembershipPlanController::class,'destroy']);
+
 
 });
 

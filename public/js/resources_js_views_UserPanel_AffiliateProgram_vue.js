@@ -231,6 +231,115 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "AffiliateProgram",
@@ -239,10 +348,125 @@ __webpack_require__.r(__webpack_exports__);
   },
   data: function data() {
     return {
-      tab: null
+      tab: null,
+      generateLink: null,
+      currentMonthCommission: 0.0,
+      lastMonthCommission: 0.0,
+      accountBalance: 0.0,
+      membership_name: null,
+      generateLinkTotalUniqueClick: 0.0,
+      generateLinkTotalClick: 0.0,
+      generateLinkTotalDesktopClick: 0.0,
+      generateLinkTotalMobileClick: 0.0,
+      generateLinkTotalTabletClick: 0.0,
+      generateLinkTotalOtherClick: 0.0,
+      headers: [{
+        text: '#',
+        align: 'start',
+        sortable: false,
+        value: 'count'
+      }, {
+        text: 'Description',
+        value: 'description'
+      }, {
+        text: 'Amount',
+        value: 'earn_amount'
+      }, {
+        text: 'Date',
+        value: 'created_at'
+      }],
+      earnData: [],
+      referralTableHeaders: [{
+        text: '#',
+        align: 'start',
+        sortable: false,
+        value: 'count'
+      }, {
+        text: 'Full Name',
+        value: 'full_name'
+      }, {
+        text: 'Email',
+        value: 'email'
+      }, {
+        text: 'Membership',
+        value: 'membership'
+      }, {
+        text: 'Register Date',
+        value: 'created_at'
+      }, {
+        text: 'Total Commission',
+        value: 'total_commission'
+      }, {
+        text: 'Last Commission Date',
+        value: 'last_commission_date'
+      }],
+      referralTableData: []
     };
   },
+  created: function created() {
+    this.getAffiliateData();
+    this.toggleGenerate();
+  },
   methods: {
+    getAffiliateData: function getAffiliateData() {
+      var _this = this;
+
+      axios.get('/api/users/affiliate').then(function (response) {
+        _this.currentMonthCommission = response.data.currentMonthCommission;
+        _this.lastMonthCommission = response.data.lastMonthCommission;
+        _this.membership_name = response.data.membership_name;
+        _this.accountBalance = response.data.accountBalance;
+        _this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
+        _this.generateLinkTotalClick = response.data.generateLinkTotalClick;
+        _this.generateLinkTotalDesktopClick = response.data.generateLinkTotalDesktopClick;
+        _this.generateLinkTotalMobileClick = response.data.generateLinkTotalMobileClick;
+        _this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
+        var count = 1;
+
+        for (var key in response.data.earnHistory) {
+          _this.earnData.push({
+            count: count++,
+            description: response.data.earnHistory[key].description,
+            earn_amount: response.data.earnHistory[key].earn_amount,
+            created_at: response.data.earnHistory[key].created_at
+          });
+        }
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    toggleCopy: function toggleCopy() {
+      this.marker = !this.marker;
+    },
+    toggleGenerate: function toggleGenerate() {
+      var _this2 = this;
+
+      axios.get('/api/users/referral-link').then(function (response) {
+        _this2.generateLink = decodeURIComponent(response.data.referralLink);
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this2.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
     clickToggleDrawer: function clickToggleDrawer() {
       this.drawer = !this.drawer;
     },
@@ -17200,7 +17424,11 @@ var render = function() {
         { attrs: { cols: "12", sm: "12", md: "12", lg: "12" } },
         [
           _c("h1", { staticClass: "font-weight-bold text-h4 basil--text" }, [
-            _vm._v("\n            Affiliate Dashboard\n        ")
+            _vm._v(
+              "\n            Affiliate Dashboard - " +
+                _vm._s(_vm.membership_name) +
+                "\n        "
+            )
           ]),
           _vm._v(" "),
           _c(
@@ -17221,15 +17449,19 @@ var render = function() {
             },
             [
               _c("v-tab", { attrs: { href: "#tab-overview" } }, [
-                _vm._v("\n                    Overview\n                ")
+                _vm._v("\n                Overview\n            ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-traffic-report" } }, [
-                _vm._v("\n                    Traffic Report\n                ")
+                _vm._v("\n                Traffic Report\n            ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-income-report" } }, [
-                _vm._v("\n                    Income Report\n                ")
+                _vm._v("\n                Income Report\n            ")
+              ]),
+              _vm._v(" "),
+              _c("v-tab", { attrs: { href: "#tab-referral" } }, [
+                _vm._v("\n                Referral\n            ")
               ])
             ],
             1
@@ -17292,16 +17524,28 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "This Month Estimated Commission"
+                                            "This Month Estimated Commission\n                                    "
                                           )
                                         ]
                                       ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
                                       _vm._v(" "),
                                       _c("v-card-text", [
                                         _c(
                                           "div",
                                           { staticClass: "text-center" },
-                                          [_c("h3", [_vm._v("0.00")])]
+                                          [
+                                            _c("h3", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.currentMonthCommission.toFixed(
+                                                    2
+                                                  )
+                                                )
+                                              )
+                                            ])
+                                          ]
                                         )
                                       ])
                                     ],
@@ -17343,16 +17587,28 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Last Month Estimated Commission"
+                                            "Last Month Estimated Commission\n                                    "
                                           )
                                         ]
                                       ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
                                       _vm._v(" "),
                                       _c("v-card-text", [
                                         _c(
                                           "div",
                                           { staticClass: "text-center" },
-                                          [_c("h3", [_vm._v("0.00")])]
+                                          [
+                                            _c("h3", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.lastMonthCommission.toFixed(
+                                                    2
+                                                  )
+                                                )
+                                              )
+                                            ])
+                                          ]
                                         )
                                       ])
                                     ],
@@ -17395,11 +17651,21 @@ var render = function() {
                                         [_vm._v("Account Balance")]
                                       ),
                                       _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
                                       _c("v-card-text", [
                                         _c(
                                           "div",
                                           { staticClass: "text-center" },
-                                          [_c("h3", [_vm._v("0.00")])]
+                                          [
+                                            _c("h3", [
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.accountBalance.toFixed(2)
+                                                )
+                                              )
+                                            ])
+                                          ]
                                         )
                                       ])
                                     ],
@@ -17469,14 +17735,399 @@ var render = function() {
                           _c(
                             "v-row",
                             [
-                              _c("v-col", {
-                                attrs: {
-                                  cols: "12",
-                                  sm: "12",
-                                  md: "4",
-                                  lg: "4"
-                                }
-                              })
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "red darken-4",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [_vm._v("Total Unique Click")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalUniqueClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "orange darken-3",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [_vm._v("Total Click")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "deep-purple darken-2",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Total Desktop Click\n                                    "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalDesktopClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "indigo darken-2",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Total Mobile Click\n                                    "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalMobileClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "light-blue darken-3",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Total Tablet Click\n                                    "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalTabletClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "teal lighten-1",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [
+                                          _vm._v(
+                                            "Total Other Click\n                                    "
+                                          )
+                                        ]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  _vm._s(
+                                                    _vm.generateLinkTotalOtherClick
+                                                  )
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
                             ],
                             1
                           )
@@ -17503,14 +18154,120 @@ var render = function() {
                           _c(
                             "v-row",
                             [
-                              _c("v-col", {
-                                attrs: {
-                                  cols: "12",
-                                  sm: "12",
-                                  md: "4",
-                                  lg: "4"
-                                }
-                              })
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
+                                  _c("v-data-table", {
+                                    staticClass: "elevation-1",
+                                    attrs: {
+                                      headers: _vm.headers,
+                                      items: _vm.earnData,
+                                      "items-per-page": 5
+                                    }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-tab-item",
+                { attrs: { value: "tab-referral" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c(
+                        "v-card-text",
+                        [
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    [
+                                      _c(
+                                        "v-card-text",
+                                        [
+                                          _c("v-text-field", {
+                                            attrs: {
+                                              "append-icon": "mdi-content-copy",
+                                              label: "Referral Link",
+                                              type: "text"
+                                            },
+                                            on: {
+                                              "click:append": _vm.toggleCopy
+                                            },
+                                            model: {
+                                              value: _vm.generateLink,
+                                              callback: function($$v) {
+                                                _vm.generateLink = $$v
+                                              },
+                                              expression: "generateLink"
+                                            }
+                                          })
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
+                                  _c("v-data-table", {
+                                    staticClass: "elevation-1",
+                                    attrs: {
+                                      headers: _vm.referralTableHeaders,
+                                      items: _vm.referralTableData,
+                                      "items-per-page": 5
+                                    }
+                                  })
+                                ],
+                                1
+                              )
                             ],
                             1
                           )

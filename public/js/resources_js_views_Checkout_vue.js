@@ -294,7 +294,7 @@ var render = function() {
                                           _c(
                                             "router-link",
                                             {
-                                              attrs: { to: "/session/signup" }
+                                              attrs: { to: "/session/register" }
                                             },
                                             [_vm._v("Click here to create One")]
                                           )
