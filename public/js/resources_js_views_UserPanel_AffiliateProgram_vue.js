@@ -340,6 +340,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "AffiliateProgram",
@@ -393,13 +394,9 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: 'Register Date',
         value: 'created_at'
-      }, {
-        text: 'Total Commission',
-        value: 'total_commission'
-      }, {
-        text: 'Last Commission Date',
-        value: 'last_commission_date'
-      }],
+      } // { text: 'Total Commission', value: 'total_commission' },
+      // { text: 'Last Commission Date', value: 'last_commission_date' },
+      ],
       referralTableData: []
     };
   },
@@ -423,12 +420,26 @@ __webpack_require__.r(__webpack_exports__);
         _this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
         var count = 1;
 
-        for (var key in response.data.earnHistory) {
-          _this.earnData.push({
+        for (var key in response.data.referral) {
+          _this.referralTableData.push({
             count: count++,
-            description: response.data.earnHistory[key].description,
-            earn_amount: response.data.earnHistory[key].earn_amount,
-            created_at: response.data.earnHistory[key].created_at
+            full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
+            email: response.data.referral[key].email,
+            membership: response.data.referral[key].referralMembership,
+            created_at: response.data.referral[key].created_at // total_commission: response.data.referral[key].referralEarnCommission,
+            // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
+
+          });
+        }
+
+        var count1 = 1;
+
+        for (var _key in response.data.earnHistory) {
+          _this.earnData.push({
+            count: count1++,
+            description: response.data.earnHistory[_key].description,
+            earn_amount: response.data.earnHistory[_key].earn_amount.toFixed(2),
+            created_at: response.data.earnHistory[_key].created_at
           });
         }
       }, function (err) {
@@ -446,7 +457,9 @@ __webpack_require__.r(__webpack_exports__);
       });
     },
     toggleCopy: function toggleCopy() {
-      this.marker = !this.marker;
+      var textToCopy = this.$refs.linkToCopy.$el.querySelector('input');
+      textToCopy.select();
+      document.execCommand("copy");
     },
     toggleGenerate: function toggleGenerate() {
       var _this2 = this;
@@ -17425,9 +17438,9 @@ var render = function() {
         [
           _c("h1", { staticClass: "font-weight-bold text-h4 basil--text" }, [
             _vm._v(
-              "\n            Affiliate Dashboard - " +
+              "\n                Affiliate Dashboard - " +
                 _vm._s(_vm.membership_name) +
-                "\n        "
+                "\n            "
             )
           ]),
           _vm._v(" "),
@@ -17449,19 +17462,19 @@ var render = function() {
             },
             [
               _c("v-tab", { attrs: { href: "#tab-overview" } }, [
-                _vm._v("\n                Overview\n            ")
+                _vm._v("\n                    Overview\n                ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-traffic-report" } }, [
-                _vm._v("\n                Traffic Report\n            ")
+                _vm._v("\n                    Traffic Report\n                ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-income-report" } }, [
-                _vm._v("\n                Income Report\n            ")
+                _vm._v("\n                    Income Report\n                ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-referral" } }, [
-                _vm._v("\n                Referral\n            ")
+                _vm._v("\n                    Referral\n                ")
               ])
             ],
             1
@@ -17524,7 +17537,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "This Month Estimated Commission\n                                    "
+                                            "This Month Estimated Commission\n                                        "
                                           )
                                         ]
                                       ),
@@ -17587,7 +17600,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Last Month Estimated Commission\n                                    "
+                                            "Last Month Estimated Commission\n                                        "
                                           )
                                         ]
                                       ),
@@ -17668,41 +17681,6 @@ var render = function() {
                                           ]
                                         )
                                       ])
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-col",
-                                {
-                                  attrs: {
-                                    cols: "12",
-                                    sm: "12",
-                                    md: "12",
-                                    lg: "12"
-                                  }
-                                },
-                                [
-                                  _c(
-                                    "v-layout",
-                                    { staticClass: "emb-card mb-6" },
-                                    [
-                                      _c(
-                                        "app-card",
-                                        {
-                                          attrs: {
-                                            customClasses: "pa-6",
-                                            colClasses:
-                                              "xl12 lg12 md12 xs12 sm12",
-                                            heading: "Click History"
-                                          }
-                                        },
-                                        [_c("buy-or-sell")],
-                                        1
-                                      )
                                     ],
                                     1
                                   )
@@ -17893,7 +17871,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Desktop Click\n                                    "
+                                            "Total Desktop Click\n                                        "
                                           )
                                         ]
                                       ),
@@ -17960,7 +17938,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Mobile Click\n                                    "
+                                            "Total Mobile Click\n                                        "
                                           )
                                         ]
                                       ),
@@ -18027,7 +18005,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Tablet Click\n                                    "
+                                            "Total Tablet Click\n                                        "
                                           )
                                         ]
                                       ),
@@ -18094,7 +18072,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Other Click\n                                    "
+                                            "Total Other Click\n                                        "
                                           )
                                         ]
                                       ),
@@ -18215,11 +18193,13 @@ var render = function() {
                                 [
                                   _c(
                                     "v-card",
+                                    { attrs: { color: "grey lighten-3" } },
                                     [
                                       _c(
                                         "v-card-text",
                                         [
                                           _c("v-text-field", {
+                                            ref: "linkToCopy",
                                             attrs: {
                                               "append-icon": "mdi-content-copy",
                                               label: "Referral Link",

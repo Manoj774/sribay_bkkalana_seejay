@@ -4,6 +4,8 @@ namespace App\Http\Controllers;
 
 use App\Models\Category;
 use App\Models\CustomerShippingAddress;
+use App\Models\MemberEarnHistory;
+use App\Models\MembershipPlan;
 use App\Models\Payment;
 use App\Models\User;
 use App\Models\UserHasMemberShip;
@@ -12,6 +14,7 @@ use Hashids\Hashids;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Validator;
 
 class UserController extends Controller
@@ -110,8 +113,12 @@ class UserController extends Controller
             return response()->json(['message' => $validator->errors()], 401);
         }
 
-        $data = $request->only(['first_name', 'last_name', 'phone_number', 'email', 'password', 'referral']);
+        $h = new Hashids('', 5);
+        $data = $request->only(['first_name', 'last_name', 'phone_number', 'email', 'password', 'referral_id']);
         $data['password'] = bcrypt($data['password']);
+        if (isset($data['referral_id'])){
+            $data['referral_id'] = $h->decode($data['referral_id'])[0];
+        }
 
         $user = new User($data);
 
@@ -169,20 +176,76 @@ class UserController extends Controller
         ]);
 
         if ($payment->save()) {
-            $userHasMembership = new UserHasMemberShip([
-                'user_id' => $request->user,
-                'membership_id' => $request->subscription_plan,
-            ]);
-            if ($userHasMembership->save()) {
-                $user = User::find($request->user);
-                $user->role = 3;
-                if (!$user->update()) {
-                    return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
+
+            $membership = MembershipPlan::find($request->subscription_plan);
+
+            $userHasMembership = UserHasMemberShip::where('user_id','=',$request->user)
+                                 ->first();
+
+            if ($userHasMembership){
+
+                $userHasMembership->membership_id = $request->subscription_plan;
+                $userHasMembership->account_amount = ($userHasMembership->account_amount + $membership->registered_commission);
+
+                if (!$userHasMembership->update()) {
+                    return response()->json(['message' => 'User Membership update failed. Internal Server Error'], 500);
                 }
-                return response()->json(['message' => 'Membership purchasing successfully'], 200);
             }
-            return response()->json(['message' => 'User Membership update failed. Internal Server Error'], 500);
+
+            if (!$userHasMembership){
+                $userHasMembership = new UserHasMemberShip([
+                    'user_id' => $request->user,
+                    'membership_id' => $request->subscription_plan,
+                    'account_amount' => $membership->registered_commission,
+                ]);
+                if (!$userHasMembership->save()) {
+                    return response()->json(['message' => 'User Membership create failed. Internal Server Error'], 500);
+                }
+            }
+
+            $memberEarn = new MemberEarnHistory([
+                'user_id' => $request->user,
+                'earn_amount' => $membership->registered_commission,
+                'description' => 'Registered Commission',
+            ]);
+
+            if (!$memberEarn->save()){
+                Log::error('Member Earn not update. Internal Server Error');
+            }
+
+            $user = User::find($request->user);
+            $user->role = 3;
+
+            if (!$user->update()) {
+                return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
+            }
+
+            if ($user->referral_id){
+
+                $userHasMembership = UserHasMemberShip::where('user_id','=',$user->referral_id)->first();
+
+                if ($userHasMembership){
+                    $userHasMembership->account_amount = $userHasMembership->account_amount + $membership->referral_commission;
+                    if (!$userHasMembership->update()) {
+                        return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
+                    }
+
+                    $memberEarn = new MemberEarnHistory([
+                        'user_id' => $user->referral_id,
+                        'earn_amount' => $membership->referral_commission,
+                        'description' => 'Referral Registered Commission',
+                    ]);
+
+                    if (!$memberEarn->save()){
+                        Log::error('Member Earn not update. Internal Server Error');
+                    }
+
+                }
+
+            }
+            return response()->json(['message' => 'Membership purchasing successfully'], 200);
         }
+
         return response()->json(['message' => 'Payment update failed. Internal Server Error'], 500);
     }
 
@@ -353,6 +416,44 @@ class UserController extends Controller
             ->where('user_id', '=', $request->user()->id)
             ->get();
 
+
+        $referrals = DB::table('users')
+            ->select('id','users.first_name','users.last_name','email','created_at')
+            ->where('referral_id', '=', $request->user()->id)
+            ->get();
+
+        $referralsData = array();
+
+        foreach ($referrals as $referral){
+
+            $referralMembership = DB::table('user_has_member_ships')
+                ->select('membership_plans.name AS membership_name')
+                ->join('membership_plans','user_has_member_ships.membership_id','=','membership_plans.id')
+                ->where('user_id', '=', $referral->id)
+                ->first();
+
+//            $referralEarnCommission = DB::table('member_earn_histories')
+//                ->where('description', '!=','Registered Commission')
+//                ->where('description', '!=','Weekly Reward')
+//                ->where('user_id', '=', $referral->id)
+//                ->sum('earn_amount');
+//
+//            $lastEarnCommissionDate = DB::table('member_earn_histories')
+//                ->select('created_at AS last_commission_date')
+//                ->where('description', '!=','Weekly Reward')
+//                ->where('description', '!=','Registered Commission')
+//                ->where('user_id', '=', $referral->id)
+//                ->orderByDesc('created_at')
+//                ->first();
+
+            $referral->referralMembership = $referralMembership->membership_name;
+//            $referral->referralEarnCommission = $referralEarnCommission;
+//            $referral->lastEarnCommissionDate = isset($lastEarnCommissionDate->last_commission_date) ? $lastEarnCommissionDate->last_commission_date : null;
+
+            $referralsData[] = $referral;
+
+        }
+
         $affiliateUserData = [
             'currentMonthCommission' => $currentMonthCommission,
             'lastMonthCommission' => $lastMonthCommission,
@@ -365,6 +466,7 @@ class UserController extends Controller
             'generateLinkTotalTabletClick' => $generateLinkTotalTabletClick,
             'generateLinkTotalOtherClick' => $generateLinkTotalOtherClick,
             'earnHistory' => $earnHistory,
+            'referral' => $referralsData
         ];
 
         return response()->json($affiliateUserData);

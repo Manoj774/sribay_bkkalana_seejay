@@ -39,6 +39,8 @@ class MembershipPlanController extends Controller
             'task_rewards' => 'required|numeric',
             'total_reward_per_day' => 'required|numeric',
             'bonus_rewards' => 'required|numeric',
+            'registered_commission' => 'required|numeric',
+            'referral_commission' => 'required|numeric',
         ]);
 
         $membershipPlan = new MembershipPlan([
@@ -53,7 +55,8 @@ class MembershipPlanController extends Controller
             'monthly_income' => $request->monthly_income,
             'monthly_income_with_bonus' => $request->monthly_income_with_bonus,
             'annual_revenue' => $request->annual_revenue,
-
+            'registered_commission' => $request->registered_commission,
+            'referral_commission' => $request->referral_commission,
         ]);
 
         if (!$membershipPlan->save()){
@@ -97,6 +100,8 @@ class MembershipPlanController extends Controller
             'task_rewards' => 'required|numeric',
             'total_reward_per_day' => 'required|numeric',
             'bonus_rewards' => 'required|numeric',
+            'registered_commission' => 'required|numeric',
+            'referral_commission' => 'required|numeric',
         ]);
 
         $membershipPlan = MembershipPlan::find($id);
@@ -114,6 +119,8 @@ class MembershipPlanController extends Controller
         $membershipPlan->monthly_income = $request->monthly_income;
         $membershipPlan->monthly_income_with_bonus = $request->monthly_income_with_bonus;
         $membershipPlan->annual_revenue = $request->annual_revenue;
+        $membershipPlan->registered_commission = $request->registered_commission;
+        $membershipPlan->referral_commission = $request->referral_commission;
 
         if (!$membershipPlan->update()){
             return response()->json(['message' => 'Membership plan not update. Internal Server Error'], 500);

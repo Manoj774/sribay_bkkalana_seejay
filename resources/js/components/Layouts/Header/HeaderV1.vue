@@ -17,7 +17,7 @@
 								</div>
 								<div class="notifications d-inline-flex align-items-center">
 									<emb-cart></emb-cart>
-									<emb-wishlist></emb-wishlist>
+<!--									<emb-wishlist></emb-wishlist>-->
                                     <div v-if="user == null " class="ml-5">
                                         <v-toolbar-title>
                                             <a href="/session/register" class="white--text font-weight-regular text-capitalize">Sign Up</a>

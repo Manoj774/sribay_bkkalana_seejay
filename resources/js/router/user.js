@@ -55,7 +55,7 @@ export default {
 			component: Gadget
 		},
 		{
-			path: '/products/:title',
+			path: '/products/:category',
 			component: Product,
 			name: 'Products'
 		},
@@ -193,6 +193,11 @@ export default {
 			component: Register,
 			name:'Register'
 		},
+        {
+            path: '/session/register/:id',
+            component: Register,
+            name:'Register'
+        },
 		{
 			path: '/session/forgot-password',
 			component: ForgotPassword,

@@ -138,6 +138,7 @@
                                                 :prepend-icon="'mdi-reload '"
                                                 label="Generate Link"
                                                 type="text"
+                                                ref="productLinkToCopy"
                                                 @click:append="toggleCopy"
                                                 @click:prepend="toggleGenerate()"
                                             ></v-text-field>
@@ -450,7 +451,7 @@
             } else {
                 this.getProductDetails(this.$router.history.current.params.id);
             }
-            if (JSON.parse(localStorage.getItem('user')) != null) {
+            if (JSON.parse(sessionStorage.getItem('user')) != null) {
                 this.user = JSON.parse(sessionStorage.getItem('user'));
             }
         },
@@ -565,7 +566,9 @@
                 }
             },
             toggleCopy() {
-                this.marker = !this.marker
+                let textToCopy = this.$refs.productLinkToCopy.$el.querySelector('input')
+                textToCopy.select()
+                document.execCommand("copy");
             },
 
             toggleGenerate() {

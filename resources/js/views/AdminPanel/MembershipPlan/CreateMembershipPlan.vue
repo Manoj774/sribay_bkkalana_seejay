@@ -143,6 +143,28 @@
                                         >
                                         </v-text-field>
                                     </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
+                                            label="Registered Commission"
+                                            type="number"
+                                            required
+                                            readonly
+                                            v-model="membership.registered_commission"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
+                                            label="Referral Commission"
+                                            type="number"
+                                            required
+                                            readonly
+                                            v-model="membership.referral_commission"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
                                 </v-row>
                             </v-card-text>
                             <v-card-actions>
@@ -173,6 +195,9 @@
                 monthly_income:"",
                 monthly_income_with_bonus:"",
                 annual_revenue:"",
+                registered_commission:0.0,
+                referral_commission:0.0,
+
             },
             membershipNameRules: [
                 v => !!v || 'Membership Name is required',

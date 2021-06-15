@@ -1,10 +1,10 @@
 <template>
     <v-row>
         <v-col cols="12" sm="12" md="12" lg="12">
-            <v-toolbar-title><h3>Edit Membership Plan</h3></v-toolbar-title>
+            <v-toolbar-title><h3>Edit Membership Plan - <small>{{membership.name}}</small></h3></v-toolbar-title>
             <v-row>
                 <v-col cols="12" sm="12" md="12" lg="12">
-                    <router-link class="pt-4 d-block font-weight-medium" to="/products">Back to Memberships
+                    <router-link class="pt-4 d-block font-weight-medium" to="/sriBay-admin/membership-plans">Back to Memberships
                     </router-link>
                 </v-col>
                 <v-col cols="12" sm="12" md="12" lg="12">
@@ -143,6 +143,26 @@
                                         >
                                         </v-text-field>
                                     </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
+                                            label="Registered Commission"
+                                            type="number"
+                                            required
+                                            v-model="membership.registered_commission"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
+                                            label="Referral Commission"
+                                            type="number"
+                                            required
+                                            v-model="membership.referral_commission"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
                                 </v-row>
                             </v-card-text>
                             <v-card-actions>
@@ -173,6 +193,8 @@
                 monthly_income:"",
                 monthly_income_with_bonus:"",
                 annual_revenue:"",
+                registered_commission:0.0,
+                referral_commission:0.0,
             },
             membershipNameRules: [
                 v => !!v || 'Membership Name is required',

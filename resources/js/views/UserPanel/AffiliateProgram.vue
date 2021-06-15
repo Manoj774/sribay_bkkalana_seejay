@@ -71,17 +71,17 @@
                                     </v-card>
                                 </v-col>
 
-                                <v-col cols="12" sm="12" md="12" lg="12">
-                                    <v-layout class="emb-card mb-6">
-                                        <app-card
-                                            customClasses="pa-6"
-                                            colClasses="xl12 lg12 md12 xs12 sm12"
-                                            heading="Click History"
-                                        >
-                                            <buy-or-sell></buy-or-sell>
-                                        </app-card>
-                                    </v-layout>
-                                </v-col>
+<!--                                <v-col cols="12" sm="12" md="12" lg="12">-->
+<!--                                    <v-layout class="emb-card mb-6">-->
+<!--                                        <app-card-->
+<!--                                            customClasses="pa-6"-->
+<!--                                            colClasses="xl12 lg12 md12 xs12 sm12"-->
+<!--                                            heading="Click History"-->
+<!--                                        >-->
+<!--                                            <buy-or-sell></buy-or-sell>-->
+<!--                                        </app-card>-->
+<!--                                    </v-layout>-->
+<!--                                </v-col>-->
 
                             </v-row>
                         </v-card-text>
@@ -187,13 +187,14 @@
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12" sm="12" md="12" lg="12">
-                                    <v-card>
+                                    <v-card color="grey lighten-3">
                                         <v-card-text>
                                             <v-text-field
                                             v-model="generateLink"
                                             :append-icon="'mdi-content-copy'"
                                             label="Referral Link"
                                             type="text"
+                                            ref="linkToCopy"
                                             @click:append="toggleCopy"
                                         ></v-text-field>
                                         </v-card-text>
@@ -261,8 +262,8 @@
                     { text: 'Email', value: 'email' },
                     { text: 'Membership', value: 'membership' },
                     { text: 'Register Date', value: 'created_at' },
-                    { text: 'Total Commission', value: 'total_commission' },
-                    { text: 'Last Commission Date', value: 'last_commission_date' },
+                    // { text: 'Total Commission', value: 'total_commission' },
+                    // { text: 'Last Commission Date', value: 'last_commission_date' },
                 ],
                 referralTableData: [],
             }
@@ -287,11 +288,24 @@
                     this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
 
                     let count = 1;
+                    for (const key in response.data.referral){
+                        this.referralTableData.push({
+                            count: count++,
+                            full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
+                            email: response.data.referral[key].email,
+                            membership: response.data.referral[key].referralMembership,
+                            created_at: response.data.referral[key].created_at,
+                            // total_commission: response.data.referral[key].referralEarnCommission,
+                            // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
+                        });
+                    }
+
+                    let count1 = 1;
                     for (const key in response.data.earnHistory){
                         this.earnData.push({
-                            count: count++,
+                            count: count1++,
                             description: response.data.earnHistory[key].description,
-                            earn_amount: response.data.earnHistory[key].earn_amount,
+                            earn_amount: response.data.earnHistory[key].earn_amount.toFixed(2),
                             created_at: response.data.earnHistory[key].created_at,
                         });
                     }
@@ -310,7 +324,9 @@
                 });
             },
             toggleCopy() {
-                this.marker = !this.marker
+                let textToCopy = this.$refs.linkToCopy.$el.querySelector('input')
+                textToCopy.select()
+                document.execCommand("copy");
             },
 
             toggleGenerate() {

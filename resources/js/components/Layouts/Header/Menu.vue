@@ -21,7 +21,8 @@
                             <a>{{$t(megaitem.name)}}</a>
 							<ul class="sub-menu">
 								<li v-for="(submega,submegakey) in megaitem.children" :key="submegakey">
-									<router-link :to="{name: 'Products', params: {title:$t(submega.name)}, query: {category: submega.id}}">{{$t(submega.name)}}</router-link>
+                                    <a :href="'/products/'+submega.id">{{$t(submega.name)}}</a>
+<!--									<router-link :to="{name: 'Products', params: {category:$t(submega.id)}}"></router-link>-->
 								</li>
 							</ul>
 						</li>

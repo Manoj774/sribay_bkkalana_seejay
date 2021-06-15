@@ -2,10 +2,6 @@
 	<div class="emb-gadget-wrap">
 		<emb-page-title v-if="$route.name == 'Shop'" :heading="$route.name" subHeading="Explore your favourite fashion style.">
 		</emb-page-title>
-		<emb-page-title v-else-if="$route.params.title.toLowerCase() == 'Gadgets'.toLowerCase()" :heading="$route.params.title.charAt(0).toUpperCase()+ $route.params.title.slice(1)" subHeading="Checkout our new gadgets.">
-		</emb-page-title>
-		<emb-page-title v-else-if="$route.params.title == 'Accessories'" :heading="$route.params.title" subHeading="Choose the wide range of best accessories.">
-		</emb-page-title>
 		<emb-page-title v-else :heading="$route.name">
 		</emb-page-title>
 		<div class="gadget-content section-gap">
@@ -127,8 +123,12 @@ export default {
 		}
 	},
     mounted() {
-        this.getProductsData();
         this.getParentCategories();
+        if (this.$router.history.current.params.category != null) {
+            this.getProductsDataWithCategory(this.$router.history.current.params.category);
+        }else{
+            this.getProductsData();
+        }
     },
     methods:{
         onPageChange() {
@@ -154,6 +154,22 @@ export default {
                     console.log(error);
                 });
         },
+
+        getProductsDataWithCategory(category) {
+            axios.get('/api/product-by-category/'+category
+            ).then(response => {
+                this.products = response.data.products;
+                let count = 1;
+                for (let categoryKey in this.products) {
+                    this.listData.push(this.products[categoryKey]);
+                }
+                // console.log(this.listData);
+            })
+                .catch(error => {
+                    console.log(error);
+                });
+        },
+
 
         getParentCategories: function() {
             axios.get('/api/category/tree-view').then(response => {

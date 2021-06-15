@@ -209,10 +209,6 @@ class ShoppingCartController extends Controller
      */
     public function destroy(Request $request)
     {
-        if (!$request->user()){
-            $request->session()->remove('cart');
-            return true;
-        }
         $shoppingCart = ShoppingCart::where('user_id','=',$request->user()->id)->first();
         if ($shoppingCart->delete()){
             $shoppingCartItem = ShoppingCartItems::where('shopping_cart_id','=',$shoppingCart->id)->get();
@@ -223,6 +219,12 @@ class ShoppingCartController extends Controller
             }
             return true;
         }
+
+        if (!$request->user()){
+            $request->session()->remove('cart');
+            return true;
+        }
+
         return false;
     }
 

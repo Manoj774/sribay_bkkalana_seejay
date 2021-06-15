@@ -463,6 +463,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["cart", "wishlist"])),
@@ -473,7 +474,7 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       this.getProductDetails(this.$router.history.current.params.id);
     }
 
-    if (JSON.parse(localStorage.getItem('user')) != null) {
+    if (JSON.parse(sessionStorage.getItem('user')) != null) {
       this.user = JSON.parse(sessionStorage.getItem('user'));
     }
   },
@@ -602,7 +603,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
     },
     toggleCopy: function toggleCopy() {
-      this.marker = !this.marker;
+      var textToCopy = this.$refs.productLinkToCopy.$el.querySelector('input');
+      textToCopy.select();
+      document.execCommand("copy");
     },
     toggleGenerate: function toggleGenerate() {
       var _this4 = this;
@@ -1314,6 +1317,7 @@ var render = function() {
                                                 ),
                                                 _vm._v(" "),
                                                 _c("v-text-field", {
+                                                  ref: "productLinkToCopy",
                                                   attrs: {
                                                     "append-icon":
                                                       "mdi-content-copy ",

@@ -170,6 +170,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateMembership",
   data: function data() {
@@ -185,7 +205,9 @@ __webpack_require__.r(__webpack_exports__);
         weekly_income: "",
         monthly_income: "",
         monthly_income_with_bonus: "",
-        annual_revenue: ""
+        annual_revenue: "",
+        registered_commission: 0.0,
+        referral_commission: 0.0
       },
       membershipNameRules: [function (v) {
         return !!v || 'Membership Name is required';
@@ -381,7 +403,12 @@ var render = function() {
         "v-col",
         { attrs: { cols: "12", sm: "12", md: "12", lg: "12" } },
         [
-          _c("v-toolbar-title", [_c("h3", [_vm._v("Edit Membership Plan")])]),
+          _c("v-toolbar-title", [
+            _c("h3", [
+              _vm._v("Edit Membership Plan - "),
+              _c("small", [_vm._v(_vm._s(_vm.membership.name))])
+            ])
+          ]),
           _vm._v(" "),
           _c(
             "v-row",
@@ -394,7 +421,7 @@ var render = function() {
                     "router-link",
                     {
                       staticClass: "pt-4 d-block font-weight-medium",
-                      attrs: { to: "/products" }
+                      attrs: { to: "/sriBay-admin/membership-plans" }
                     },
                     [_vm._v("Back to Memberships\n                ")]
                   )
@@ -828,6 +855,79 @@ var render = function() {
                                           },
                                           expression:
                                             "membership.annual_revenue"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: {
+                                        cols: "12",
+                                        sm: "12",
+                                        md: "4",
+                                        lg: "4"
+                                      }
+                                    },
+                                    [
+                                      _c("v-text-field", {
+                                        staticClass: "name-input",
+                                        attrs: {
+                                          label: "Registered Commission",
+                                          type: "number",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value:
+                                            _vm.membership
+                                              .registered_commission,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.membership,
+                                              "registered_commission",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "membership.registered_commission"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: {
+                                        cols: "12",
+                                        sm: "12",
+                                        md: "4",
+                                        lg: "4"
+                                      }
+                                    },
+                                    [
+                                      _c("v-text-field", {
+                                        staticClass: "name-input",
+                                        attrs: {
+                                          label: "Referral Commission",
+                                          type: "number",
+                                          required: ""
+                                        },
+                                        model: {
+                                          value:
+                                            _vm.membership.referral_commission,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.membership,
+                                              "referral_commission",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "membership.referral_commission"
                                         }
                                       })
                                     ],

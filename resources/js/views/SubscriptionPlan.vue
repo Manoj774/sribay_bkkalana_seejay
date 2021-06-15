@@ -181,14 +181,14 @@
                                         <v-text-field
                                             v-model="register.first_name"
                                             type="text"
-                                            placeholder="First Name*"
+                                            label="First Name*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
                                         <v-text-field
                                             v-model="register.last_name"
                                             type="text"
-                                            placeholder="Last Name*"
+                                            label="Last Name*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
@@ -196,21 +196,21 @@
                                             v-model="register.phone_number"
                                             type="number"
                                             max=10
-                                            placeholder="Mobile Number*"
+                                            label="Mobile Number*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
                                         <v-text-field
                                             v-model="register.email"
                                             type="email"
-                                            placeholder="Email*"
+                                            label="Email*"
                                             :rules="emailRules"
                                         >
                                         </v-text-field>
                                         <v-text-field
                                             v-model="register.password"
                                             type="password"
-                                            placeholder="Enter Password*"
+                                            label="Enter Password*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
@@ -218,14 +218,15 @@
                                             v-model="register.confirm_password"
                                             class="mb-4"
                                             type="password"
-                                            placeholder="Retype Password*"
+                                            label="Retype Password*"
                                             :rules="inputRules.basictextRules"
                                         >
                                         </v-text-field>
                                         <v-text-field
-                                            v-model="register.referral"
+                                            v-model="register.referral_id"
                                             type="text"
-                                            placeholder="Referral ID"
+                                            label="Referral ID"
+                                            readonly
                                         >
                                         </v-text-field>
                                         <v-btn class="accent mx-0 mb-4" large @click.stop.prevent="registerUser">
@@ -332,7 +333,7 @@
                 email: null,
                 password: null,
                 confirm_password: null,
-                referral: null
+                referral_id: null
             },
             user: JSON.parse(sessionStorage.getItem('user')),
             login_valid: false,
@@ -349,9 +350,15 @@
             this.getSubscriptionPlans();
         },
         mounted() {
+
             let recaptchaScript = document.createElement('script')
             recaptchaScript.setAttribute('src', 'https://cdn.directpay.lk/dev/v1/directpayCardPayment.js?v=1')
             document.head.appendChild(recaptchaScript)
+
+            if (sessionStorage.getItem('referral') != null){
+                this.register.referral_id = sessionStorage.getItem('referral');
+            }
+
         },
         methods: {
             getSubscriptionPlans() {
@@ -412,6 +419,9 @@
                             message: "User Account Successfully Created..",
                             type: 'success',
                         });
+                        if (sessionStorage.getItem('referral') != null){
+                            sessionStorage.removeItem('referral')
+                        }
                         this.user = response.data.user;
                         this.initPayment();
                         this.e1 = 3;

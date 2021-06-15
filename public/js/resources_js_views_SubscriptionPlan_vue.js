@@ -325,6 +325,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "SubscriptionPlan",
   data: function data() {
@@ -345,7 +346,7 @@ __webpack_require__.r(__webpack_exports__);
         email: null,
         password: null,
         confirm_password: null,
-        referral: null
+        referral_id: null
       },
       user: JSON.parse(sessionStorage.getItem('user')),
       login_valid: false,
@@ -369,6 +370,10 @@ __webpack_require__.r(__webpack_exports__);
     var recaptchaScript = document.createElement('script');
     recaptchaScript.setAttribute('src', 'https://cdn.directpay.lk/dev/v1/directpayCardPayment.js?v=1');
     document.head.appendChild(recaptchaScript);
+
+    if (sessionStorage.getItem('referral') != null) {
+      this.register.referral_id = sessionStorage.getItem('referral');
+    }
   },
   methods: {
     getSubscriptionPlans: function getSubscriptionPlans() {
@@ -435,6 +440,10 @@ __webpack_require__.r(__webpack_exports__);
             message: "User Account Successfully Created..",
             type: 'success'
           });
+
+          if (sessionStorage.getItem('referral') != null) {
+            sessionStorage.removeItem('referral');
+          }
 
           _this2.user = response.data.user;
 
@@ -1071,7 +1080,7 @@ var render = function() {
                                       _c("v-text-field", {
                                         attrs: {
                                           type: "text",
-                                          placeholder: "First Name*",
+                                          label: "First Name*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1090,7 +1099,7 @@ var render = function() {
                                       _c("v-text-field", {
                                         attrs: {
                                           type: "text",
-                                          placeholder: "Last Name*",
+                                          label: "Last Name*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1110,7 +1119,7 @@ var render = function() {
                                         attrs: {
                                           type: "number",
                                           max: "10",
-                                          placeholder: "Mobile Number*",
+                                          label: "Mobile Number*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1129,7 +1138,7 @@ var render = function() {
                                       _c("v-text-field", {
                                         attrs: {
                                           type: "email",
-                                          placeholder: "Email*",
+                                          label: "Email*",
                                           rules: _vm.emailRules
                                         },
                                         model: {
@@ -1144,7 +1153,7 @@ var render = function() {
                                       _c("v-text-field", {
                                         attrs: {
                                           type: "password",
-                                          placeholder: "Enter Password*",
+                                          label: "Enter Password*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1164,7 +1173,7 @@ var render = function() {
                                         staticClass: "mb-4",
                                         attrs: {
                                           type: "password",
-                                          placeholder: "Retype Password*",
+                                          label: "Retype Password*",
                                           rules: _vm.inputRules.basictextRules
                                         },
                                         model: {
@@ -1184,18 +1193,19 @@ var render = function() {
                                       _c("v-text-field", {
                                         attrs: {
                                           type: "text",
-                                          placeholder: "Referral ID"
+                                          label: "Referral ID",
+                                          readonly: ""
                                         },
                                         model: {
-                                          value: _vm.register.referral,
+                                          value: _vm.register.referral_id,
                                           callback: function($$v) {
                                             _vm.$set(
                                               _vm.register,
-                                              "referral",
+                                              "referral_id",
                                               $$v
                                             )
                                           },
-                                          expression: "register.referral"
+                                          expression: "register.referral_id"
                                         }
                                       }),
                                       _vm._v(" "),

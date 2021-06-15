@@ -14,14 +14,14 @@
                                     <v-text-field
                                         v-model="register.first_name"
                                         type="text"
-                                        placeholder="First Name*"
+                                        label="First Name*"
                                         :rules="inputRules.basictextRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
                                         v-model="register.last_name"
                                         type="text"
-                                        placeholder="Last Name*"
+                                        label="Last Name*"
                                         :rules="inputRules.basictextRules"
                                     >
                                     </v-text-field>
@@ -29,21 +29,21 @@
                                         v-model="register.phone_number"
                                         type="number"
                                         max=10
-                                        placeholder="Mobile Number*"
+                                        label="Mobile Number*"
                                         :rules="inputRules.basictextRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
                                         v-model="register.email"
                                         type="email"
-                                        placeholder="Email*"
+                                        label="Email*"
                                         :rules="emailRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
                                         v-model="register.password"
                                         type="password"
-                                        placeholder="Enter Password*"
+                                        label="Enter Password*"
                                         :rules="inputRules.basictextRules"
                                     >
                                     </v-text-field>
@@ -51,8 +51,15 @@
                                         v-model="register.confirm_password"
                                         class="mb-4"
                                         type="password"
-                                        placeholder="Retype Passowrd*"
+                                        label="Retype Passowrd*"
                                         :rules="inputRules.basictextRules"
+                                    >
+                                    </v-text-field>
+                                    <v-text-field
+                                        v-model="register.referral_id"
+                                        type="text"
+                                        label="Referral ID"
+                                        readonly
                                     >
                                     </v-text-field>
                                     <v-btn class="accent mx-0 mb-4" large  @click.stop.prevent="registerUser">
@@ -79,7 +86,8 @@
                     phone_number: null,
                     email: null,
                     password: null,
-                    confirm_password: null
+                    confirm_password: null,
+                    referral_id: null
                 },
                 register_valid: false,
                 emailRules: [
@@ -91,6 +99,14 @@
                 }
             }
         },
+        mounted() {
+            if (this.$router.history.current.params.id != null){
+                sessionStorage.setItem('referral', this.$router.history.current.params.id)
+            }
+            if (sessionStorage.getItem('referral') != null){
+                this.register.referral_id = sessionStorage.getItem('referral');
+            }
+        },
         methods: {
             registerUser(){
                 this.$refs.register_form.validate();
@@ -99,7 +115,10 @@
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
                         sessionStorage.setItem('user', JSON.stringify(response.data.user))
-                        this.$router.push('/')
+                        if (sessionStorage.getItem('referral') != null){
+                            sessionStorage.removeItem('referral')
+                        }
+                        window.location.href='/'
                     }).catch(error => {
                         this.$toast.open({
                             message: error.response.data.message,

@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Auth;
 use App\Http\Controllers\Controller;
 use App\Providers\RouteServiceProvider;
 use App\Models\User;
+use Hashids\Hashids;
 use Illuminate\Foundation\Auth\RegistersUsers;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
@@ -37,9 +38,12 @@ class RegisterController extends Controller
             return response()->json(['error' => $validator->errors()], 401);
         }
 
-        $data = $request->only(['first_name','last_name', 'phone_number' , 'email', 'password']);
+        $h = new Hashids('', 5);
+        $data = $request->only(['first_name', 'last_name', 'phone_number', 'email', 'password', 'referral_id']);
         $data['password'] = bcrypt($data['password']);
-
+        if (isset($data['referral_id'])){
+            $data['referral_id'] = $h->decode($data['referral_id'])[0];
+        }
         $user = new User($data);
 
         if (!$user->save()){

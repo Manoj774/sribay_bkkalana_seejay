@@ -325,10 +325,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
 
 
 
@@ -349,8 +345,13 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getProductsData();
     this.getParentCategories();
+
+    if (this.$router.history.current.params.category != null) {
+      this.getProductsDataWithCategory(this.$router.history.current.params.category);
+    } else {
+      this.getProductsData();
+    }
   },
   methods: {
     onPageChange: function onPageChange() {
@@ -376,14 +377,29 @@ __webpack_require__.r(__webpack_exports__);
         console.log(error);
       });
     },
-    getParentCategories: function getParentCategories() {
+    getProductsDataWithCategory: function getProductsDataWithCategory(category) {
       var _this2 = this;
+
+      axios.get('/api/product-by-category/' + category).then(function (response) {
+        _this2.products = response.data.products;
+        var count = 1;
+
+        for (var categoryKey in _this2.products) {
+          _this2.listData.push(_this2.products[categoryKey]);
+        } // console.log(this.listData);
+
+      })["catch"](function (error) {
+        console.log(error);
+      });
+    },
+    getParentCategories: function getParentCategories() {
+      var _this3 = this;
 
       axios.get('/api/category/tree-view').then(function (response) {
         var responseData = response.data.categories;
 
         for (var i in responseData) {
-          _this2.productCategories.push(responseData[i]);
+          _this3.productCategories.push(responseData[i]);
         }
       }, function (response) {
         var errors = response.data.message;
@@ -393,7 +409,7 @@ __webpack_require__.r(__webpack_exports__);
           html += errors[i];
         }
 
-        _this2.$toast.open({
+        _this3.$toast.open({
           message: html,
           type: 'error'
         });
@@ -731,22 +747,6 @@ var render = function() {
             attrs: {
               heading: _vm.$route.name,
               subHeading: "Explore your favourite fashion style."
-            }
-          })
-        : _vm.$route.params.title.toLowerCase() == "Gadgets".toLowerCase()
-        ? _c("emb-page-title", {
-            attrs: {
-              heading:
-                _vm.$route.params.title.charAt(0).toUpperCase() +
-                _vm.$route.params.title.slice(1),
-              subHeading: "Checkout our new gadgets."
-            }
-          })
-        : _vm.$route.params.title == "Accessories"
-        ? _c("emb-page-title", {
-            attrs: {
-              heading: _vm.$route.params.title,
-              subHeading: "Choose the wide range of best accessories."
             }
           })
         : _c("emb-page-title", { attrs: { heading: _vm.$route.name } }),
