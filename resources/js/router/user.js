@@ -59,6 +59,11 @@ export default {
 			component: Product,
 			name: 'Products'
 		},
+        {
+            path: '/products/f/:searchText',
+            component: Product,
+            name: 'Products'
+        },
 		{
 			path: '/products',
 			component: Product,

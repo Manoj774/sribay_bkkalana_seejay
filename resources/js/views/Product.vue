@@ -161,8 +161,10 @@ export default {
         this.getParentCategories();
         if (this.$router.history.current.params.category != null) {
             this.selectCategory = this.$router.history.current.params.category;
-            console.log(this.selectCategory);
             this.getProductsDataWithCategory(this.$router.history.current.params.category);
+        }else if(this.$router.history.current.params.searchText != null){
+            this.product.searchText = this.$router.history.current.params.searchText;
+            this.productFilter();
         }else{
             this.getProductsData();
         }

@@ -7,7 +7,7 @@
       </div>
       <div  class="search-form"  v-if="!isHidden">
         <div class="form">
-          <input type="text" placeholder="Search Here">
+          <input type="text" placeholder="Search Here" v-model="searchText" v-on:keyup.enter="productFilter">
             <v-btn class="close-btn white" @click="isHidden = !isHidden">
               <v-icon>mdi-close</v-icon>
             </v-btn>
@@ -21,7 +21,14 @@
       data (){
          return{
             isHidden: true,
+             searchText:''
          }
-      }
+      },
+       methods:{
+          productFilter(){
+              console.log('lol')
+              window.location.href = "/products/f/"+this.searchText;
+          }
+       }
    }
 </script>
