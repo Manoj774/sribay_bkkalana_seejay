@@ -13,30 +13,61 @@
                     <v-flex xs12 sm12 md4 lg4 xl3>
                         <template>
                             <div class="sidebar-filter-wrap">
-                                <div class="search-box emb-card white mb-6 pa-6">
-<!--                                    <ais-search-box placeholder="Search a product"></ais-search-box>-->
+                                <div class="search-box emb-card white mb-4 pt-6 pl-6 pr-6">
+                                    <v-text-field
+                                        solo
+                                        label="Search Product"
+                                        append-icon="mdi-magnify"
+                                        @keyup="productFilter"
+                                        v-model="product.searchText"
+                                    ></v-text-field>
                                 </div>
-                                <div class="cateogary-block emb-card white mb-6 pa-6">
+                                <div class="category-block emb-card white mb-6 pa-6">
                                     <h5>CATEGORIES</h5>
-                                    <v-treeview
-                                        v-model="product.product_categories"
-                                        :items="productCategories"
-                                        :selection-type="selectionType"
-                                        selectable
-                                        return-object
-                                        open-all
-                                    ></v-treeview>
+                                    <template>
+                                        <ul style="list-style: none">
+                                            <li v-for="(megaitem,key) in productCategories" :key="key">
+                                                <a  :id="selectCategory != null ? selectCategory == megaitem.id ? 'select-category-color':'main-category' :'main-category'" :href="'/products/'+megaitem.id">{{$t(megaitem.name)}}</a>
+                                                <ul style="list-style: none">
+                                                    <li v-for="(submega,submegakey) in megaitem.children" :key="submegakey">
+                                                        <a :id="selectCategory != null ? selectCategory == submega.id ? 'select-category-color':'sub-category' :'sub-category'" :href="'/products/'+submega.id">{{$t(submega.name)}}</a>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </template>
                                 </div>
 
                                 <div class="emb-card white mb-6 pa-6">
                                     <h5>PRICE</h5>
-<!--                                    <ais-range-input attribute="price"></ais-range-input>-->
+                                    <v-row>
+                                        <v-col xl="4" md="4" sm="12">
+                                            <v-text-field
+                                                solo
+                                                type="number"
+                                                placeholder="0"
+                                                v-model="product.minPrice"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        <v-col xl="4" md="4" sm="12" >
+                                            <v-text-field
+                                                solo
+                                                type="number"
+                                                placeholder="50000"
+                                                v-model="product.maxPrice"
+                                            ></v-text-field>
+                                        </v-col>
+
+                                        <v-col xl="2" md="2" sm="12" class="mt-1"><v-btn class="accent" @click="productFilter">GO</v-btn></v-col>
+
+                                    </v-row>
                                 </div>
                                 <div class="emb-card white pa-6">
                                     <div class="ais-ClearRefinements">
-                                        <button class="v-btn v-btn--contained cpx-0 v-size--large font-weight-medium accent ais-ClearRefinements-button">
+                                        <v-btn @click="getProductsData" class="cpx-0 v-size--large font-weight-medium accent ais-ClearRefinements-button">
                                             Clear all filters
-                                        </button>
+                                        </v-btn>
                                     </div>
                                 </div>
                             </div>
@@ -119,12 +150,18 @@ export default {
             selectionType:'independent',
             product: {
                 product_categories: null,
+                searchText:null,
+                minPrice:0,
+                maxPrice:null,
             },
+            selectCategory:null,
 		}
 	},
     mounted() {
         this.getParentCategories();
         if (this.$router.history.current.params.category != null) {
+            this.selectCategory = this.$router.history.current.params.category;
+            console.log(this.selectCategory);
             this.getProductsDataWithCategory(this.$router.history.current.params.category);
         }else{
             this.getProductsData();
@@ -141,6 +178,13 @@ export default {
         },
 
         getProductsData() {
+            this.listData = [];
+            this.product = {
+                    product_categories: null,
+                    searchText:null,
+                    minPrice:0,
+                    maxPrice:null,
+            }
             axios.get('/api/product'
             ).then(response => {
                 this.products = response.data.products;
@@ -156,6 +200,7 @@ export default {
         },
 
         getProductsDataWithCategory(category) {
+            this.listData = [];
             axios.get('/api/product-by-category/'+category
             ).then(response => {
                 this.products = response.data.products;
@@ -190,12 +235,40 @@ export default {
             });
         },
 
-
-
         productFilter(){
 
+            if (this.product.searchText === ''){
+                this.getProductsData();
+            }else{
+                this.listData = [];
+                axios.post('/api/product/filter',this.product).then(response => {
+                    this.products = response.data.products;
+                    let count = 1;
+                    for (let categoryKey in this.products) {
+                        this.listData.push(this.products[categoryKey]);
+                    }
+                    // console.log(this.listData);
+                })
+                    .catch(error => {
+                        console.log(error);
+                    });
+            }
         }
 
     }
 }
 </script>
+
+<style>
+    #main-category{
+        font-size: 18px;
+    }
+    #sub-category{
+        font-size: 16px;
+        color: #000000;
+    }
+    #select-category-color{
+        font-size: 16px;
+        color: #ff5722 !important;
+    }
+</style>

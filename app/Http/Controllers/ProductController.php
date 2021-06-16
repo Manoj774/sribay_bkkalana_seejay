@@ -43,6 +43,13 @@ class ProductController extends Controller
         return response()->json(['products' => $products], 200);
     }
 
+    /**
+     * Display a listing of the Features product.
+     *
+     * @return Response json
+     */
+
+
     public function getFeaturesProduct(){
 
         $parentCategories = DB::table('categories')
@@ -69,6 +76,54 @@ class ProductController extends Controller
         return response()->json(['products' => $products], 200);
 
     }
+
+    public function getProductFilter(Request $request){
+
+        $text = $request->searchText;
+        $categories = $request->product_categories;
+        $minPrice = $request->minPrice;
+        $maxPrice = $request->maxPrice;
+
+
+        $sql = 'SELECT products.id,products.product_name,products.sell_price,product_images.image_url';
+        $sql .= ' FROM products';
+        $sql .= ' JOIN product_images ON products.id = product_images.product_id';
+        $sql .= ' JOIN product_has_categories ON products.id = product_has_categories.product_id';
+        $sql .= ' JOIN categories ON product_has_categories.category_id = categories.id';
+        if ($text != null || $text != '' || $categories != null || $maxPrice > 0){
+            $sql .= ' WHERE';
+        }
+
+        if ($text != null && $text != ''){
+            $sql .= " categories.name LIKE '%". $text ."%'";
+            $sql .= " OR products.product_name LIKE '%". $text ."%'";
+        }
+
+        if ($categories != null){
+            if ($text != null && $text != ''){
+                $sql .= ' AND';
+            }
+
+            $sql .= ' product_has_categories.category_id IN '.$categories.'';
+        }
+
+        if($maxPrice > 0){
+            if ($categories != null){
+                $sql .= ' AND';
+            }
+            $sql .= ' products.sell_price BETWEEN '.$minPrice.' AND '.$maxPrice.'';
+        }
+
+        $sql .= ' GROUP BY products.id';
+        $products = DB::select($sql);
+
+        if (!$products) {
+            return response()->json(['message' => 'Products not found'], 404);
+        }
+        return response()->json(['products' => $products], 200);
+
+    }
+
 
     /**
      * Display a listing of the product by category.

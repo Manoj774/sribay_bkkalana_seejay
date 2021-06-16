@@ -32,7 +32,7 @@ Route::post('register', [RegisterController::class,'register']);
 //product
 Route::get('/product',[ProductController::class,'index']);
 Route::get('/product/feature-products',[ProductController::class,'getFeaturesProduct']);
-Route::get('/product/filter', [ProductController::class,'search']);
+Route::post('/product/filter', [ProductController::class,'getProductFilter']);
 Route::get('/product/{id}',[ProductController::class,'show']);
 Route::get('/product-by-category/{id}',[ProductController::class,'productsByCategory']);
 Route::post('/product/link-generate',[ProductController::class,'productsAffiliateLink']);
