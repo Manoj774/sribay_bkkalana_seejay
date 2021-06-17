@@ -317,7 +317,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       var userData = this.user;
       var sipping_address = this.userInfo;
       var cartData = this.cart;
-      3;
       var sub_total = this.cartSubTotal;
       var orderTotal = this.totalPrice;
       var shipping_cost = this.shipping;

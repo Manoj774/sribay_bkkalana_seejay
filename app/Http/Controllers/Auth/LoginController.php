@@ -54,6 +54,10 @@ class LoginController extends Controller
 
         $user = User::where("email",$request->email)->first();
 
+        if (!$user->stat){
+            return response()->json(['status' => 401,'message' => "Your account is deactivated"],403);
+        }
+
         if (!$this->addSessionCartDataToUser($request,$user)){
             Log::error('cart data adding failed..');
         }

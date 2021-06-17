@@ -66,16 +66,20 @@ Route::middleware('auth:sanctum')->get('/user/profile', function (Request $reque
 Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/users',[UserController::class,'index']);
+    Route::get('/users/customers',[UserController::class,'getCustomers']);
     Route::get('/users/shipping-address',[UserController::class,'getUserShippingAddress']);
     Route::post('/users/create-shipping-address',[UserController::class,'createUserShippingAddress']);
     Route::post('/users/create',[UserController::class,'create']);
     Route::put('/users/{id}',[UserController::class,'update']);
     Route::get('/users/affiliate',[UserController::class,'getAffiliateDashboardData']);
     Route::get('/users/referral-link',[UserController::class,'getGenerateReferralLink']);
+    Route::post('/users/change-status',[UserController::class,'changeUserStatus']);
 
     Route::get('/orders',[OrderController::class,'index']);
     Route::get('/orders/user-orders',[OrderController::class,'getUserOrders']);
     Route::post('/orders/create',[OrderController::class,'create']);
+    Route::put('/orders/update-status',[OrderController::class,'updateOrderStatus']);
+    Route::put('/orders/filter-orders',[OrderController::class,'filterOrders']);
 
 
 

@@ -97,12 +97,12 @@
                                         </v-flex>
                                     </v-layout>
                                 </div>
-                                <div class="mb-6">
-                                    <a href="javascript:void(0)" class="color-inherit text-underline"
-                                       @click="addItemToWishlist(selectedProduct)">
-                                        Add To WishList
-                                    </a>
-                                </div>
+<!--                                <div class="mb-6">-->
+<!--                                    <a href="javascript:void(0)" class="color-inherit text-underline"-->
+<!--                                       @click="addItemToWishlist(selectedProduct)">-->
+<!--                                        Add To WishList-->
+<!--                                    </a>-->
+<!--                                </div>-->
                                 <div class="mb-6 btn-wrap">
                                     <v-btn
                                         v-if="ifItemExistInCart(selectedProduct)"

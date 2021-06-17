@@ -707,25 +707,21 @@ var render = function() {
               1
             ),
             _vm._v(" "),
-            _c(
-              "router-link",
-              { attrs: { to: "/product-edit/" + _vm.data.id } },
-              [
-                _c(
-                  "div",
-                  { staticClass: "add-to-cart" },
-                  [
-                    _c(
-                      "v-btn",
-                      { staticClass: "accent", attrs: { small: "", icon: "" } },
-                      [_c("v-icon", [_vm._v("mdi-pencil")])],
-                      1
-                    )
-                  ],
-                  1
-                )
-              ]
-            )
+            _c("router-link", { attrs: { to: "#" + _vm.data.id } }, [
+              _c(
+                "div",
+                { staticClass: "add-to-cart" },
+                [
+                  _c(
+                    "v-btn",
+                    { staticClass: "accent", attrs: { small: "", icon: "" } },
+                    [_c("v-icon", [_vm._v("mdi-pencil")])],
+                    1
+                  )
+                ],
+                1
+              )
+            ])
           ],
           1
         ),
@@ -999,7 +995,7 @@ var render = function() {
                       }
                     },
                     [
-                      _vm._v("\n\t\t\t\t\t\tAdd Product\n\t\t\t\t\t\t"),
+                      _vm._v("\n\t\t\t\t\t\t\tAdd Product\n\t\t\t\t\t\t\t"),
                       _c("v-icon", [_vm._v("mdi-plus-thick")])
                     ],
                     1
@@ -1012,79 +1008,12 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c(
-        "v-layout",
-        { staticClass: "pt-12 ma-0", attrs: { row: "", wrap: "" } },
-        [
-          _c("v-flex", { attrs: { xs12: "", sm8: "", md9: "", "py-0": "" } }, [
-            _c("h5", { staticClass: "mb-0 pt-2" }, [_vm._v("Product grid")])
-          ]),
-          _vm._v(" "),
-          _c(
-            "v-flex",
-            {
-              attrs: {
-                xs12: "",
-                sm4: "",
-                md3: "",
-                "py-0": "",
-                "text-right": ""
-              }
-            },
-            [
-              _c(
-                "v-icon",
-                {
-                  staticClass: "pa-2",
-                  on: {
-                    click: function($event) {
-                      return _vm.switchToGridView(true)
-                    }
-                  }
-                },
-                [_vm._v("mdi-apps")]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-icon",
-                {
-                  staticClass: "pa-2",
-                  on: {
-                    click: function($event) {
-                      return _vm.switchToListView(false)
-                    }
-                  }
-                },
-                [_vm._v("mdi-format-list-bulleted ")]
-              )
-            ],
-            1
-          )
-        ],
-        1
-      ),
+      _c("v-layout", {
+        staticClass: "pt-12 ma-0",
+        attrs: { row: "", wrap: "" }
+      }),
       _vm._v(" "),
-      _c(
-        "div",
-        { staticClass: "d-md-inline-flex mb-5" },
-        [
-          _c("v-select", {
-            staticClass: "mr-md-5",
-            attrs: { items: _vm.typeItems, label: "Type" }
-          }),
-          _vm._v(" "),
-          _c("v-select", {
-            staticClass: "mr-md-5",
-            attrs: { items: _vm.recentItems, label: "Recent" }
-          }),
-          _vm._v(" "),
-          _c("v-select", {
-            staticClass: "mr-md-5",
-            attrs: { items: _vm.noOfItems, label: "No of Items" }
-          })
-        ],
-        1
-      ),
+      _c("div", { staticClass: "d-md-inline-flex mb-5" }),
       _vm._v(" "),
       _c("product-items", {
         attrs: {

@@ -56,10 +56,14 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Customers",
   data: function data() {
     return {
+      switch1: true,
       tableHeaders: [{
         text: '#',
         align: 'start',
@@ -70,25 +74,13 @@ __webpack_require__.r(__webpack_exports__);
         value: 'name',
         sortable: false
       }, {
-        text: 'Username',
-        value: 'username',
-        sortable: false
-      }, {
-        text: 'Date Registered',
-        value: 'date_registered',
-        sortable: false
-      }, {
         text: 'Email',
         value: 'email',
         sortable: false
       }, {
         text: 'Orders',
         value: 'orders',
-        sortable: false
-      }, {
-        text: 'Total Spend',
-        value: 'total_spend',
-        sortable: false
+        sortable: true
       }, {
         text: 'City',
         value: 'city',
@@ -98,16 +90,118 @@ __webpack_require__.r(__webpack_exports__);
         value: 'postal_code',
         sortable: false
       }, {
-        text: 'AOV',
-        value: 'aov',
-        sortable: false
+        text: 'Date Registered',
+        value: 'date_registered',
+        sortable: true
       }, {
-        text: 'Actions',
-        value: 'actions',
+        text: 'Status',
+        value: 'status',
         sortable: false
-      }],
-      customers: []
+      } // {
+      //     text: 'Actions',
+      //     value: 'actions',
+      //     sortable: false,
+      // },
+      ],
+      customers: [],
+      search: null,
+      dialog: false,
+      changeStatus: true,
+      changeStatusCustomerId: null
     };
+  },
+  watch: {
+    dialog: function dialog(val) {
+      val || this.closeStatusChangeDialog();
+    }
+  },
+  mounted: function mounted() {
+    this.getCustomers();
+  },
+  methods: {
+    getCustomers: function getCustomers() {
+      var _this = this;
+
+      axios.get('/api/users/customers').then(function (response) {
+        _this.customers = [];
+        var responseData = response.data.customers;
+        var count = 1;
+
+        for (var i in responseData) {
+          _this.customers.push({
+            count: count,
+            name: responseData[i].first_name + " " + responseData[i].last_name,
+            email: responseData[i].email,
+            orders: responseData[i].orders,
+            city: responseData[i].city,
+            postal_code: responseData[i].zip_code,
+            date_registered: responseData[i].created_at,
+            stat: responseData[i].stat,
+            id: responseData[i].id
+          });
+
+          count++;
+        }
+
+        _this.users = responseData;
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    changeStatusCustomerDialogOpen: function changeStatusCustomerDialogOpen(cus_id, value, event) {
+      this.changeStatus = value;
+      this.changeStatusCustomerId = cus_id;
+      this.dialog = true;
+    },
+    closeStatusChangeDialog: function closeStatusChangeDialog() {
+      this.changeStatus = null;
+      this.changeStatusCustomerId = null;
+      this.dialog = false;
+    },
+    changeCustomerStatus: function changeCustomerStatus() {
+      var _this2 = this;
+
+      var customer = {
+        id: this.changeStatusCustomerId,
+        status: this.changeStatus
+      };
+      axios.post('/api/users/change-status', customer).then(function (response) {
+        _this2.closeStatusChangeDialog();
+
+        _this2.$snotify.success('User Status Updated', {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          _this2.getCustomers();
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this2.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    }
   }
 });
 
@@ -201,136 +295,150 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c(
-    "v-row",
-    [
-      _c(
-        "v-col",
-        { attrs: { cols: "12", sm: "12", md: "12", lg: "12" } },
-        [
-          _c("v-toolbar-title", [_c("h3", [_vm._v("Customers")])]),
-          _vm._v(" "),
-          _c("v-data-table", {
-            staticClass: "elevation-1",
-            attrs: {
-              headers: _vm.tableHeaders,
-              items: _vm.customers,
-              "items-per-page": 20
-            },
-            scopedSlots: _vm._u([
-              {
-                key: "top",
-                fn: function() {
-                  return [
-                    _c(
-                      "v-dialog",
-                      {
-                        attrs: { "max-width": "620px" },
-                        model: {
-                          value: _vm.dialogDelete,
-                          callback: function($$v) {
-                            _vm.dialogDelete = $$v
-                          },
-                          expression: "dialogDelete"
-                        }
-                      },
-                      [
-                        _c(
-                          "v-card",
-                          [
-                            _c("v-card-title", { staticClass: "text-h5" }, [
-                              _vm._v(
-                                "Are you sure you want to disable this membership plan ?"
-                              )
-                            ]),
-                            _vm._v(" "),
-                            _c(
-                              "v-card-actions",
-                              [
-                                _c("v-spacer"),
-                                _vm._v(" "),
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: { color: "blue darken-1", text: "" },
-                                    on: { click: _vm.closeDelete }
-                                  },
-                                  [_vm._v("Cancel")]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "v-btn",
-                                  {
-                                    attrs: { color: "blue darken-1", text: "" },
-                                    on: { click: _vm.deleteItemConfirm }
-                                  },
-                                  [_vm._v("OK")]
-                                ),
-                                _vm._v(" "),
-                                _c("v-spacer")
-                              ],
-                              1
+  return _c("div", [
+    _c("h4", { staticClass: "mb-6" }, [_vm._v("Customers")]),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: "pa-4 pt-0 emb-card mb-6" },
+      [
+        _c(
+          "v-row",
+          [
+            _c(
+              "v-col",
+              { attrs: { cols: "12", sm: "8", md: "5", lg: "5" } },
+              [
+                _c("v-text-field", {
+                  attrs: {
+                    label: "Search",
+                    "single-line": "",
+                    "hide-details": ""
+                  },
+                  model: {
+                    value: _vm.search,
+                    callback: function($$v) {
+                      _vm.search = $$v
+                    },
+                    expression: "search"
+                  }
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    ),
+    _vm._v(" "),
+    _c(
+      "div",
+      { staticClass: " pa-4" },
+      [
+        _c("v-data-table", {
+          staticClass: "elevation-1",
+          attrs: {
+            headers: _vm.tableHeaders,
+            items: _vm.customers,
+            "items-per-page": 20,
+            search: _vm.search
+          },
+          scopedSlots: _vm._u([
+            {
+              key: "top",
+              fn: function() {
+                return [
+                  _c(
+                    "v-dialog",
+                    {
+                      attrs: { "max-width": "650px" },
+                      model: {
+                        value: _vm.dialog,
+                        callback: function($$v) {
+                          _vm.dialog = $$v
+                        },
+                        expression: "dialog"
+                      }
+                    },
+                    [
+                      _c(
+                        "v-card",
+                        [
+                          _c("v-card-title", { staticClass: "text-h5" }, [
+                            _vm._v(
+                              "Are you sure you want to change this this customer status ?"
                             )
-                          ],
-                          1
-                        )
-                      ],
-                      1
-                    )
-                  ]
-                },
-                proxy: true
+                          ]),
+                          _vm._v(" "),
+                          _c(
+                            "v-card-actions",
+                            [
+                              _c("v-spacer"),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { color: "blue darken-1", text: "" },
+                                  on: { click: _vm.closeStatusChangeDialog }
+                                },
+                                [_vm._v("Cancel")]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-btn",
+                                {
+                                  attrs: { color: "blue darken-1", text: "" },
+                                  on: { click: _vm.changeCustomerStatus }
+                                },
+                                [_vm._v("OK")]
+                              ),
+                              _vm._v(" "),
+                              _c("v-spacer")
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ]
               },
-              {
-                key: "item.actions",
-                fn: function(ref) {
-                  var item = ref.item
-                  return [
-                    _c(
-                      "v-icon",
-                      {
-                        staticClass: "mr-2",
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.editItem(item.id)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                    mdi-pencil\n                "
+              proxy: true
+            },
+            {
+              key: "item.status",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _c("v-switch", {
+                    attrs: {
+                      color: "success",
+                      value: item.stat,
+                      "input-value": item.stat
+                    },
+                    on: {
+                      change: function($event) {
+                        return _vm.changeStatusCustomerDialogOpen(
+                          item.id,
+                          $event !== null,
+                          $event
                         )
-                      ]
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-icon",
-                      {
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.deleteItem(item.id)
-                          }
-                        }
-                      },
-                      [
-                        _vm._v(
-                          "\n                    mdi-delete\n                "
-                        )
-                      ]
-                    )
-                  ]
-                }
+                      }
+                    }
+                  })
+                ]
               }
-            ])
-          })
-        ],
-        1
-      )
-    ],
-    1
-  )
+            }
+          ])
+        })
+      ],
+      1
+    )
+  ])
 }
 var staticRenderFns = []
 render._withStripped = true

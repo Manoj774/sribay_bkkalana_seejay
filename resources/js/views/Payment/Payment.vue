@@ -254,7 +254,7 @@ export default {
             let referenceNo = Math.floor(1000 + Math.random() * 9000);
             let userData = this.user;
             let sipping_address = this.userInfo;
-            let cartData = this.cart;3
+            let cartData = this.cart;
             let sub_total = this.cartSubTotal;
             let orderTotal = this.totalPrice;
             let shipping_cost = this.shipping;

@@ -1082,13 +1082,13 @@ var render = function() {
                                   [
                                     _c("emb-currency-sign"),
                                     _vm._v(
-                                      "\n                                " +
+                                      "\n                                    " +
                                         _vm._s(
                                           _vm.selectedProduct.sell_price.toFixed(
                                             2
                                           )
                                         ) +
-                                        "\n                            "
+                                        "\n                                "
                                     )
                                   ],
                                   1
@@ -1212,29 +1212,6 @@ var render = function() {
                                   1
                                 ),
                                 _vm._v(" "),
-                                _c("div", { staticClass: "mb-6" }, [
-                                  _c(
-                                    "a",
-                                    {
-                                      staticClass:
-                                        "color-inherit text-underline",
-                                      attrs: { href: "javascript:void(0)" },
-                                      on: {
-                                        click: function($event) {
-                                          return _vm.addItemToWishlist(
-                                            _vm.selectedProduct
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [
-                                      _vm._v(
-                                        "\n                                    Add To WishList\n                                "
-                                      )
-                                    ]
-                                  )
-                                ]),
-                                _vm._v(" "),
                                 _c(
                                   "div",
                                   { staticClass: "mb-6 btn-wrap" },
@@ -1248,7 +1225,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                    View Cart\n                                "
+                                              "\n                                        View Cart\n                                    "
                                             )
                                           ]
                                         )
@@ -1268,7 +1245,7 @@ var render = function() {
                                           },
                                           [
                                             _vm._v(
-                                              "\n                                    Add To Cart\n                                "
+                                              "\n                                        Add To Cart\n                                    "
                                             )
                                           ]
                                         ),
@@ -1288,7 +1265,7 @@ var render = function() {
                                       },
                                       [
                                         _vm._v(
-                                          "Buy\n                                    Now\n                                "
+                                          "Buy\n                                        Now\n                                    "
                                         )
                                       ]
                                     )
@@ -1356,12 +1333,12 @@ var render = function() {
                                                   },
                                                   [
                                                     _vm._v(
-                                                      "\n                                            Commission Rate: " +
+                                                      "\n                                                Commission Rate: " +
                                                         _vm._s(
                                                           this.selectedProduct
                                                             .selling_margin
                                                         ) +
-                                                        "%\n                                        "
+                                                        "%\n                                            "
                                                     )
                                                   ]
                                                 ),
@@ -1378,11 +1355,11 @@ var render = function() {
                                                   },
                                                   [
                                                     _vm._v(
-                                                      "\n                                            Estimated Commissions:\n                                            "
+                                                      "\n                                                Estimated Commissions:\n                                                "
                                                     ),
                                                     _c("emb-currency-sign"),
                                                     _vm._v(
-                                                      "\n                                            " +
+                                                      "\n                                                " +
                                                         _vm._s(
                                                           (
                                                             (this
@@ -1394,7 +1371,7 @@ var render = function() {
                                                             100
                                                           ).toFixed(2)
                                                         ) +
-                                                        "\n                                        "
+                                                        "\n                                            "
                                                     )
                                                   ],
                                                   1
@@ -1452,14 +1429,14 @@ var render = function() {
                                 { attrs: { href: "#tab-description" } },
                                 [
                                   _vm._v(
-                                    "\n                                Description\n                            "
+                                    "\n                                    Description\n                                "
                                   )
                                 ]
                               ),
                               _vm._v(" "),
                               _c("v-tab", { attrs: { href: "#tab-reviews" } }, [
                                 _vm._v(
-                                  "\n                                Reviews\n                            "
+                                  "\n                                    Reviews\n                                "
                                 )
                               ])
                             ],
@@ -1585,7 +1562,7 @@ var render = function() {
                                             },
                                             [
                                               _vm._v(
-                                                "\n                                            Register\n                                        "
+                                                "\n                                                Register\n                                            "
                                               )
                                             ]
                                           ),
@@ -1595,7 +1572,7 @@ var render = function() {
                                             { attrs: { href: "#tab-signin" } },
                                             [
                                               _vm._v(
-                                                "\n                                            Sign In\n                                        "
+                                                "\n                                                Sign In\n                                            "
                                               )
                                             ]
                                           )
@@ -1951,7 +1928,7 @@ var render = function() {
                                                             },
                                                             [
                                                               _vm._v(
-                                                                "\n                                                            Sign Up\n                                                        "
+                                                                "\n                                                                Sign Up\n                                                            "
                                                               )
                                                             ]
                                                           )
@@ -2061,7 +2038,7 @@ var render = function() {
                                                             },
                                                             [
                                                               _vm._v(
-                                                                "\n                                                            Sign In\n                                                        "
+                                                                "\n                                                                Sign In\n                                                            "
                                                               )
                                                             ]
                                                           )
@@ -2108,7 +2085,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                        Close\n                                    "
+                                            "\n                                            Close\n                                        "
                                           )
                                         ]
                                       )

@@ -21,7 +21,7 @@ class CreateOrdersTable extends Migration
             $table->double('tax')->default(0.0);
             $table->double('sub_total')->nullable(false);
             $table->double('net_amount')->nullable(false);
-            $table->enum('order_stat',['Pending',',Delivered',',Cancel'])->default('Pending');
+            $table->enum('order_stat',['Pending','Shipped','Delivered','Cancel'])->default('Pending');
             $table->dateTime('delivered_date');
             $table->text('note');
             $table->timestamps();

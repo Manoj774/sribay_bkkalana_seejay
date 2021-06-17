@@ -23,26 +23,28 @@
             >
 
                 <template v-slot:top>
-                    <emb-delete-confirmation-2
-                        ref="deleteConfirmationDialog"
-                        messageTitle="Are you sure you want to delete?"
-                        messageDescription="Are you sure you want to delete this user permanently?"
-                        @onConfirm="ondeleteItemFromCollaborationList"
-                        btn1="Cancel"
-                        btn2="Yes"
-                    >
-                    </emb-delete-confirmation-2>
+                    <v-dialog v-model="dialog" max-width="650px">
+                        <v-card>
+                            <v-card-title class="text-h5">Are you sure you want to change this this customer status ?</v-card-title>
+                            <v-card-actions>
+                                <v-spacer></v-spacer>
+                                <v-btn color="blue darken-1" text @click="closeStatusChangeDialog">Cancel</v-btn>
+                                <v-btn color="blue darken-1" text @click="changeCustomerStatus">OK</v-btn>
+                                <v-spacer></v-spacer>
+                            </v-card-actions>
+                        </v-card>
+                    </v-dialog>
                 </template>
-                <template v-slot:item.profile_picture="{ item }">
-                    <img :src="item.profile_picture" width="40">
+                <template v-slot:item.role="{item}">
+                   {{item.role == 1 ? "Admin": item.role==3 ? "Member" : "User"}}
                 </template>
-                <template v-slot:item.action="{item}">
-                    <v-icon
-                        small
-                        @click="deleteItemFromCollaborationList(item.id)"
-                    >
-                        mdi-delete
-                    </v-icon>
+                <template v-slot:item.status="{item}">
+                    <v-switch
+                        color="success"
+                        :value="item.stat"
+                        :input-value="item.stat"
+                        @change="changeStatusCustomerDialogOpen(item.id,$event !== null, $event)"
+                    ></v-switch>
                 </template>
             </v-data-table>
 
@@ -75,11 +77,7 @@
                 loader: true,
                 users: [],
                 headers: [
-                    {
-                        text: "Image",
-                        sortable: false,
-                        value: "profile_picture"
-                    },
+
                     {
                         text: "First Name",
                         sortable: false,
@@ -96,22 +94,33 @@
                         value: "email"
                     },
                     {
-                        text: "Action",
+                        text: "Role",
                         sortable: false,
-                        value: "action"
-                    }
+                        value: "role"
+                    },
+                    {
+                        text: 'Status',
+                        value: 'status',
+                        sortable: false,
+                    },
                 ],
-                selectDeletedItem: null
+                selectDeletedItem: null,
+                dialog: false,
+                changeStatus: true,
+                changeStatusCustomerId:null
             };
+        },
+        watch: {
+            dialog (val) {
+                val || this.closeStatusChangeDialog()
+            },
         },
         mounted() {
             this.getAdminUsers();
         },
         methods: {
             getAdminUsers() {
-                axios.get(this.$serverUrl+'api/users',{
-                    headers: {'Content-Type':'application/json','Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')}
-                }).then(response => {
+                axios.get('/api/users').then(response => {
                     const responseData = response.data.users;
                     this.users = responseData;
                 }, response => {
@@ -136,15 +145,45 @@
                 }
             },
 
-            deleteItemFromCollaborationList(item) {
-                this.$refs.deleteConfirmationDialog.openDialog();
-                this.selectDeletedItem = item;
+            changeStatusCustomerDialogOpen (cus_id,value, event) {
+                this.changeStatus = value;
+                this.changeStatusCustomerId = cus_id;
+                this.dialog = true
             },
-            ondeleteItemFromCollaborationList() {
-                this.$refs.deleteConfirmationDialog.close();
-                let index = this.collaborationData.indexOf(this.selectDeletedItem);
-                this.collaborationData.splice(index, 1);
-            }
+            closeStatusChangeDialog () {
+                this.changeStatus = null;
+                this.changeStatusCustomerId = null;
+                this.dialog = false
+            },
+            changeCustomerStatus(){
+                let customer = {
+                    id:this.changeStatusCustomerId,
+                    status:this.changeStatus
+                }
+                axios.post('/api/users/change-status',customer).then(response => {
+                    this.closeStatusChangeDialog()
+                    this.$snotify.success('User Status Updated', {
+                        closeOnClick: false,
+                        pauseOnHover: false,
+                        timeout: 1000,
+                        showProgressBar: false,
+                    });
+                    setTimeout(() => {
+                        this.getCustomers();
+                    }, 2000);
+
+                }, err => {
+                    const errors = err.response.data.message;
+                    var html = '';
+                    for (const i in errors){
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
+            },
         }
     };
 </script>

@@ -31,6 +31,32 @@ class UserController extends Controller
         return response()->json(['users' => $users], 200);
     }
 
+
+    /**
+     * Display a listing of the customers.
+     *
+     * @return Response json
+     */
+
+    public function getCustomers()
+    {
+        $customers = DB::table('users')
+            ->select('id','users.first_name','users.last_name','users.city','users.zip_code','users.email','users.created_at','users.stat')
+            ->whereNotIn('role', [1])->get();
+
+        $cus = array();
+
+        foreach ($customers as $customer){
+            $orders = DB::table('orders')
+                ->where('user_id','=',$customer->id)
+                ->count('id');
+            $customer->orders = $orders;
+            $cus[] = $customer;
+        }
+
+        return response()->json(['customers' => $customers], 200);
+    }
+
     /**
      * Display a user shipping address.
      *
@@ -287,7 +313,7 @@ class UserController extends Controller
             'last_name' => $request->last_name,
             'email' => $request->email,
             'password' => bcrypt($request->password),
-            'is_admin' => $request->is_admin
+            'role' => 1
         ]);
 
         if (!$user->save()) {
@@ -446,7 +472,7 @@ class UserController extends Controller
 //                ->orderByDesc('created_at')
 //                ->first();
 
-            $referral->referralMembership = $referralMembership->membership_name;
+            $referral->referralMembership = $referralMembership != null ? $referralMembership->membership_name : '';
 //            $referral->referralEarnCommission = $referralEarnCommission;
 //            $referral->lastEarnCommissionDate = isset($lastEarnCommissionDate->last_commission_date) ? $lastEarnCommissionDate->last_commission_date : null;
 
@@ -471,6 +497,18 @@ class UserController extends Controller
 
         return response()->json($affiliateUserData);
 
+    }
+
+    public function changeUserStatus(Request $request){
+        $user = User::find($request->id);
+        if (!$user) {
+            return response()->json(['message' => 'User not found'], 404);
+        }
+        $user->stat = $request->status;
+        if (!$user->update()){
+            return response()->json(['message' => 'User status update failed. Internal Server Error'], 500);
+        }
+        return response()->json(['message' => 'User status has been updated'], 201);
     }
 
     public function getGenerateReferralLink(Request $request){

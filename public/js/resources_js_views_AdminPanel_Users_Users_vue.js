@@ -66,6 +66,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -92,10 +94,6 @@ __webpack_require__.r(__webpack_exports__);
       loader: true,
       users: [],
       headers: [{
-        text: "Image",
-        sortable: false,
-        value: "profile_picture"
-      }, {
         text: "First Name",
         sortable: false,
         value: "first_name"
@@ -108,12 +106,24 @@ __webpack_require__.r(__webpack_exports__);
         sortable: false,
         value: "email"
       }, {
-        text: "Action",
+        text: "Role",
         sortable: false,
-        value: "action"
+        value: "role"
+      }, {
+        text: 'Status',
+        value: 'status',
+        sortable: false
       }],
-      selectDeletedItem: null
+      selectDeletedItem: null,
+      dialog: false,
+      changeStatus: true,
+      changeStatusCustomerId: null
     };
+  },
+  watch: {
+    dialog: function dialog(val) {
+      val || this.closeStatusChangeDialog();
+    }
   },
   mounted: function mounted() {
     this.getAdminUsers();
@@ -122,12 +132,7 @@ __webpack_require__.r(__webpack_exports__);
     getAdminUsers: function getAdminUsers() {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/users', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-        }
-      }).then(function (response) {
+      axios.get('/api/users').then(function (response) {
         var responseData = response.data.users;
         _this.users = responseData;
       }, function (response) {
@@ -153,14 +158,49 @@ __webpack_require__.r(__webpack_exports__);
         console.log("Invalid Inputs");
       }
     },
-    deleteItemFromCollaborationList: function deleteItemFromCollaborationList(item) {
-      this.$refs.deleteConfirmationDialog.openDialog();
-      this.selectDeletedItem = item;
+    changeStatusCustomerDialogOpen: function changeStatusCustomerDialogOpen(cus_id, value, event) {
+      this.changeStatus = value;
+      this.changeStatusCustomerId = cus_id;
+      this.dialog = true;
     },
-    ondeleteItemFromCollaborationList: function ondeleteItemFromCollaborationList() {
-      this.$refs.deleteConfirmationDialog.close();
-      var index = this.collaborationData.indexOf(this.selectDeletedItem);
-      this.collaborationData.splice(index, 1);
+    closeStatusChangeDialog: function closeStatusChangeDialog() {
+      this.changeStatus = null;
+      this.changeStatusCustomerId = null;
+      this.dialog = false;
+    },
+    changeCustomerStatus: function changeCustomerStatus() {
+      var _this2 = this;
+
+      var customer = {
+        id: this.changeStatusCustomerId,
+        status: this.changeStatus
+      };
+      axios.post('/api/users/change-status', customer).then(function (response) {
+        _this2.closeStatusChangeDialog();
+
+        _this2.$snotify.success('User Status Updated', {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          _this2.getCustomers();
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this2.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -304,53 +344,105 @@ var render = function() {
                 key: "top",
                 fn: function() {
                   return [
-                    _c("emb-delete-confirmation-2", {
-                      ref: "deleteConfirmationDialog",
-                      attrs: {
-                        messageTitle: "Are you sure you want to delete?",
-                        messageDescription:
-                          "Are you sure you want to delete this user permanently?",
-                        btn1: "Cancel",
-                        btn2: "Yes"
+                    _c(
+                      "v-dialog",
+                      {
+                        attrs: { "max-width": "650px" },
+                        model: {
+                          value: _vm.dialog,
+                          callback: function($$v) {
+                            _vm.dialog = $$v
+                          },
+                          expression: "dialog"
+                        }
                       },
-                      on: { onConfirm: _vm.ondeleteItemFromCollaborationList }
-                    })
+                      [
+                        _c(
+                          "v-card",
+                          [
+                            _c("v-card-title", { staticClass: "text-h5" }, [
+                              _vm._v(
+                                "Are you sure you want to change this this customer status ?"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "v-card-actions",
+                              [
+                                _c("v-spacer"),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "blue darken-1", text: "" },
+                                    on: { click: _vm.closeStatusChangeDialog }
+                                  },
+                                  [_vm._v("Cancel")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "blue darken-1", text: "" },
+                                    on: { click: _vm.changeCustomerStatus }
+                                  },
+                                  [_vm._v("OK")]
+                                ),
+                                _vm._v(" "),
+                                _c("v-spacer")
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
                   ]
                 },
                 proxy: true
               },
               {
-                key: "item.profile_picture",
+                key: "item.role",
                 fn: function(ref) {
                   var item = ref.item
                   return [
-                    _c("img", {
-                      attrs: { src: item.profile_picture, width: "40" }
-                    })
+                    _vm._v(
+                      "\n               " +
+                        _vm._s(
+                          item.role == 1
+                            ? "Admin"
+                            : item.role == 3
+                            ? "Member"
+                            : "User"
+                        ) +
+                        "\n            "
+                    )
                   ]
                 }
               },
               {
-                key: "item.action",
+                key: "item.status",
                 fn: function(ref) {
                   var item = ref.item
                   return [
-                    _c(
-                      "v-icon",
-                      {
-                        attrs: { small: "" },
-                        on: {
-                          click: function($event) {
-                            return _vm.deleteItemFromCollaborationList(item.id)
-                          }
-                        }
+                    _c("v-switch", {
+                      attrs: {
+                        color: "success",
+                        value: item.stat,
+                        "input-value": item.stat
                       },
-                      [
-                        _vm._v(
-                          "\n                    mdi-delete\n                "
-                        )
-                      ]
-                    )
+                      on: {
+                        change: function($event) {
+                          return _vm.changeStatusCustomerDialogOpen(
+                            item.id,
+                            $event !== null,
+                            $event
+                          )
+                        }
+                      }
+                    })
                   ]
                 }
               }

@@ -28,6 +28,7 @@ class CreateUsersTable extends Migration
             $table->integer('role')->default(2);
             $table->string('password');
             $table->foreignId('referral_id')->nullable(true);
+            $table->boolean('stat')->default(true);
             $table->rememberToken();
             $table->timestamps();
             $table->softDeletes();
