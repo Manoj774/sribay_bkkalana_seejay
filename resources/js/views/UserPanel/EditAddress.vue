@@ -61,9 +61,12 @@
                 first_name: '',
                 last_name: '',
                 address: '',
+                email: '',
+                phone_number: '',
                 city: '',
                 state: '',
                 zip_code: '',
+
             }
          }
       },
@@ -89,7 +92,9 @@
                   });
               }else{
                   axios.get('/api/users/shipping-address').then(response => {
-                      this.profileData = response.data.shipping_address;
+                      if (response.data.shipping_address != null){
+                          this.profileData = response.data.shipping_address;
+                      }
                   }, response => {
                       const errors = response.body.message;
                       var html = '';

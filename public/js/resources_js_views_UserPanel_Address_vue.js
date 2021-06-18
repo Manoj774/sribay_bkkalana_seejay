@@ -277,29 +277,50 @@ var render = function() {
                 [
                   _c("address", { staticClass: "mb-6" }, [
                     _vm._v(
-                      "\n                " + _vm._s(_vm.shippingAddress.address)
-                    ),
-                    _c("br"),
-                    _vm._v(
-                      "\n                " + _vm._s(_vm.shippingAddress.city)
+                      "\n                " +
+                        _vm._s(
+                          _vm.shippingAddress != null
+                            ? _vm.shippingAddress.address
+                            : ""
+                        )
                     ),
                     _c("br"),
                     _vm._v(
                       "\n                " +
                         _vm._s(
-                          _vm.shippingAddress.first_name +
-                            " " +
-                            _vm.shippingAddress.last_name
+                          _vm.shippingAddress != null
+                            ? _vm.shippingAddress.city
+                            : ""
+                        )
+                    ),
+                    _c("br"),
+                    _vm._v(
+                      "\n                " +
+                        _vm._s(
+                          _vm.shippingAddress != null
+                            ? _vm.shippingAddress.first_name +
+                                " " +
+                                _vm.shippingAddress.last_name
+                            : ""
                         )
                     ),
                     _c("br"),
                     _vm._v(
                       "\n                Zip - " +
-                        _vm._s(_vm.shippingAddress.zip_code)
+                        _vm._s(
+                          _vm.shippingAddress != null
+                            ? _vm.shippingAddress.zip_code
+                            : ""
+                        )
                     ),
                     _c("br"),
                     _vm._v(
-                      "\n                " + _vm._s(_vm.shippingAddress.state)
+                      "\n                " +
+                        _vm._s(
+                          _vm.shippingAddress != null
+                            ? _vm.shippingAddress.state
+                            : ""
+                        )
                     ),
                     _c("br")
                   ]),

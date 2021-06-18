@@ -22,7 +22,7 @@ const MembershipPlanAdd = () => import('../views/AdminPanel/MembershipPlan/Creat
 const MembershipPlanEdit = () => import('../views/AdminPanel/MembershipPlan/EditMembershipPlan.vue');
 
 //Members
-
+const Members = () => import('../views/AdminPanel/Members/Members');
 
 //Customers
 const Customers = () => import('../views/AdminPanel/Customers/Customers.vue');
@@ -93,6 +93,11 @@ export default {
             path: '/sriBay-admin/membership-plans',
             component: MembershipPlans,
             name:'MembershipPlans',
+        },
+        {
+            path: '/sriBay-admin/members',
+            component: Members,
+            name:'Members',
         },
         {
             path: '/sriBay-admin/add-membership-plan',

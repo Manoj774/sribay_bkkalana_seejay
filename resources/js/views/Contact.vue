@@ -40,11 +40,11 @@
 									<h2>Write to Us</h2>
 								</div>
 								<v-form  ref="form" v-model="valid">
-									<v-text-field type="text" placeholder="First Name" :rules="inputRules.basictextRules"></v-text-field>
-									<v-text-field	type="text"	placeholder="Last Name" :rules="inputRules.basictextRules"></v-text-field>
-									<v-text-field type="email" placeholder="Email" :rules="emailRules"></v-text-field>
-									<v-text-field	type="text"	placeholder="Subject" :rules="inputRules.basictextRules"></v-text-field>
-									<v-textarea rows="2" label="Leave a Message" :rules="inputRules.basictextRules"></v-textarea>
+									<v-text-field  v-model="contactFormData.first_name" type="text" placeholder="First Name" :rules="inputRules.basictextRules"></v-text-field>
+									<v-text-field  v-model="contactFormData.last_name" 	type="text"	placeholder="Last Name" :rules="inputRules.basictextRules"></v-text-field>
+									<v-text-field  v-model="contactFormData.email"  type="email" placeholder="Email" :rules="emailRules"></v-text-field>
+									<v-text-field  v-model="contactFormData.subject" 	type="text"	placeholder="Subject" :rules="inputRules.basictextRules"></v-text-field>
+									<v-textarea  v-model="contactFormData.message"  rows="2" label="Leave a Message" :rules="inputRules.basictextRules"></v-textarea>
 									<v-btn class="accent mx-0 mt-4" large @click.stop.prevent="saveDetails">	Send Message</v-btn>
 								</v-form>
 							</v-flex>
@@ -70,6 +70,13 @@ export default {
       ],
       inputRules: {
         basictextRules: [v => !!v || "This field should not be empty"]
+      },
+      contactFormData:{
+          first_name:null,
+          last_name:null,
+          email:null,
+          subject:null,
+          message:null,
       }
     };
   },
@@ -88,7 +95,27 @@ export default {
       //   });
     },
     saveDetails() {
-      this.$refs.form.validate();
+
+        axios.post('/api/contact-us',this.contactFormData).then(response => {
+            this.$snotify.success(response.data.message, {
+                closeOnClick: false,
+                pauseOnHover: false,
+                timeout: 1000,
+                showProgressBar: false,
+            });
+            setTimeout(() => {
+               window.location.href='';
+            }, 2000);
+        }).catch(error => {
+            this.$snotify.success(error.response.data.message, {
+                closeOnClick: false,
+                pauseOnHover: false,
+                timeout: 1000,
+                showProgressBar: false,
+            });
+        });
+
+
     }
   }
 };

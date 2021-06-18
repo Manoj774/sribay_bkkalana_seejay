@@ -42,7 +42,7 @@ class UserController extends Controller
     {
         $customers = DB::table('users')
             ->select('id','users.first_name','users.last_name','users.city','users.zip_code','users.email','users.created_at','users.stat')
-            ->whereNotIn('role', [1])->get();
+            ->whereNotIn('role', [1,3])->get();
 
         $cus = array();
 
@@ -54,7 +54,34 @@ class UserController extends Controller
             $cus[] = $customer;
         }
 
-        return response()->json(['customers' => $customers], 200);
+        return response()->json(['customers' => $cus], 200);
+    }
+
+    /**
+     * Display a listing of the members.
+     *
+     * @return Response json
+     */
+    public function getMembers(){
+        $members = DB::table('users')
+            ->select('users.id','users.first_name','users.last_name','users.city',
+                    'users.zip_code','users.email','users.created_at','users.stat',
+                    'user_has_member_ships.account_amount','membership_plans.name AS membership')
+            ->join('user_has_member_ships','users.id','=','user_has_member_ships.user_id')
+            ->join('membership_plans','user_has_member_ships.membership_id','=','membership_plans.id')
+            ->whereNotIn('role', [1,2])->get();
+
+        $mem = array();
+
+        foreach ($members as $member){
+            $orders = DB::table('orders')
+                ->where('user_id','=',$member->id)
+                ->count('id');
+            $member->orders = $orders;
+            $mem[] = $member;
+        }
+
+        return response()->json(['members' => $mem], 200);
     }
 
     /**

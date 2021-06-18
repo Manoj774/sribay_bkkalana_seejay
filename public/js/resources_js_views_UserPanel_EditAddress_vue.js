@@ -75,6 +75,8 @@ __webpack_require__.r(__webpack_exports__);
         first_name: '',
         last_name: '',
         address: '',
+        email: '',
+        phone_number: '',
         city: '',
         state: '',
         zip_code: ''
@@ -106,7 +108,9 @@ __webpack_require__.r(__webpack_exports__);
         });
       } else {
         axios.get('/api/users/shipping-address').then(function (response) {
-          _this.profileData = response.data.shipping_address;
+          if (response.data.shipping_address != null) {
+            _this.profileData = response.data.shipping_address;
+          }
         }, function (response) {
           var errors = response.body.message;
           var html = '';

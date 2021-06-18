@@ -10,7 +10,7 @@ use App\Http\Controllers\Auth\LoginController;
 use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShoppingCartController;
-
+use App\Http\Controllers\ContactUsController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -59,6 +59,10 @@ Route::get('/category/tree-view',[CategoryController::class,'getCategoryForTreeV
 Route::get('/category/tree-select',[CategoryController::class,'getCategoriesForTreeSelect']);
 
 
+//contact us
+Route::post('/contact-us',[ContactUsController::class,'create']);
+
+
 Route::middleware('auth:sanctum')->get('/user/profile', function (Request $request) {
     return $request->user();
 });
@@ -67,6 +71,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
 
     Route::get('/users',[UserController::class,'index']);
     Route::get('/users/customers',[UserController::class,'getCustomers']);
+    Route::get('/users/members',[UserController::class,'getMembers']);
     Route::get('/users/shipping-address',[UserController::class,'getUserShippingAddress']);
     Route::post('/users/create-shipping-address',[UserController::class,'createUserShippingAddress']);
     Route::post('/users/create',[UserController::class,'create']);
@@ -74,6 +79,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/affiliate',[UserController::class,'getAffiliateDashboardData']);
     Route::get('/users/referral-link',[UserController::class,'getGenerateReferralLink']);
     Route::post('/users/change-status',[UserController::class,'changeUserStatus']);
+
 
     Route::get('/orders',[OrderController::class,'index']);
     Route::get('/orders/user-orders',[OrderController::class,'getUserOrders']);
@@ -99,6 +105,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/product-edit/{id}',[ProductController::class,'edit']);
     Route::post('/product/update',[ProductController::class,'update']);
     Route::delete('/product/remove-image/{id}',[ProductController::class,'removeImage']);
+    Route::delete('/product/{id}',[ProductController::class,'destroy']);
 
     //admin membership plan
     //// Route::get('/membership/filter', [MembershipPlanController::class,'search']);

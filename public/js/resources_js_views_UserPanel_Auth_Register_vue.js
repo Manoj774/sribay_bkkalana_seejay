@@ -89,6 +89,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
@@ -110,6 +111,9 @@ __webpack_require__.r(__webpack_exports__);
       inputRules: {
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty';
+        }],
+        mobileInputRules: [function (v) {
+          return v && v.length < 11 || "This field must have at least 10 characters";
         }]
       }
     };
@@ -347,9 +351,11 @@ var render = function() {
                                 _c("v-text-field", {
                                   attrs: {
                                     type: "number",
-                                    max: "10",
+                                    oninput:
+                                      "javascript: if (this.value.length > this.maxLength) this.value = this.value.slice(0, this.maxLength);",
+                                    maxlength: 10,
                                     label: "Mobile Number*",
-                                    rules: _vm.inputRules.basictextRules
+                                    rules: _vm.inputRules.mobileInputRules
                                   },
                                   model: {
                                     value: _vm.register.phone_number,

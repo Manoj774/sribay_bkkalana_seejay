@@ -19,11 +19,11 @@
             <h5>Shipping Address</h5>
             <div class="pt-4">
                <address class="mb-6">
-                   {{shippingAddress.address}}<br>
-                   {{shippingAddress.city}}<br>
-                   {{shippingAddress.first_name +' '+ shippingAddress.last_name}}<br>
-                   Zip - {{shippingAddress.zip_code}}<br>
-                   {{shippingAddress.state}}<br>
+                   {{shippingAddress != null ? shippingAddress.address : ''  }}<br>
+                   {{shippingAddress != null ? shippingAddress.city : '' }}<br>
+                   {{shippingAddress != null ? shippingAddress.first_name +' '+ shippingAddress.last_name : '' }}<br>
+                   Zip - {{shippingAddress != null ? shippingAddress.zip_code : '' }}<br>
+                   {{shippingAddress != null ? shippingAddress.state : '' }}<br>
                </address>
                <router-link :to="{name: 'EditAddress', query: {type: 'ship-address'}}" ><v-btn class="accent mx-0" >Edit</v-btn></router-link>
             </div>

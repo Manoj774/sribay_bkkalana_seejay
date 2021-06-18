@@ -84,6 +84,13 @@ __webpack_require__.r(__webpack_exports__);
         basictextRules: [function (v) {
           return !!v || "This field should not be empty";
         }]
+      },
+      contactFormData: {
+        first_name: null,
+        last_name: null,
+        email: null,
+        subject: null,
+        message: null
       }
     };
   },
@@ -101,7 +108,27 @@ __webpack_require__.r(__webpack_exports__);
       //   });
     },
     saveDetails: function saveDetails() {
-      this.$refs.form.validate();
+      var _this = this;
+
+      axios.post('/api/contact-us', this.contactFormData).then(function (response) {
+        _this.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = '';
+        }, 2000);
+      })["catch"](function (error) {
+        _this.$snotify.success(error.response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+      });
     }
   }
 });
@@ -309,6 +336,17 @@ var render = function() {
                                   type: "text",
                                   placeholder: "First Name",
                                   rules: _vm.inputRules.basictextRules
+                                },
+                                model: {
+                                  value: _vm.contactFormData.first_name,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.contactFormData,
+                                      "first_name",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "contactFormData.first_name"
                                 }
                               }),
                               _vm._v(" "),
@@ -317,6 +355,17 @@ var render = function() {
                                   type: "text",
                                   placeholder: "Last Name",
                                   rules: _vm.inputRules.basictextRules
+                                },
+                                model: {
+                                  value: _vm.contactFormData.last_name,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.contactFormData,
+                                      "last_name",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "contactFormData.last_name"
                                 }
                               }),
                               _vm._v(" "),
@@ -325,6 +374,13 @@ var render = function() {
                                   type: "email",
                                   placeholder: "Email",
                                   rules: _vm.emailRules
+                                },
+                                model: {
+                                  value: _vm.contactFormData.email,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.contactFormData, "email", $$v)
+                                  },
+                                  expression: "contactFormData.email"
                                 }
                               }),
                               _vm._v(" "),
@@ -333,6 +389,17 @@ var render = function() {
                                   type: "text",
                                   placeholder: "Subject",
                                   rules: _vm.inputRules.basictextRules
+                                },
+                                model: {
+                                  value: _vm.contactFormData.subject,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.contactFormData,
+                                      "subject",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "contactFormData.subject"
                                 }
                               }),
                               _vm._v(" "),
@@ -341,6 +408,17 @@ var render = function() {
                                   rows: "2",
                                   label: "Leave a Message",
                                   rules: _vm.inputRules.basictextRules
+                                },
+                                model: {
+                                  value: _vm.contactFormData.message,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.contactFormData,
+                                      "message",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "contactFormData.message"
                                 }
                               }),
                               _vm._v(" "),

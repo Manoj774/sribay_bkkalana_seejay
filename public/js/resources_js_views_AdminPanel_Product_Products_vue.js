@@ -74,8 +74,33 @@ __webpack_require__.r(__webpack_exports__);
       this.selectedItem = data;
     },
     onDeleteItemFromProductsList: function onDeleteItemFromProductsList() {
+      var _this = this;
+
       this.$refs.deleteConfirmationDialog.close();
-      this.$emit("deleteProduct", this.selectedItem);
+      axios["delete"]('/api/product/' + this.selectedItem.id).then(function (response) {
+        _this.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = '';
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -294,8 +319,33 @@ __webpack_require__.r(__webpack_exports__);
       this.selectedItem = data;
     },
     ondeleteItemFromListView: function ondeleteItemFromListView() {
+      var _this = this;
+
       this.$refs.deleteConfirmationDialog.close();
-      this.$emit("deleteProduct", this.selectedItem);
+      axios["delete"]('/api/product/' + this.selectedItem.id).then(function (response) {
+        _this.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = '';
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });

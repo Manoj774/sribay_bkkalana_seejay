@@ -107,7 +107,7 @@ __webpack_require__.r(__webpack_exports__);
     }
 
     if (this.user != null) {
-      if (this.user.role === 3 || this.user.role === 1) {
+      if (this.user.role === 3) {
         this.settings = {
           affiliate: [{
             title: "Affiliate Program",

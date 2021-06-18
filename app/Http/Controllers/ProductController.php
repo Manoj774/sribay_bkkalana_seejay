@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Category;
 use App\Models\GenerateLinkClick;
 use App\Models\MemberEarnHistory;
 use App\Models\Product;
@@ -450,6 +451,45 @@ class ProductController extends Controller
             }
         }
         return response()->json(['message' => 'Product image not deleted. Internal Server Error'], 500);
+    }
+
+    /**
+     * destroy the specified product in storage.
+     *
+     *
+     * @param int $id
+     * @return Response
+     */
+    public function destroy($id){
+
+        $product = Product::find($id);
+        $productCategory = ProductHasCategory::where('product_id','=',$id)->get();
+        $productImages = ProductImage::where('product_id','=',$id)->get();
+
+        if (!$product) {
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        if (!$product->delete()){
+            return response()->json(['message' => 'Product not removed. Internal Server Error'], 500);
+        }
+
+        foreach ($productCategory as $item){
+            if (!$item->delete()){
+                Log::error('Product Category remove failed..');
+            }
+        }
+
+        foreach ($productImages as $item){
+            if (File::exists(public_path($item->image_url))){
+                if (File::delete(public_path($item->image_url))){
+                    if (!$item->delete()){
+                        Log::error('Product Image remove failed..');
+                    }
+                }
+            }
+        }
+        return response()->json(['message' => 'Product has been removed'], 200);
     }
 
 

@@ -62,8 +62,30 @@ export default {
       this.selectedItem = data;
     },
     onDeleteItemFromProductsList() {
-      this.$refs.deleteConfirmationDialog.close();
-      this.$emit("deleteProduct", this.selectedItem);
+        this.$refs.deleteConfirmationDialog.close();
+        axios.delete('/api/product/'+this.selectedItem.id).then(response => {
+            this.$snotify.success(response.data.message, {
+                closeOnClick: false,
+                pauseOnHover: false,
+                timeout: 1000,
+                showProgressBar: false,
+            });
+            setTimeout(() => {
+                window.location.href='';
+            }, 2000);
+
+        }, err => {
+            const errors = err.response.data.message;
+            let html = '';
+            for (const i in errors){
+                html += errors[i];
+            }
+            this.$toast.open({
+                message: html,
+                type: 'error',
+            });
+        });
+
     }
   }
 };

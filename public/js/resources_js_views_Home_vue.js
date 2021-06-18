@@ -482,40 +482,40 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
     addProductToCart: function addProductToCart(item) {
       var _this = this;
 
-      console.log(item);
-      this.$snotify.success('Product adding to the cart', {
-        closeOnClick: false,
-        pauseOnHover: false,
-        timeout: 1000,
-        showProgressBar: false
-      });
-      setTimeout(function () {
-        var newProduct = {
-          id: item.id,
-          image: item.image_url,
-          name: item.product_name,
-          price: item.sell_price,
-          quantity: 1,
-          total: item.sell_price * 1,
-          aff_user_id: null
-        };
-        axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
-          window.location.href = _this.$router.history.current.path; // console.log(this.$router.history.current);
-          // console.log(response.data.message)
-        }, function (response) {
-          var errors = response.data.message;
-          var html = '';
-
-          for (var i in errors) {
-            html += errors[i];
-          }
-
-          _this.$toast.open({
-            message: html,
-            type: 'error'
-          });
+      var newProduct = {
+        product_id: item.id,
+        image: item.image_url,
+        name: item.product_name,
+        price: item.sell_price,
+        quantity: item.quantity ? item.quantity : 1,
+        total: item.sell_price * (item.quantity ? item.quantity : 1),
+        aff_user_id: item.user
+      };
+      axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
+        _this.$snotify.success('Product adding to the cart', {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
         });
-      }, 50);
+
+        setTimeout(function () {
+          window.location.href = _this.$router.history.current.path;
+        }, 50); // console.log(this.$router.history.current);
+        // console.log(response.data.message)
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     },
 
     /**
@@ -3015,7 +3015,9 @@ var render = function() {
                                           "router-link",
                                           {
                                             attrs: {
-                                              to: "/products/" + cateogary.id
+                                              to:
+                                                "/product-detail/" +
+                                                cateogary.id
                                             }
                                           },
                                           [
@@ -3034,70 +3036,9 @@ var render = function() {
                                           ]
                                         ),
                                         _vm._v(" "),
-                                        _c(
-                                          "div",
-                                          { staticClass: "wishlist-icon" },
-                                          [
-                                            _vm.ifItemExistInWishlist(cateogary)
-                                              ? _c(
-                                                  "v-btn",
-                                                  {
-                                                    attrs: { icon: "" },
-                                                    on: {
-                                                      click: function($event) {
-                                                        return _vm.addItemToWishlist(
-                                                          cateogary
-                                                        )
-                                                      }
-                                                    }
-                                                  },
-                                                  [
-                                                    _c(
-                                                      "v-icon",
-                                                      {
-                                                        staticClass:
-                                                          "black--text"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          "mdi-cards-heart"
-                                                        )
-                                                      ]
-                                                    )
-                                                  ],
-                                                  1
-                                                )
-                                              : _c(
-                                                  "v-btn",
-                                                  {
-                                                    attrs: { icon: "" },
-                                                    on: {
-                                                      click: function($event) {
-                                                        return _vm.addItemToWishlist(
-                                                          cateogary
-                                                        )
-                                                      }
-                                                    }
-                                                  },
-                                                  [
-                                                    _c(
-                                                      "v-icon",
-                                                      {
-                                                        staticClass:
-                                                          "grey--text"
-                                                      },
-                                                      [
-                                                        _vm._v(
-                                                          "mdi-cards-heart"
-                                                        )
-                                                      ]
-                                                    )
-                                                  ],
-                                                  1
-                                                )
-                                          ],
-                                          1
-                                        ),
+                                        _c("div", {
+                                          staticClass: "wishlist-icon"
+                                        }),
                                         _vm._v(" "),
                                         _c(
                                           "div",

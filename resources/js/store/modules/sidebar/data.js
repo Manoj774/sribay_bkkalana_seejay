@@ -130,41 +130,34 @@ export const menus = [
 
 export const adminPanelMenus = [
 
-   {
-      path: '',
-      name:"message.products",
-      icon: 'mdi-cart',
-		active: false,
-      children: [
-			{
-				name: "products",
-				path: "/sribay-admin/products"
-			},
-			{
-				name: "productAdd",
-				path: "/sribay-admin/product-add"
-            },
-            {
-				name: "Category",
-				path: "/sribay-admin/category"
-            },
-      ]
-   },
     {
-        path: '',
-        name: 'Membership',
+      path: '/sribay-admin/products',
+      name:"message.products",
+      icon: 'mdi-archive',
+      active: false,
+      children: null
+    },
+    {
+        path: '/sribay-admin/category',
+        name: 'Category',
+        icon: 'mdi-shape-outline ',
+        active: false,
+        children: null
+    },
+    {
+        path: '/sribay-admin/membership-plans',
+        name: 'Membership Plans',
         icon: 'mdi-account-cash ',
         active: false,
-        children: [
-            {
-                name: "Membership Plans",
-                path: "/sribay-admin/membership-plans"
-            },
-            {
-                name: "Members",
-                path: "/sribay-admin/members"
-            },
-        ]
+        children: null
+    },
+    {
+        path: '/sribay-admin/members',
+        name:"Members",
+        icon: 'mdi-account-star',
+        active: false,
+        children: null
+
     },
     {
         path: '/sribay-admin/customers',
@@ -204,10 +197,10 @@ export const adminPanelMenus = [
       children: null
     },
     {
-      path: '/home',
+      path: '/',
       name:"message.goToSite",
       icon: 'mdi-home-import-outline ',
-		active: false,
+      active: false,
       children: null
     },
 ]

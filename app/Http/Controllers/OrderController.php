@@ -119,15 +119,41 @@ class OrderController extends Controller
      */
     public function getUserOrders(Request $request)
     {
+
         $orders = DB::table('orders')
-            ->select('orders.id', 'net_amount', 'orders.order_stat', 'orders.created_at', 'address', 'city', 'state', 'zip_code')
-            ->join('customer_shipping_addresses', 'orders.shipping_address', '=', 'customer_shipping_addresses.id')
+            ->select('orders.id', 'orders.created_at', 'orders.net_amount', 'orders.order_stat', DB::raw('CONCAT(users.first_name," ",users.last_name) AS full_name'),
+                'payments.payment_stat', 'payments.transaction_id',
+                'customer_shipping_addresses.first_name AS shipping_first_name', 'customer_shipping_addresses.last_name AS shipping_last_name',
+                'customer_shipping_addresses.address AS shipping_address', 'customer_shipping_addresses.city AS shipping_city',
+                'customer_shipping_addresses.state AS shipping_state', 'customer_shipping_addresses.zip_code AS sipping_zip_code',
+                'customer_shipping_addresses.phone_number AS shipping_phone_number',
+                'orders.shipping_cost','orders.shipping_cost','orders.tax','orders.sub_total')
+            ->join('users', 'orders.user_id', '=', 'users.id')
+            ->join('customer_shipping_addresses', 'users.id', '=', 'customer_shipping_addresses.user_id')
+            ->join('payments', 'orders.id', '=', 'payments.order')
             ->where('orders.user_id', '=', $request->user()->id)
             ->get();
-        if (!$orders) {
-            return response()->json(['message' => 'orders not found'], 404);
+        if ($orders) {
+            $ordersData = array();
+            foreach ($orders as $order) {
+                $order_items = DB::table('order_items')
+                    ->select('order_items.id', 'order_items.quantity', 'order_items.total', 'products.product_name',
+                        'product_images.image_url')
+                    ->join('products', 'order_items.product_id', '=', 'products.id')
+                    ->join('product_images', 'products.id', '=', 'product_images.product_id')
+                    ->where('order_id', '=', $order->id)
+                    ->groupBy('order_items.id')
+                    ->get();
+                $order->orderId = sprintf('%06d',$order->id);
+                $order->order_items = $order_items;
+                $ordersData[] = $order;
+            }
+
+            return response()->json(['orders' => $ordersData], 200);
         }
-        return response()->json(['orders' => $orders], 200);
+        return response()->json(['message' => 'orders not found'], 404);
+
+
     }
 
 
@@ -448,7 +474,7 @@ class OrderController extends Controller
                 return response()->json(['message' => "Order Successful", 'order_no' => sprintf("%05d", $order->id)], 200);
             }
 
-            return false;
+            return response()->json(['message' => "Order Successful", 'order_no' => sprintf("%05d", $order->id)], 200);
 
         }
 

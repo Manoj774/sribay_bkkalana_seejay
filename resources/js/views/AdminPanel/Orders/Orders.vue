@@ -413,8 +413,6 @@
                 });
             },
 
-
-
             leftPad(number, targetLength) {
                 let output = number + '';
                 while (output.length < targetLength) {
