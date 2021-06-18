@@ -128,7 +128,7 @@
 
 
                                 </div>
-                                <div v-if="role == 3 || role == 1">
+                                <div v-if="role == 3">
                                     <v-row>
                                         <v-col cols="12">
                                             <span class="font-weight-medium">Affiliate</span>

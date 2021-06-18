@@ -1273,7 +1273,7 @@ var render = function() {
                                   1
                                 ),
                                 _vm._v(" "),
-                                _vm.role == 3 || _vm.role == 1
+                                _vm.role == 3
                                   ? _c(
                                       "div",
                                       [
