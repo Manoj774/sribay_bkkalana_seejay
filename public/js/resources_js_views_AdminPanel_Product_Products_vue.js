@@ -159,30 +159,48 @@ __webpack_require__.r(__webpack_exports__);
       var index = deletedToDoList.indexOf(item);
       this.listData.splice(index, 1);
     },
-    getProductsData: function getProductsData() {
+    getProductsData: function getProductsData(value) {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/product', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('bigStore.jwt')
-        }
-      }).then(function (response) {
-        _this.products = response.data.products;
-        var count = 1;
+      if (value != null && value !== '') {
+        axios.post('/api/product/filter', {
+          searchText: value
+        }).then(function (response) {
+          _this.listData = [];
+          _this.products = response.data.products;
+          var count = 1;
 
-        for (var categoryKey in _this.products) {
-          _this.listData.push({
-            'count': count++,
-            'image': _this.products[categoryKey].image_url,
-            'name': _this.products[categoryKey].product_name,
-            'price': _this.products[categoryKey].sell_price,
-            'id': _this.products[categoryKey].id
-          });
-        }
-      })["catch"](function (error) {
-        console.log(error);
-      });
+          for (var categoryKey in _this.products) {
+            _this.listData.push({
+              'count': count++,
+              'image': _this.products[categoryKey].image_url,
+              'name': _this.products[categoryKey].product_name,
+              'price': _this.products[categoryKey].sell_price,
+              'id': _this.products[categoryKey].id
+            });
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      } else {
+        axios.get('/api/product').then(function (response) {
+          _this.listData = [];
+          _this.products = response.data.products;
+          var count = 1;
+
+          for (var categoryKey in _this.products) {
+            _this.listData.push({
+              'count': count++,
+              'image': _this.products[categoryKey].image_url,
+              'name': _this.products[categoryKey].product_name,
+              'price': _this.products[categoryKey].sell_price,
+              'id': _this.products[categoryKey].id
+            });
+          }
+        })["catch"](function (error) {
+          console.log(error);
+        });
+      }
     }
   },
   components: {
@@ -204,6 +222,9 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */ __webpack_require__.d(__webpack_exports__, {
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
+//
+//
+//
 //
 //
 //
@@ -339,11 +360,10 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      typeItems: ["Men", "Women", "Gadgets"],
-      recentItems: ["This Week", "This Month", "Past Month"],
-      noOfItems: ["10", "20", "30"],
       gridView: true,
-      listView: false
+      listView: false,
+      searchText: null,
+      search: null
     };
   },
   components: {
@@ -355,6 +375,9 @@ __webpack_require__.r(__webpack_exports__);
     },
     switchToListView: function switchToListView(value) {
       this.gridView = value;
+    },
+    productSearch: function productSearch() {
+      this.$refs.products.getProductsData(this.searchText);
     }
   }
 });
@@ -668,95 +691,105 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "product-item-wrap emb-card" }, [
-        _c(
-          "div",
-          { staticClass: "thumb-warp" },
-          [
-            _c("img", {
-              attrs: {
-                alt: "product",
-                height: "800",
-                width: "626",
-                src: _vm.data.image
-              }
-            }),
-            _vm._v(" "),
-            _c(
-              "div",
-              { staticClass: "wishlist-icon" },
-              [
-                _c(
-                  "v-btn",
-                  {
-                    attrs: { icon: "" },
-                    on: {
-                      click: function($event) {
-                        return _vm.deleteItem(_vm.data)
-                      }
-                    }
-                  },
-                  [
-                    _c("v-icon", { staticClass: "grey--text" }, [
-                      _vm._v("mdi-delete")
-                    ])
-                  ],
-                  1
-                )
-              ],
-              1
-            ),
-            _vm._v(" "),
-            _c("router-link", { attrs: { to: "#" + _vm.data.id } }, [
+      _c(
+        "div",
+        {
+          staticClass: "product-item-wrap emb-card",
+          staticStyle: { "max-height": "400px", "min-height": "400px" }
+        },
+        [
+          _c(
+            "div",
+            { staticClass: "thumb-warp" },
+            [
+              _c("img", {
+                staticStyle: { "max-height": "280px", "min-height": "280px" },
+                attrs: { alt: "product", src: _vm.data.image }
+              }),
+              _vm._v(" "),
               _c(
                 "div",
-                { staticClass: "add-to-cart" },
+                { staticClass: "wishlist-icon" },
                 [
                   _c(
                     "v-btn",
-                    { staticClass: "accent", attrs: { small: "", icon: "" } },
-                    [_c("v-icon", [_vm._v("mdi-pencil")])],
+                    {
+                      attrs: { icon: "" },
+                      on: {
+                        click: function($event) {
+                          return _vm.deleteItem(_vm.data)
+                        }
+                      }
+                    },
+                    [
+                      _c("v-icon", { staticClass: "grey--text" }, [
+                        _vm._v("mdi-delete")
+                      ])
+                    ],
                     1
                   )
                 ],
                 1
+              ),
+              _vm._v(" "),
+              _c(
+                "router-link",
+                { attrs: { to: "/sriBay-admin/product-edit/" + _vm.data.id } },
+                [
+                  _c(
+                    "div",
+                    { staticClass: "add-to-cart" },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "accent",
+                          attrs: { small: "", icon: "" }
+                        },
+                        [_c("v-icon", [_vm._v("mdi-pencil")])],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ]
               )
-            ])
-          ],
-          1
-        ),
-        _vm._v(" "),
-        _c("div", { staticClass: "emb-card-content pa-4" }, [
-          _c("h5", { staticClass: "font-weight-medium text-capitalize" }, [
-            _vm._v(_vm._s(_vm.data.name))
-          ]),
+            ],
+            1
+          ),
           _vm._v(" "),
-          _c("div", { staticClass: "inline-block" }, [
-            _c("p", [_vm._v(_vm._s(_vm.data.category))])
-          ]),
-          _vm._v(" "),
-          _c(
-            "div",
-            {
-              staticClass:
-                "emb-meta-info layout align-center justify-space-between"
-            },
-            [
-              _c("div", { staticClass: "inline-block" }, [
-                _c(
-                  "h6",
-                  { staticClass: "accent--text" },
-                  [
-                    _c("emb-currency-sign"),
-                    _vm._v(_vm._s(_vm.data.price) + "\n                    ")
-                  ],
-                  1
-                )
-              ])
-            ]
-          )
-        ])
-      ]),
+          _c("div", { staticClass: "emb-card-content pa-4" }, [
+            _c("h5", { staticClass: "font-weight-medium text-capitalize" }, [
+              _vm._v(_vm._s(_vm.data.name.substring(0, 50) + "...."))
+            ]),
+            _vm._v(" "),
+            _c("div", { staticClass: "inline-block" }, [
+              _c("p", [_vm._v(_vm._s(_vm.data.category))])
+            ]),
+            _vm._v(" "),
+            _c(
+              "div",
+              {
+                staticClass:
+                  "emb-meta-info layout align-center justify-space-between"
+              },
+              [
+                _c("div", { staticClass: "inline-block" }, [
+                  _c(
+                    "h6",
+                    { staticClass: "accent--text" },
+                    [
+                      _c("emb-currency-sign"),
+                      _vm._v(_vm._s(_vm.data.price) + "\n                    ")
+                    ],
+                    1
+                  )
+                ])
+              ]
+            )
+          ])
+        ]
+      ),
       _vm._v(" "),
       _c("emb-delete-confirmation-2", {
         ref: "deleteConfirmationDialog",
@@ -871,13 +904,26 @@ var render = function() {
             }
           },
           {
+            key: "item.name",
+            fn: function(ref) {
+              var item = ref.item
+              return [
+                _vm._v(
+                  "\n                " +
+                    _vm._s(item.name.substring(0, 50) + "....") +
+                    "\n            "
+                )
+              ]
+            }
+          },
+          {
             key: "item.action",
             fn: function(ref) {
               var item = ref.item
               return [
                 _c(
                   "router-link",
-                  { attrs: { to: "/product-edit/" + item.id } },
+                  { attrs: { to: "/sriBay-admin/product-edit/" + item.id } },
                   [
                     _c(
                       "v-btn",
@@ -972,7 +1018,18 @@ var render = function() {
               _c(
                 "div",
                 { staticClass: "input-wrap" },
-                [_c("v-text-field", { attrs: { label: "Search Projects" } })],
+                [
+                  _c("v-text-field", {
+                    attrs: { label: "Search Projects" },
+                    model: {
+                      value: _vm.searchText,
+                      callback: function($$v) {
+                        _vm.searchText = $$v
+                      },
+                      expression: "searchText"
+                    }
+                  })
+                ],
                 1
               ),
               _vm._v(" "),
@@ -982,7 +1039,15 @@ var render = function() {
                 [
                   _c(
                     "v-btn",
-                    { staticClass: "mr-3", attrs: { color: "primary" } },
+                    {
+                      staticClass: "mr-3",
+                      attrs: { color: "primary" },
+                      on: {
+                        click: function($event) {
+                          return _vm.productSearch(_vm.searchText)
+                        }
+                      }
+                    },
                     [_vm._v("Search")]
                   ),
                   _vm._v(" "),
@@ -1008,14 +1073,62 @@ var render = function() {
         ])
       ]),
       _vm._v(" "),
-      _c("v-layout", {
-        staticClass: "pt-12 ma-0",
-        attrs: { row: "", wrap: "" }
-      }),
+      _c(
+        "v-layout",
+        { staticClass: "pt-12 ma-0", attrs: { row: "", wrap: "" } },
+        [
+          _c("v-flex", { attrs: { xs12: "", sm8: "", md9: "", "py-0": "" } }, [
+            _c("h5", { staticClass: "mb-0 pt-2" }, [_vm._v("Product grid")])
+          ]),
+          _vm._v(" "),
+          _c(
+            "v-flex",
+            {
+              attrs: {
+                xs12: "",
+                sm4: "",
+                md3: "",
+                "py-0": "",
+                "text-right": ""
+              }
+            },
+            [
+              _c(
+                "v-icon",
+                {
+                  staticClass: "pa-2",
+                  on: {
+                    click: function($event) {
+                      return _vm.switchToGridView(true)
+                    }
+                  }
+                },
+                [_vm._v("mdi-apps")]
+              ),
+              _vm._v(" "),
+              _c(
+                "v-icon",
+                {
+                  staticClass: "pa-2",
+                  on: {
+                    click: function($event) {
+                      return _vm.switchToListView(false)
+                    }
+                  }
+                },
+                [_vm._v("mdi-format-list-bulleted ")]
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
       _vm._v(" "),
       _c("div", { staticClass: "d-md-inline-flex mb-5" }),
       _vm._v(" "),
       _c("product-items", {
+        ref: "products",
         attrs: {
           gridListView: _vm.gridView,
           cols: 6,

@@ -7,8 +7,11 @@
 				<img :src="item.image" width="50px">
 
 			</template>
+            <template v-slot:item.name="{ item }">
+                {{item.name.substring(0,50)+'....'}}
+            </template>
 			<template v-slot:item.action="{ item }">
-				<router-link :to="'/product-edit/'+item.id">
+				<router-link :to="'/sriBay-admin/product-edit/'+item.id">
 					<v-btn
 						small icon
 						class="primary--text"

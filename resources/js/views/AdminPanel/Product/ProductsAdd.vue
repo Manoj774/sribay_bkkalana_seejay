@@ -211,9 +211,7 @@
 				this.$refs.form.validate()
 			},
 			getParentCategories: function() {
-                axios.get(this.$serverUrl+'api/category/tree-select',{
-                    headers: {'Content-Type':'application/json','Authorization': localStorage.getItem('token')}
-                }).then(response => {
+                axios.get('/api/category/tree-select').then(response => {
 					const responseData = response.data.categories;
 					 for(const i in responseData) {
 						 this.parentCategories.push(responseData[i]);
@@ -254,19 +252,14 @@
 				formData.append('sku', this.product.sku)
 				formData.append('description', this.product.description)
 
-                axios.post(this.$serverUrl+'api/product/create', formData,{
-				 	headers: {
-				 		'Content-Type': 'multipart/form-data',
-						'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-				 	},
-				 }).then(response => {
+                axios.post('/api/product/create',formData).then(response => {
 				 	this.$toast.open({
 				 		message: response.data.message,
 				 		type: 'success',
 				 	});
 				 	this.$router.go(this.$router.currentRoute)
-				 }, response => {
-				 	const errors = response.data.message;
+				 }, err => {
+				 	const errors = err.response.data.message;
 				 	var html = '';
 				 	for (const i in errors){
 				 		html += errors[i];
@@ -291,7 +284,6 @@
 				for(var pair of formData.entries()){
 					this.product.images[index] = pair[1];
 				}
-				//console.log(fileList)
 
 			},
 			beforeRemove (index, done, fileList) {

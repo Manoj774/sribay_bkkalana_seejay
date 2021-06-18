@@ -90,14 +90,15 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/category/{id}',[CategoryController::class,'show']);
     Route::get('/category/{id}/edit',[CategoryController::class,'edit']);
     Route::put('/category/{id}',[CategoryController::class,'update']);
+    Route::delete('/category/{id}',[CategoryController::class,'destroy']);
     // Route::delete('/category/{id}',[CategoryController::class,'destroy']);
 
 
     //admin product
     Route::post('/product/create', [ProductController::class,'create']);
-    Route::get('/product/{id}/edit',[ProductController::class,'edit']);
-    Route::put('/product/{id}',[ProductController::class,'update']);
-    Route::delete('/category/{id}',[CategoryController::class,'destroy']);
+    Route::get('/product-edit/{id}',[ProductController::class,'edit']);
+    Route::post('/product/update',[ProductController::class,'update']);
+    Route::delete('/product/remove-image/{id}',[ProductController::class,'removeImage']);
 
     //admin membership plan
     //// Route::get('/membership/filter', [MembershipPlanController::class,'search']);

@@ -1,8 +1,8 @@
 <template>
     <div>
-        <div class="product-item-wrap emb-card"  >
+        <div class="product-item-wrap emb-card"  style="max-height: 400px; min-height: 400px;">
             <div class="thumb-warp">
-                <img alt="product" height="800" width="626" :src="data.image" >
+                <img alt="product" :src="data.image" style="max-height: 280px;min-height: 280px;">
 
                 <div class="wishlist-icon">
                     <v-btn @click="deleteItem(data)" icon >
@@ -10,7 +10,7 @@
                     </v-btn>
                 </div>
 
-                <router-link :to="'#'+data.id">
+                <router-link :to="'/sriBay-admin/product-edit/'+data.id">
                     <div class="add-to-cart">
                         <v-btn
                             class="accent"
@@ -23,7 +23,7 @@
 
             </div>
             <div class="emb-card-content pa-4">
-                <h5 class="font-weight-medium text-capitalize">{{data.name}}</h5>
+                <h5 class="font-weight-medium text-capitalize">{{data.name.substring(0,50)+'....'}}</h5>
                 <div class="inline-block">
                     <p>{{data.category}}</p>
                 </div>

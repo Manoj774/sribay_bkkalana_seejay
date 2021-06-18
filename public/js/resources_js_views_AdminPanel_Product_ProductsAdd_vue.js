@@ -4471,12 +4471,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
     getParentCategories: function getParentCategories() {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/category/tree-select', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': localStorage.getItem('token')
-        }
-      }).then(function (response) {
+      axios.get('/api/category/tree-select').then(function (response) {
         var responseData = response.data.categories;
 
         for (var i in responseData) {
@@ -4523,20 +4518,15 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
       formData.append('quantity', this.product.quantity);
       formData.append('sku', this.product.sku);
       formData.append('description', this.product.description);
-      axios.post(this.$serverUrl + 'api/product/create', formData, {
-        headers: {
-          'Content-Type': 'multipart/form-data',
-          'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-        }
-      }).then(function (response) {
+      axios.post('/api/product/create', formData).then(function (response) {
         _this2.$toast.open({
           message: response.data.message,
           type: 'success'
         });
 
         _this2.$router.go(_this2.$router.currentRoute);
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (err) {
+        var errors = err.response.data.message;
         var html = '';
 
         for (var _i in errors) {
@@ -4566,8 +4556,7 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
         for (_iterator.s(); !(_step = _iterator.n()).done;) {
           var pair = _step.value;
           this.product.images[index] = pair[1];
-        } //console.log(fileList)
-
+        }
       } catch (err) {
         _iterator.e(err);
       } finally {

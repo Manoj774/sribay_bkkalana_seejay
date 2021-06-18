@@ -70,27 +70,49 @@ export default {
       let index = deletedToDoList.indexOf(item);
       this.listData.splice(index, 1);
     },
-    getProductsData() {
-        axios.get(this.$serverUrl+'api/product',{
-		  headers: {'Content-Type':'application/json','Authorization': 'Bearer ' + localStorage.getItem('bigStore.jwt')}
-	  }).then(response => {
-          this.products = response.data.products;
-		  let count = 1;
-          for (let categoryKey in this.products) {
-			  this.listData.push(
-					  {
-						  'count': count++,
-						  'image': this.products[categoryKey].image_url,
-						  'name' : this.products[categoryKey].product_name,
-						  'price': this.products[categoryKey].sell_price,
-                          'id'   : this.products[categoryKey].id
-					  }
-			  );
-          }
-        })
-        .catch(error => {
-          console.log(error);
-        });
+    getProductsData(value) {
+
+        if (value != null && value !== ''){
+
+            axios.post('/api/product/filter',{searchText:value}).then(response => {
+                this.listData =[];
+                this.products = response.data.products;
+                let count = 1;
+                for (let categoryKey in this.products) {
+                    this.listData.push(
+                        {
+                            'count': count++,
+                            'image': this.products[categoryKey].image_url,
+                            'name' : this.products[categoryKey].product_name,
+                            'price': this.products[categoryKey].sell_price,
+                            'id'   : this.products[categoryKey].id
+                        }
+                    );
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }else{
+            axios.get('/api/product').then(response => {
+                this.listData =[];
+                this.products = response.data.products;
+                let count = 1;
+                for (let categoryKey in this.products) {
+                    this.listData.push(
+                        {
+                            'count': count++,
+                            'image': this.products[categoryKey].image_url,
+                            'name' : this.products[categoryKey].product_name,
+                            'price': this.products[categoryKey].sell_price,
+                            'id'   : this.products[categoryKey].id
+                        }
+                    );
+                }
+            }).catch(error => {
+                console.log(error);
+            });
+        }
+
     }
   },
   components: {

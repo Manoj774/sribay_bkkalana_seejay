@@ -15,10 +15,13 @@ use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Crypt;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Log;
+use Illuminate\Support\Facades\Validator;
 use Jenssegers\Agent\Agent;
 use SebastianBergmann\Environment\Console;
+use Symfony\Component\HttpFoundation\File\Exception\FileException;
 
 class ProductController extends Controller
 {
@@ -245,70 +248,6 @@ class ProductController extends Controller
     }
 
 
-    /**
-     * Store a session cart.
-     *
-     * @param Request $request
-     * @return void json
-     */
-
-    public function addToCart(Request $request)
-    {
-        $cart_data = $request->session()->get('cart');
-        $cart_data[$request->id] = [
-            'id'=>$request->id,
-            'image'=>$request->image,
-            'name'=>$request->name,
-            'price'=>$request->price,
-            'quantity'=>$request->quantity,
-            'total'=>$request->total,
-            'aff_user_id'=>$request->aff_user_id
-        ];
-        $request->session()->put('cart',$cart_data);
-        return response()->json(['message' => 'Success'], 201);
-
-    }
-
-    /**
-     * Remove a cart item.
-     *
-     * @param Request $request
-     * @param $id
-     * @return void json
-     */
-
-    public function removeFromCart(Request $request,$id)
-    {
-        $cart_data = $request->session()->get('cart');
-        if (isset($cart_data[$id])){
-            unset($cart_data[$id]);
-        }
-        $request->session()->put('cart',$cart_data);
-        return response()->json(['message' => 'Success'], 201);
-
-    }
-
-
-    /**
-     * Display a listing cart items.
-     *
-     * @param Request $request
-     * @return void json
-     */
-
-    public function getCartItems(Request $request)
-    {
-        $cart_items = $request->session()->get('cart');
-        return response()->json(['cart_items' => $cart_items], 201);
-    }
-
-    public function removeAllCartItems(Request $request)
-    {
-//        $cart_items = $request->session()->get('cart');
-        $request->session()->remove('cart');
-        return true;
-    }
-
 
     /**
      * Store a newly created Tags in storage.
@@ -352,14 +291,18 @@ class ProductController extends Controller
                 foreach ($images as $image) {
                     $original_name = strtolower(trim($image->getClientOriginalName()));
                     $file_name = time() . rand(100, 999) . $original_name;
-                    $path = $image->storeAs('images/products', $file_name, 'public');
+                    try {
+                        $image->move(public_path('images/products'), $file_name);
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_url' => '/images/products/' . $file_name,
+                            'is_main' => ($count == 1)
+                        ]);
+                        $count++;
+                    }catch (FileException $exception){
+                        Log::error($exception->getMessage());
+                    }
 
-                    ProductImage::create([
-                        'product_id' => $product->id,
-                        'image_url' => '/storage/' . $path,
-                        'is_main' => ($count == 1)
-                    ]);
-                    $count++;
                 }
             }
 
@@ -389,10 +332,10 @@ class ProductController extends Controller
         $product = DB::table('products')
             ->where('id', $id)->first();
         $product_category = DB::table('product_has_categories')
-            ->select('id')
+            ->select('category_id')
             ->where('product_id', $product->id)->get();
         $product_images = DB::table('product_images')
-            ->select('image_url AS image')
+            ->select('id','image_url AS image')
             ->where('product_id', $product->id)->get();
 
         if (!$product) {
@@ -401,6 +344,112 @@ class ProductController extends Controller
         $product->product_categories = [];
         $product->images = [];
         return response()->json(['product' => $product, 'product_category' => $product_category, 'product_images' => $product_images], 200);
+    }
+
+    /**
+     * Update the specified product.
+     *
+     * @param Request $request
+     * @return void json
+     */
+    public function update(Request $request){
+        $validator =  Validator::make($request->all(), [
+            'product_name' => 'required|max:250',
+            'description' => 'required',
+            'market_price' => 'required|numeric',
+            'buying_price' => 'required|numeric',
+            'sell_price' => 'required|numeric',
+            'selling_margin' => 'required|numeric',
+            'quantity' => 'required|numeric',
+            'product_category' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()], 401);
+        }
+
+        $product = Product::find($request->id);
+
+        if (!$product){
+            return response()->json(['message' => 'Product not found'], 404);
+        }
+
+        $product->product_name = $request->product_name;
+        $product->description = $request->description;
+        $product->market_price = $request->market_price;
+        $product->buying_price = $request->buying_price;
+        $product->sell_price = $request->sell_price;
+        $product->selling_margin = $request->selling_margin;
+        $product->sku = $request->sku;
+        $product->quantity = $request->quantity;
+        $product->is_featured = $request->is_featured;
+
+        if (!$product->update()){
+            return response()->json(['message' => 'Product not updated. Internal Server Error'], 500);
+        }
+
+        if (isset($request->images)){
+            if ($request->hasfile('images')) {
+
+                $images = $request->file('images');
+                $count = 1;
+                foreach ($images as $image) {
+                    $original_name = strtolower(trim($image->getClientOriginalName()));
+                    $file_name = time() . rand(100, 999) . $original_name;
+                    try {
+                        $image->move(public_path('images/products'), $file_name);
+                        ProductImage::create([
+                            'product_id' => $product->id,
+                            'image_url' => '/images/products/' . $file_name,
+                            'is_main' => ($count == 1)
+                        ]);
+                        $count++;
+                    }catch (FileException $exception){
+                        Log::error($exception->getMessage());
+                    }
+
+                }
+            }
+        }
+
+        $productCategory = ProductHasCategory::where('product_id','=',$request->id)->get();
+
+        foreach ($productCategory as $item){
+            if (!$item->delete()){
+             Log::error('Category remove failed..');
+            }
+        }
+
+        if (isset($request->product_category)) {
+            $categories = $request->product_category;
+            foreach ($categories as $category) {
+                ProductHasCategory::create([
+                    'product_id' => $product->id,
+                    'category_id' => $category
+                ]);
+            }
+        }
+        return response()->json(['message' => 'Product has been updated'], 201);
+
+    }
+
+    /**
+     * Remove the specified product image.
+     *
+     * @param int $id
+     * @return void json
+     */
+    public function removeImage($id){
+
+        $image = ProductImage::find($id);
+        if (File::exists(public_path($image->image_url))){
+            if (File::delete(public_path($image->image_url))){
+                if ($image->delete()){
+                    return response()->json(['message' => 'Product image deleted successfully.'], 200);
+                }
+            }
+        }
+        return response()->json(['message' => 'Product image not deleted. Internal Server Error'], 500);
     }
 
 
