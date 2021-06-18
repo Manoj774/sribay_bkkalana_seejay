@@ -29,16 +29,17 @@ class ContactUsController extends Controller
             return response()->json(['status' => 400,'message' => $validator],400);
         }
 
+        $data['data'] = array(
+            'first_name' => $request->first_name,
+            'last_name' => $request->last_name,
+            'email' => $request->email,
+            'subject' => $request->subject,
+            'message' => $request->message,
+        );
 
-        Mail::send('email', array(
-            'first_name' => $request->get('first_name'),
-            'last_name' => $request->get('last_name'),
-            'email' => $request->get('email'),
-            'subject' => $request->get('subject'),
-            'message' => $request->get('message'),
-        ), function($message) use ($request){
-            $message->from($request->email);
-            $message->to('kalananipun008@gmail.com', 'Hello Admin')->subject($request->get('subject'));
+        Mail::send('email',$data, function($message) use ($request){
+            $message->from('kalananipun008@gmail.com');
+            $message->to('corestak2021@gmail.com', 'Hello Admin')->subject($request->get('subject'));
         });
         return response()->json(['message' => "Thanks for contacting!"], 200);
 
