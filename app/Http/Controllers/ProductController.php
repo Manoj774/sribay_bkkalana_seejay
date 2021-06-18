@@ -159,13 +159,13 @@ class ProductController extends Controller
      * @return Response json
      */
 
-    public function show($id, $user = 0)
+    public function show($id, $user = null)
     {
 
         $userId = $user;
         $productId = $id;
 
-        if ($user != 0) {
+        if ($user != null) {
             $h = new Hashids('', 5);
             $userId = $h->decode($user)[0];
             $productId = $h->decode($id)[0];

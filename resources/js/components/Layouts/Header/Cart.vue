@@ -171,8 +171,8 @@
                     pauseOnHover: false,
                     timeout: 1000
                 });
-                axios.delete('/api/cart/remove-cart-item/'+this.selectDeletedProduct.id).then(response => {
-                    this.getCartItems();
+                axios.delete('/api/cart/remove-cart-item/'+this.selectDeletedProduct.product_id).then(response => {
+                    window.location.href = "/cart";
                 }, response => {
                     const errors = response.data.message;
                     var html = '';

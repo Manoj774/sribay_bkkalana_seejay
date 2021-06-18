@@ -312,11 +312,11 @@ export default {
                         type: 'success',
                     });
                     setTimeout(() => {
-                    window.location.href = '/account/order-history';
+                        window.location.href = '/account/order-history';
                     }, 500);
                 }).catch(error => {
                     toast.open({
-                        message: error.data.message,
+                        message: error.response.data.message,
                         type: 'error',
                     });
                 });
