@@ -226,11 +226,11 @@ class OrderController extends Controller
 
             foreach ($cart_data as $product) {
 
-                $productData = Product::find($product['id']);
+                $productData = Product::find($product['product_id']);
 
                 $orderItems = new OrderItem([
                     'order_id' => $order->id,
-                    'product_id' => $product['id'],
+                    'product_id' => $product['product_id'],
                     'quantity' => $product['quantity'],
                     'total' => $product['total'],
                     'profit_pre_product' => ($productData->sell_price - $productData->buying_price),
