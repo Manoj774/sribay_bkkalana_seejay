@@ -268,11 +268,34 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
+      json_fields: {
+        "Order ID": "orderId",
+        "Buyer": "full_name",
+        "Date": "created_at",
+        "Net Amount": "net_amount",
+        "Order Status": "order_stat",
+        "Transaction Number": "transaction_id",
+        "Shipping Address": "shipping_address",
+        "Shipping Phone Number": "shipping_phone_number"
+      },
+      json_meta: [[{
+        " key ": " charset ",
+        " value ": " utf- 8 "
+      }]],
       form_date: null,
       to_date: null,
       form_date_modal: false,
@@ -327,7 +350,8 @@ __webpack_require__.r(__webpack_exports__);
         value: 'Cancel'
       }],
       selectedOrderStatus: null,
-      fillerOrderStatus: 'Pending'
+      fillerOrderStatus: 'Pending',
+      downloadLoading: false
     };
   },
   mounted: function mounted() {
@@ -353,6 +377,7 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/api/orders').then(function (response) {
         _this.invoiceData = response.data.orders;
+        console.log(_this.invoiceData);
       }, function (err) {
         var errors = err.response.data.message;
         var html = '';
@@ -442,6 +467,27 @@ __webpack_require__.r(__webpack_exports__);
       }
 
       return output;
+    },
+    exportOrders: function exportOrders() {
+      var filterOrders = {
+        dateFrom: this.form_date,
+        dateTo: this.to_date,
+        status: this.fillerOrderStatus.value
+      }; // this.url = "/api/orders/export-orders/" + filterOrders;
+
+      window.location.href = "/api/orders/export-orders/" + filterOrders; // axios.post('/api/orders/export-orders/',{'orders':this.invoiceData}).then(response => {
+      //     this.downloadFile(response, 'customFilename')
+      // }, err => {
+      //     const errors = err.response.data.message;
+      //     var html = '';
+      //     for (const i in errors){
+      //         html += errors[i];
+      //     }
+      //     this.$toast.open({
+      //         message: html,
+      //         type: 'error',
+      //     });
+      // });
     }
   }
 });
@@ -9998,7 +10044,7 @@ var render = function() {
             _vm._v(" "),
             _c(
               "v-col",
-              { attrs: { cols: "12", sm: "8", md: "5", lg: "5" } },
+              { attrs: { cols: "12", sm: "12", md: "4", lg: "4" } },
               [
                 _c(
                   "v-row",
@@ -10265,7 +10311,7 @@ var render = function() {
             _vm._v(" "),
             _c(
               "v-col",
-              { attrs: { cols: "12", sm: "12", md: "3", lg: "3" } },
+              { attrs: { cols: "12", sm: "12", md: "2", lg: "2" } },
               [
                 _c("v-select", {
                   attrs: {
@@ -10286,6 +10332,38 @@ var render = function() {
                     expression: "fillerOrderStatus"
                   }
                 })
+              ],
+              1
+            ),
+            _vm._v(" "),
+            _c(
+              "v-col",
+              {
+                staticClass: "mt-4",
+                attrs: { cols: "12", sm: "12", md: "2", lg: "2" }
+              },
+              [
+                _c(
+                  "download-excel",
+                  {
+                    staticClass: "export-excel-wrapper",
+                    attrs: {
+                      data: _vm.invoiceData,
+                      fields: _vm.json_fields,
+                      name: "Orders.xls"
+                    }
+                  },
+                  [
+                    _c(
+                      "v-btn",
+                      {
+                        attrs: { type: "primary", color: "red", size: "small" }
+                      },
+                      [_vm._v(" Export EXCEL ")]
+                    )
+                  ],
+                  1
+                )
               ],
               1
             )

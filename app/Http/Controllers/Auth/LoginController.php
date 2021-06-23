@@ -29,6 +29,45 @@ class LoginController extends Controller
     |
     */
 
+    /**
+     * login admin user
+     *
+     * @param Request $request
+     * @return JsonResponse
+     */
+
+    public function sribayAdminLogin(Request $request)
+    {
+        $validator = Validator::make($request->all(), [
+            "email" => "required|email",
+            "password" => "required"
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['status' => 400,'message' => $validator],400);
+        }
+
+        if(!Auth::attempt($request->only('email','password'))){
+            return response()->json(['status' => 401,'message' => "Username or Password is incorrect"],401);
+        }
+
+        $user = User::where("email",$request->email)->first();
+
+        if (!$user->stat){
+            return response()->json(['status' => 401,'message' => "Your account is deactivated"],403);
+        }
+
+        if ($user->role != 1){
+            return response()->json(['status' => 401,'message' => "The provided credentials are incorrect."],403);
+        }
+
+        $token = $user->createToken('user-token')->plainTextToken;
+        Arr::add($user,'token',$token);
+
+        return response()->json(['token' =>  $token,'role'=> $user->role,'user'=> $user],200);
+
+    }
+
 
     /**
      * login user

@@ -26,32 +26,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
-      profileData: [{
-        key: "First Name",
-        value: "John"
-      }, {
-        key: "Last Name",
-        value: "Doe"
-      }, {
-        key: "Gender",
-        value: "Female"
-      }, {
-        key: "Date Of birth",
-        value: "9th May 1995"
-      }, {
-        key: "Mobile Number",
-        value: "+123 456 789 123"
-      }, {
-        key: "Location",
-        value: "San Francisco"
-      }, {
-        key: "E-mail id",
-        value: "johnDoe@doe.com"
-      }]
+      profileData: {
+        first_name: '',
+        last_name: '',
+        address: '',
+        phone_number: '',
+        email: '',
+        role: ''
+      }
     };
+  },
+  created: function created() {
+    this.getProfileData();
+  },
+  methods: {
+    getProfileData: function getProfileData() {
+      var _this = this;
+
+      axios.get('/api/user/profile').then(function (response) {
+        _this.profileData = response.data;
+      }, function (response) {
+        var errors = response.body.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    }
   }
 });
 
@@ -151,14 +181,65 @@ var render = function() {
     _c(
       "div",
       { staticClass: "pt-4" },
-      _vm._l(_vm.profileData, function(info, key) {
-        return _c("div", { key: key, staticClass: "proflie-field mb-4" }, [
-          _c("label", [_vm._v(_vm._s(info.key) + " :")]),
+      [
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("First Name :")]),
           _vm._v(" "),
-          _c("span", [_vm._v(_vm._s(info.value))])
-        ])
-      }),
-      0
+          _c("span", [_vm._v(_vm._s(_vm.profileData.first_name))])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("Last Name :")]),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.profileData.last_name))])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("Mobile Number :")]),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.profileData.phone_number))])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("Location :")]),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.profileData.address))])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("E-mail :")]),
+          _vm._v(" "),
+          _c("span", [_vm._v(_vm._s(_vm.profileData.email))])
+        ]),
+        _vm._v(" "),
+        _c("div", { staticClass: "proflie-field mb-4" }, [
+          _c("label", [_vm._v("Role :")]),
+          _vm._v(" "),
+          _c("span", [
+            _vm._v(
+              _vm._s(
+                _vm.profileData.role == 3
+                  ? "Member"
+                  : _vm.profileData.role == 1
+                  ? "Admin"
+                  : "User"
+              )
+            )
+          ])
+        ]),
+        _vm._v(" "),
+        _c(
+          "router-link",
+          {
+            attrs: {
+              to: { name: "AdminEditProfileInfo", query: { type: "info" } }
+            }
+          },
+          [_c("v-btn", { staticClass: "accent mx-0" }, [_vm._v("Edit")])],
+          1
+        )
+      ],
+      1
     )
   ])
 }

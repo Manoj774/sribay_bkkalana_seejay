@@ -18,6 +18,10 @@ class CreateUserHasMemberShipsTable extends Migration
             $table->foreignId('user_id');
             $table->foreignId('membership_id');
             $table->double('account_amount');
+            $table->string('bank_person_name');
+            $table->string('bank_account_number');
+            $table->string('bank_name');
+            $table->string('bank_branch');
             $table->timestamps();
         });
     }

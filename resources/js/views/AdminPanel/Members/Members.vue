@@ -43,6 +43,11 @@
                         @change="changeStatusCustomerDialogOpen(item.id,$event !== null, $event)"
                     ></v-switch>
                 </template>
+                <template v-slot:item.actions="{ item }">
+                    <v-btn text icon color="grey" class="mr-3"  @click="openDialog(item)" small slot="activator">
+                        <v-icon class="primary--text">mdi-eye</v-icon>
+                    </v-btn>
+                </template>
             </v-data-table>
         </div>
     </div>

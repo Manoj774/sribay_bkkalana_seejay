@@ -7,7 +7,7 @@
                     <v-text-field v-model="search" label="Search" single-line hide-details>
                     </v-text-field>
                 </v-col>
-                <v-col cols="12"sm="8" md="5" lg="5">
+                <v-col cols="12"sm="12" md="4" lg="4">
                     <v-row>
                         <v-col
                             cols="12"
@@ -99,7 +99,7 @@
                         </v-col>
                     </v-row>
                 </v-col>
-                <v-col cols="12"sm="12" md="3" lg="3">
+                <v-col cols="12"sm="12" md="2" lg="2">
                     <v-select
                         v-model="fillerOrderStatus"
                         :items="orderStatus"
@@ -111,6 +111,15 @@
                         single-line
                         @change="filterOrder"
                     ></v-select>
+                </v-col>
+                <v-col cols="12"sm="12" md="2" lg="2" class="mt-4">
+                    <download-excel
+                        class = "export-excel-wrapper"
+                        :data = "invoiceData"
+                        :fields = "json_fields"
+                        name = "Orders.xls">
+                        <v-btn type="primary" color="red" size = "small"> Export EXCEL </v-btn>
+                    </download-excel>
                 </v-col>
             </v-row>
         </div>
@@ -253,12 +262,31 @@
 </template>
 
 <script>
+
     import jsPDF from 'jspdf'
     import html2canvas from "html2canvas"
 
     export default {
         data() {
             return {
+                json_fields: {
+                    "Order ID": "orderId",
+                    "Buyer": "full_name",
+                    "Date": "created_at",
+                    "Net Amount": "net_amount",
+                    "Order Status": "order_stat",
+                    "Transaction Number": "transaction_id",
+                    "Shipping Address": "shipping_address",
+                    "Shipping Phone Number":"shipping_phone_number",
+                },
+                json_meta: [
+                    [
+                        {
+                            " key ": " charset ",
+                            " value ": " utf- 8 "
+                        }
+                    ]
+                ],
                 form_date: null,
                 to_date: null,
                 form_date_modal: false,
@@ -314,29 +342,35 @@
                 ],
                 selectedOrderStatus:null,
                 fillerOrderStatus: 'Pending',
+                downloadLoading: false,
             };
         },
         mounted() {
             this.getInvoice();
         },
         methods: {
+
             openDialog(item) {
                 this.selectViewItem = item;
                 this.selectedOrderStatus = item.order_stat;
                 this.editDialog = true;
             },
+
             deleteItemFromInvoicesList(item) {
                 this.$refs.deleteConfirmationDialog.openDialog();
                 this.selectDeletedItem = item;
             },
+
             ondeleteItemFromInvoicesList() {
                 this.$refs.deleteConfirmationDialog.close();
                 let index = this.invoiceData.indexOf(this.selectDeletedItem);
                 this.invoiceData.splice(index, 1);
             },
+
             getInvoice() {
                 axios.get('/api/orders').then(response => {
                     this.invoiceData = response.data.orders;
+                    console.log(this.invoiceData)
                 }, err => {
                     const errors = err.response.data.message;
                     var html = '';
@@ -419,6 +453,32 @@
                     output = '0' + output;
                 }
                 return output;
+            },
+
+            exportOrders() {
+
+                let filterOrders = {
+                    dateFrom:this.form_date,
+                    dateTo:this.to_date,
+                    status: this.fillerOrderStatus.value
+                }
+                // this.url = "/api/orders/export-orders/" + filterOrders;
+
+                window.location.href = "/api/orders/export-orders/"+ filterOrders;
+
+                // axios.post('/api/orders/export-orders/',{'orders':this.invoiceData}).then(response => {
+                //     this.downloadFile(response, 'customFilename')
+                // }, err => {
+                //     const errors = err.response.data.message;
+                //     var html = '';
+                //     for (const i in errors){
+                //         html += errors[i];
+                //     }
+                //     this.$toast.open({
+                //         message: html,
+                //         type: 'error',
+                //     });
+                // });
             },
 
         }

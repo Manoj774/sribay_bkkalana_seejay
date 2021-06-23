@@ -27,7 +27,9 @@ class UserController extends Controller
     public function index()
     {
         $users = DB::table('users')
-            ->whereNotIn('id', [Auth::id()])->get();
+            ->whereNotIn('id', [Auth::id()])
+            ->whereNotIn('role', [2,3])
+            ->get();
         return response()->json(['users' => $users], 200);
     }
 
@@ -95,6 +97,39 @@ class UserController extends Controller
             ->where('user_id', '=', [Auth::id()])->first();
         return response()->json(['shipping_address' => $shipping_address], 200);
     }
+
+    public function updateBankInfo(Request $request,$id){
+
+        $validator = Validator::make($request->all(), [
+            'bank_person_name' => 'required|max:100',
+            'bank_account_number' => 'required|max:50',
+            'bank_name' => 'required',
+            'bank_branch' => 'required',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()], 401);
+        }
+
+        $bankDetails = UserHasMemberShip::where('user_id','=',$id)->first();
+
+        $bankDetails->bank_person_name = $request->bank_person_name;
+        $bankDetails->bank_account_number = $request->bank_account_number;
+        $bankDetails->bank_name = $request->bank_name;
+        $bankDetails->bank_branch = $request->bank_branch;
+
+        if (!$bankDetails->update()) {
+            return response()->json(['message' => 'Bank details not update. Internal Server Error'], 500);
+        }
+        return response()->json(['message' => "Bank details updated"], 201);
+
+    }
+
+    public function getMemberBankInfo($id){
+        $bankDetails = UserHasMemberShip::where('user_id','=',$id)->first();
+        return response()->json(['bankInfo' => $bankDetails], 200);
+    }
+
 
     /**
      * Update or created customer shipping address in storage.

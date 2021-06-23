@@ -11,6 +11,9 @@ use App\Http\Controllers\Auth\RegisterController;
 use App\Http\Controllers\OrderController;
 use App\Http\Controllers\ShoppingCartController;
 use App\Http\Controllers\ContactUsController;
+use App\Http\Controllers\DashBoardController;
+
+
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -25,6 +28,7 @@ use App\Http\Controllers\ContactUsController;
 
 //auth
 Route::post('login', [LoginController::class,'login'])->middleware('throttle:api');
+Route::post('admin-sribay/admin-login', [LoginController::class,'sribayAdminLogin'])->middleware('throttle:api');
 Route::post('logout', [LoginController::class,'logOut'])->middleware('auth:sanctum');
 Route::post('register', [RegisterController::class,'register']);
 
@@ -69,6 +73,9 @@ Route::middleware('auth:sanctum')->get('/user/profile', function (Request $reque
 
 Route::middleware(['auth:sanctum'])->group(function () {
 
+    Route::get('/dash-board',[DashBoardController::class,'index']);
+
+
     Route::get('/users',[UserController::class,'index']);
     Route::get('/users/customers',[UserController::class,'getCustomers']);
     Route::get('/users/members',[UserController::class,'getMembers']);
@@ -79,6 +86,8 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/users/affiliate',[UserController::class,'getAffiliateDashboardData']);
     Route::get('/users/referral-link',[UserController::class,'getGenerateReferralLink']);
     Route::post('/users/change-status',[UserController::class,'changeUserStatus']);
+    Route::put('/members/update-bank-info/{id}',[UserController::class,'updateBankInfo']);
+    Route::get('/members/bank-info/{id}',[UserController::class,'getMemberBankInfo']);
 
 
     Route::get('/orders',[OrderController::class,'index']);
@@ -86,6 +95,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/orders/create',[OrderController::class,'create']);
     Route::put('/orders/update-status',[OrderController::class,'updateOrderStatus']);
     Route::put('/orders/filter-orders',[OrderController::class,'filterOrders']);
+//    Route::get('/orders/export-orders/',[OrderController::class,'ordersExport']);
 
 
 

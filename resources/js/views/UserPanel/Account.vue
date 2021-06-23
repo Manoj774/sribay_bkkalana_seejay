@@ -75,15 +75,7 @@ export default {
 						path:"/account/address",
 						id:"addresses"
 					}
-				],
-				// cards:[
-				// 	{
-				// 		title:"Saved Cards",
-				// 		icon:"mdi-credit-card ",
-				// 		path:"/account/cards",
-				// 		id:"cards"
-				// 	},
-				// ]
+				]
 			},
 			selectedTab: 0,
             user:{
@@ -137,14 +129,14 @@ export default {
                             id:"addresses"
                         }
                     ],
-                    // cards:[
-                    //     {
-                    //         title:"Saved Cards",
-                    //         icon:"mdi-credit-card ",
-                    //         path:"/account/cards",
-                    //         id:"cards"
-                    //     },
-                    // ]
+                    bankDetails:[
+                        {
+                            title:"Bank Details",
+                            icon:"mdi-credit-card ",
+                            path:"/account/bank-details",
+                            id:"bankDetails"
+                        },
+                    ]
                 };
             }
         }

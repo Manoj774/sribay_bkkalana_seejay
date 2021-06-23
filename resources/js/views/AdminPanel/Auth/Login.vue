@@ -54,7 +54,7 @@
             }
         },
         created() {
-            if (JSON.parse(sessionStorage.getItem('admin-user')) != null){
+            if (sessionStorage.getItem('user') != 0 && JSON.parse(sessionStorage.getItem('user')) != null){
                 this.logout();
             }
         },
@@ -65,14 +65,14 @@
                     let email = this.email
                     let password = this.password
 
-                    axios.post('/api/login', {email, password}).then(response => {
+                    axios.post('/api/admin-sribay/admin-login', {email, password}).then(response => {
                         sessionStorage.setItem('token', response.data.token)
                         sessionStorage.setItem('role', response.data.role)
-                        sessionStorage.setItem('admin-user', JSON.stringify(response.data.user))
                         sessionStorage.removeItem('user')
+                        sessionStorage.setItem('user', JSON.stringify(response.data.user))
                         let role = response.data.role
                          if (sessionStorage.getItem('token') != null) {
-                             this.$emit('loggedInAdmin')
+                             this.$emit('loggedIn')
                              if (this.$route.params.nextUrl != null) {
                                  this.$router.push(this.$route.params.nextUrl)
                              } else {
@@ -91,7 +91,6 @@
                 axios.post('/api/logout').then(response => {
                     sessionStorage.removeItem('token')
                     sessionStorage.removeItem('role')
-                    sessionStorage.removeItem('admin-user')
                     sessionStorage.removeItem('user')
                     this.$toast.open({
                         message: "Successfully logout",
@@ -99,7 +98,7 @@
                     });
                 }).catch(error => {
                     this.$toast.open({
-                        message: error,
+                        message: error.response.data.message,
                         type: 'error',
                     });
 

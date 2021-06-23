@@ -9,13 +9,13 @@ export const menus = [
     {
         path:'/products',
         name: "message.shop",
-        icon: "pages",
+       // icon: "pages",
         type: "sub_menu",
     },
     {
         path: '',
         name:"message.categories",
-        icon: 'party_mode',
+        //icon: 'party_mode',
         type: 'mega_menu',
         children: {
             'message.men': [
@@ -111,13 +111,13 @@ export const menus = [
     {
         path: '/contact',
         name:"message.contactUs",
-        icon: 'perm_contact_calendar',
+       // icon: 'perm_contact_calendar',
         children: null
     },
     {
         path: '/subscription-plan',
         name:"Affiliate Program",
-        icon: 'party_mode',
+       // icon: 'party_mode',
         children: null
     },
     // {

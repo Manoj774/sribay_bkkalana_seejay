@@ -239,7 +239,7 @@ class ProductController extends Controller
             ->where('product_images.product_id','=',$productId)
             ->get();
         $product->images = $product_images;
-        if($user != 0){
+        if($user != null){
             $product->user = $userId;
         }
         if (!$product) {

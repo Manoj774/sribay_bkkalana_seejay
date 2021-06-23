@@ -62,6 +62,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Members",
   data: function data() {
@@ -446,6 +451,39 @@ var render = function() {
                       }
                     }
                   })
+                ]
+              }
+            },
+            {
+              key: "item.actions",
+              fn: function(ref) {
+                var item = ref.item
+                return [
+                  _c(
+                    "v-btn",
+                    {
+                      staticClass: "mr-3",
+                      attrs: {
+                        slot: "activator",
+                        text: "",
+                        icon: "",
+                        color: "grey",
+                        small: ""
+                      },
+                      on: {
+                        click: function($event) {
+                          return _vm.openDialog(item)
+                        }
+                      },
+                      slot: "activator"
+                    },
+                    [
+                      _c("v-icon", { staticClass: "primary--text" }, [
+                        _vm._v("mdi-eye")
+                      ])
+                    ],
+                    1
+                  )
                 ]
               }
             }

@@ -65,7 +65,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   created: function created() {
-    if (JSON.parse(sessionStorage.getItem('admin-user')) != null) {
+    if (sessionStorage.getItem('user') != 0 && JSON.parse(sessionStorage.getItem('user')) != null) {
       this.logout();
     }
   },
@@ -78,18 +78,18 @@ __webpack_require__.r(__webpack_exports__);
       if (this.password.length > 0) {
         var email = this.email;
         var password = this.password;
-        axios.post('/api/login', {
+        axios.post('/api/admin-sribay/admin-login', {
           email: email,
           password: password
         }).then(function (response) {
           sessionStorage.setItem('token', response.data.token);
           sessionStorage.setItem('role', response.data.role);
-          sessionStorage.setItem('admin-user', JSON.stringify(response.data.user));
           sessionStorage.removeItem('user');
+          sessionStorage.setItem('user', JSON.stringify(response.data.user));
           var role = response.data.role;
 
           if (sessionStorage.getItem('token') != null) {
-            _this.$emit('loggedInAdmin');
+            _this.$emit('loggedIn');
 
             if (_this.$route.params.nextUrl != null) {
               _this.$router.push(_this.$route.params.nextUrl);
@@ -111,7 +111,6 @@ __webpack_require__.r(__webpack_exports__);
       axios.post('/api/logout').then(function (response) {
         sessionStorage.removeItem('token');
         sessionStorage.removeItem('role');
-        sessionStorage.removeItem('admin-user');
         sessionStorage.removeItem('user');
 
         _this2.$toast.open({
@@ -120,7 +119,7 @@ __webpack_require__.r(__webpack_exports__);
         });
       })["catch"](function (error) {
         _this2.$toast.open({
-          message: error,
+          message: error.response.data.message,
           type: 'error'
         });
       });

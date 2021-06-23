@@ -42,7 +42,7 @@
 							</div>
 							<div class="layout align-left responsive-menu">
 								<v-btn icon dark @click="toggleMobileSidebar" class="toggle-btn" large>
-									<i class="material-icons">mdi-menu</i>
+									<v-icon>mdi-menu</v-icon>
 								</v-btn>
 							</div>
 							<emb-search></emb-search>

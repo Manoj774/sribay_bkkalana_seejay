@@ -16,7 +16,7 @@ const Account = () => import('../views/UserPanel/Account.vue');
 const OrderHistory = () => import('../views/UserPanel/OrderHistory.vue');
 const Profile = () => import('../views/UserPanel/Profile.vue');
 const Address = () => import('../views/UserPanel/Address.vue');
-const Cards = () => import ('../views/UserPanel/Cards.vue');
+const BankDetails = () => import ('../views/UserPanel/BankDetails.vue');
 const AffiliateDashboard = () => import ('../views/UserPanel/AffiliateProgram');
 const EditProfile = () => import ('../views/UserPanel/EditProfile.vue');
 const EditAddress = () => import ('../views/UserPanel/EditAddress.vue');
@@ -151,7 +151,7 @@ export default {
 					path: '/account/address',name:'Address',component: Address,
 				},
 				{
-					path: '/account/cards',name:'Cards',component: Cards,
+					path: '/account/bank-details',name:'Bank Details',component: BankDetails,
 				},
 				{
 					path: '/account/profile/edit',name:'EditProfile',component: EditProfile

@@ -37,16 +37,20 @@ const Reports = () => import('../views/AdminPanel/Reports/Reports.vue');
 const Users = () => import('../views/AdminPanel/Users/Users.vue');
 const AddUser = () => import('../views/AdminPanel/Users/AddUser.vue');
 
+//Dashboard
+const Dashboard = () => import('../views/AdminPanel/DashBoard/DashBoard.vue');
+
+
 export default {
 	path: '/sriBay-admin/',
 	component: Admin,
-	redirect:'sriBay-admin/reports',
+	redirect:'sriBay-admin/dashboard',
 	meta: {
         auth: true,
         admin:true,
 	},
     beforeEnter: (to, from, next) => {
-        let user = JSON.parse(sessionStorage.getItem('admin-user'));
+        let user = JSON.parse(sessionStorage.getItem('user'));
         if (user === null) {
             next('/login');
         }else{
@@ -59,6 +63,11 @@ export default {
         next();
     },
 	children:[
+        {
+            path: '/sriBay-admin/dashboard',
+            component: Dashboard,
+            name:'DashBoard'
+        },
 		{
 			path: '/sriBay-admin/reports',
 			component: Reports,
@@ -133,7 +142,7 @@ export default {
 					path: '/sriBay-admin/account/profile',name:'AdminProfile',component: AdminProfile,
 				},
 				{
-					path: '/sriBay-admin/profile/:title',name:'AdminEditProfileInfo',component: AdminEditProfileInfo,
+					path: '/sriBay-admin/account/profile/:title',name:'AdminEditProfileInfo',component: AdminEditProfileInfo,
 				},
          ],
 		},

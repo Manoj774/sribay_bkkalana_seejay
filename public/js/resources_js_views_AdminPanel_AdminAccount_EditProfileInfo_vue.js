@@ -46,67 +46,10 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       val: '',
-      radios: [{
-        type: 'Male'
-      }, {
-        type: 'Female'
-      }],
-      radioGroup: 'Male',
       valid: false,
       inputRules: {
         basictextRules: [function (v) {
@@ -118,44 +61,70 @@ __webpack_require__.r(__webpack_exports__);
       }, function (v) {
         return /.+@.+/.test(v) || 'E-mail must be valid';
       }],
-      genders: [{
-        key: "Male"
-      }, {
-        key: "Female"
-      }],
-      date: new Date().toISOString().substr(0, 10),
-      menu: false,
-      modal: false,
-      menu2: false
+      profileData: {
+        first_name: '',
+        last_name: '',
+        address: '',
+        phone_number: '',
+        email: ''
+      }
     };
   },
-  watch: {
-    menu: function menu(val) {
-      var _this = this;
-
-      val && this.$nextTick(function () {
-        return _this.$refs.picker.activePicker = 'YEAR';
-      });
-    }
+  created: function created() {
+    this.getProfileData();
   },
   methods: {
+    getProfileData: function getProfileData() {
+      var _this = this;
+
+      axios.get('/api/user/profile').then(function (response) {
+        _this.profileData = response.data;
+      }, function (response) {
+        var errors = response.body.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
     saveDetails: function saveDetails() {
       var _this2 = this;
 
       this.$refs.form.validate();
 
       if (this.valid == true) {
-        this.$snotify.success('Your account information updated succesfully!', {
-          closeOnClick: false,
-          pauseOnHover: false,
-          timeout: 1000,
-          showProgressBar: false
-        });
-        setTimeout(function () {
-          _this2.$router.push({
-            path: '/sriBay-admin/account/profile'
+        axios.put('/api/users/' + this.profileData.id, this.profileData).then(function (response) {
+          _this2.$snotify.success(response.data.message, {
+            closeOnClick: false,
+            pauseOnHover: false,
+            timeout: 1000,
+            showProgressBar: false
           });
-        }, 50);
+
+          setTimeout(function () {
+            _this2.$router.push({
+              path: '/sriBay-admin/account/profile'
+            });
+          }, 50);
+        }, function (response) {
+          var errors = response.error;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this2.$toast.open({
+            message: html,
+            type: 'error'
+          });
+        });
       }
     },
     save: function save(date) {
@@ -254,379 +223,248 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _vm.$route.params.title == "edit" && _vm.$route.query.type == "info"
-      ? _c("div", { staticClass: "editInfo-wrap emb-card pa-4" }, [
-          _c(
-            "div",
-            [
-              _c("h4", [_vm._v("Edit Profile Information")]),
-              _vm._v(" "),
-              _c(
-                "v-form",
-                {
-                  ref: "form",
-                  staticClass: "mb-2",
-                  model: {
-                    value: _vm.valid,
-                    callback: function($$v) {
-                      _vm.valid = $$v
-                    },
-                    expression: "valid"
+  return _c("div", { staticClass: "editInfo-wrap emb-card pa-4" }, [
+    _c(
+      "div",
+      {},
+      [
+        _c("h4", [_vm._v("Edit Profile Information")]),
+        _vm._v(" "),
+        _c(
+          "v-form",
+          {
+            ref: "form",
+            staticClass: "mb-2",
+            model: {
+              value: _vm.valid,
+              callback: function($$v) {
+                _vm.valid = $$v
+              },
+              expression: "valid"
+            }
+          },
+          [
+            _c(
+              "v-layout",
+              { attrs: { row: "", wrap: "" } },
+              [
+                _c(
+                  "v-flex",
+                  { attrs: { xs12: "", sm12: "", md12: "", lg6: "", xl6: "" } },
+                  [
+                    _c(
+                      "v-layout",
+                      { attrs: { row: "", wrap: "" } },
+                      [
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "py-1": ""
+                            }
+                          },
+                          [
+                            _c("v-text-field", {
+                              attrs: {
+                                label: "First Name",
+                                rules: _vm.inputRules.basictextRules
+                              },
+                              model: {
+                                value: _vm.profileData.first_name,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.profileData, "first_name", $$v)
+                                },
+                                expression: "profileData.first_name"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "py-1": ""
+                            }
+                          },
+                          [
+                            _c("v-text-field", {
+                              attrs: {
+                                label: "Last Name",
+                                rules: _vm.inputRules.basictextRules
+                              },
+                              model: {
+                                value: _vm.profileData.last_name,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.profileData, "last_name", $$v)
+                                },
+                                expression: "profileData.last_name"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "py-1": ""
+                            }
+                          },
+                          [
+                            _c("v-text-field", {
+                              attrs: {
+                                label: "Mobile No",
+                                rules: _vm.inputRules.basictextRules
+                              },
+                              model: {
+                                value: _vm.profileData.phone_number,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.profileData, "phone_number", $$v)
+                                },
+                                expression: "profileData.phone_number"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "py-1": ""
+                            }
+                          },
+                          [
+                            _c("v-text-field", {
+                              attrs: {
+                                label: "Location",
+                                rules: _vm.inputRules.basictextRules
+                              },
+                              model: {
+                                value: _vm.profileData.address,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.profileData, "address", $$v)
+                                },
+                                expression: "profileData.address"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "py-1": ""
+                            }
+                          },
+                          [
+                            _c("v-text-field", {
+                              attrs: { label: "Email", rules: _vm.emailRules },
+                              model: {
+                                value: _vm.profileData.email,
+                                callback: function($$v) {
+                                  _vm.$set(_vm.profileData, "email", $$v)
+                                },
+                                expression: "profileData.email"
+                              }
+                            })
+                          ],
+                          1
+                        ),
+                        _vm._v(" "),
+                        _c(
+                          "v-flex",
+                          {
+                            attrs: {
+                              xs12: "",
+                              sm12: "",
+                              md12: "",
+                              lg12: "",
+                              xl12: "",
+                              "pt-1": "",
+                              "pb-0": ""
+                            }
+                          },
+                          [
+                            _c(
+                              "v-btn",
+                              {
+                                staticClass: "accent mx-0 mb-4",
+                                on: {
+                                  click: function($event) {
+                                    $event.stopPropagation()
+                                    $event.preventDefault()
+                                    return _vm.saveDetails.apply(
+                                      null,
+                                      arguments
+                                    )
+                                  }
+                                }
+                              },
+                              [_vm._v("Save")]
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
+                _c("v-flex", {
+                  attrs: {
+                    xs12: "",
+                    sm12: "",
+                    md6: "",
+                    lg6: "",
+                    xl6: "",
+                    "user-bg": "",
+                    "edit-profile": "",
+                    "hidden-md-and-down": ""
                   }
-                },
-                [
-                  _c(
-                    "v-layout",
-                    { attrs: { row: "", wrap: "" } },
-                    [
-                      _c(
-                        "v-flex",
-                        {
-                          attrs: {
-                            xs12: "",
-                            sm12: "",
-                            md12: "",
-                            lg6: "",
-                            xl6: ""
-                          }
-                        },
-                        [
-                          _c(
-                            "v-layout",
-                            { attrs: { row: "", wrap: "", "px-6": "" } },
-                            [
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "First Name",
-                                      rules: _vm.inputRules.basictextRules
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "Last Name",
-                                      rules: _vm.inputRules.basictextRules
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c(
-                                    "v-radio-group",
-                                    {
-                                      attrs: { mandatory: true },
-                                      model: {
-                                        value: _vm.radioGroup,
-                                        callback: function($$v) {
-                                          _vm.radioGroup = $$v
-                                        },
-                                        expression: "radioGroup"
-                                      }
-                                    },
-                                    _vm._l(_vm.radios, function(gender) {
-                                      return _c(
-                                        "v-radio",
-                                        {
-                                          key: gender.type,
-                                          attrs: { value: gender.type }
-                                        },
-                                        [
-                                          _c(
-                                            "label",
-                                            {
-                                              attrs: {
-                                                slot: "label",
-                                                rules:
-                                                  _vm.inputRules.basictextRules
-                                              },
-                                              slot: "label"
-                                            },
-                                            [
-                                              _vm._v(
-                                                "\n                              " +
-                                                  _vm._s(gender.type) +
-                                                  "\n                           "
-                                              )
-                                            ]
-                                          )
-                                        ]
-                                      )
-                                    }),
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c(
-                                    "v-menu",
-                                    {
-                                      ref: "menu",
-                                      attrs: {
-                                        "close-on-content-click": false,
-                                        "nudge-right": 40,
-                                        transition: "scale-transition",
-                                        "offset-y": "",
-                                        "min-width": "290px"
-                                      },
-                                      scopedSlots: _vm._u(
-                                        [
-                                          {
-                                            key: "activator",
-                                            fn: function(ref) {
-                                              var on = ref.on
-                                              return [
-                                                _c(
-                                                  "v-text-field",
-                                                  _vm._g(
-                                                    {
-                                                      attrs: {
-                                                        label: "Birthday date",
-                                                        "append-icon": "event",
-                                                        readonly: "",
-                                                        rules:
-                                                          _vm.inputRules
-                                                            .basictextRules
-                                                      },
-                                                      model: {
-                                                        value: _vm.date,
-                                                        callback: function(
-                                                          $$v
-                                                        ) {
-                                                          _vm.date = $$v
-                                                        },
-                                                        expression: "date"
-                                                      }
-                                                    },
-                                                    on
-                                                  )
-                                                )
-                                              ]
-                                            }
-                                          }
-                                        ],
-                                        null,
-                                        false,
-                                        598612342
-                                      ),
-                                      model: {
-                                        value: _vm.menu,
-                                        callback: function($$v) {
-                                          _vm.menu = $$v
-                                        },
-                                        expression: "menu"
-                                      }
-                                    },
-                                    [
-                                      _vm._v(" "),
-                                      _c("v-date-picker", {
-                                        ref: "picker",
-                                        on: { change: _vm.save },
-                                        model: {
-                                          value: _vm.date,
-                                          callback: function($$v) {
-                                            _vm.date = $$v
-                                          },
-                                          expression: "date"
-                                        }
-                                      })
-                                    ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "Mobile No",
-                                      rules: _vm.inputRules.basictextRules
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "Location",
-                                      rules: _vm.inputRules.basictextRules
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "py-1": ""
-                                  }
-                                },
-                                [
-                                  _c("v-text-field", {
-                                    attrs: {
-                                      label: "Email",
-                                      rules: _vm.emailRules
-                                    }
-                                  })
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-flex",
-                                {
-                                  attrs: {
-                                    xs12: "",
-                                    sm12: "",
-                                    md12: "",
-                                    lg12: "",
-                                    xl12: "",
-                                    "pt-1": "",
-                                    "pb-0": ""
-                                  }
-                                },
-                                [
-                                  _c(
-                                    "v-btn",
-                                    {
-                                      staticClass: "accent mx-0 mb-4",
-                                      on: {
-                                        click: function($event) {
-                                          $event.stopPropagation()
-                                          $event.preventDefault()
-                                          return _vm.saveDetails.apply(
-                                            null,
-                                            arguments
-                                          )
-                                        }
-                                      }
-                                    },
-                                    [_vm._v("Save")]
-                                  )
-                                ],
-                                1
-                              )
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      ),
-                      _vm._v(" "),
-                      _c("v-flex", {
-                        attrs: {
-                          xs12: "",
-                          sm12: "",
-                          md6: "",
-                          lg6: "",
-                          xl6: "",
-                          "user-bg": "",
-                          "edit-profile": "",
-                          "hidden-md-and-down": ""
-                        }
-                      })
-                    ],
-                    1
-                  )
-                ],
-                1
-              )
-            ],
-            1
-          )
-        ])
-      : _vm._e()
+                })
+              ],
+              1
+            )
+          ],
+          1
+        )
+      ],
+      1
+    )
   ])
 }
 var staticRenderFns = []

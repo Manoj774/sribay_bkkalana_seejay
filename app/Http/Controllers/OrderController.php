@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Export\OrderExport;
 use App\Models\MemberEarnHistory;
 use App\Models\OIAffiliateCommission;
 use App\Models\Order;
@@ -14,6 +15,7 @@ use App\Models\UserHasMemberShip;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
+use Maatwebsite\Excel\Facades\Excel;
 
 class OrderController extends Controller
 {
@@ -488,5 +490,6 @@ class OrderController extends Controller
         }
         return response()->json(['message' => "Order Status Update Successful"], 200);
     }
+
 
 }
