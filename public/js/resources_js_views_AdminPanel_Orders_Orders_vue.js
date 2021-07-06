@@ -377,7 +377,6 @@ __webpack_require__.r(__webpack_exports__);
 
       axios.get('/api/orders').then(function (response) {
         _this.invoiceData = response.data.orders;
-        console.log(_this.invoiceData);
       }, function (err) {
         var errors = err.response.data.message;
         var html = '';

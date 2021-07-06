@@ -43,6 +43,7 @@ return [
             'password' => env('MAIL_PASSWORD'),
             'timeout' => null,
             'auth_mode' => null,
+            'from' => ['address' => 'no-reply@sribay.corestak.com', 'name' => 'SriBay'],
         ],
 
         'ses' => [

@@ -25,7 +25,7 @@
 							required
 						>
 						</v-text-field>
-						<a heref="javascript:void(0)" class="send-icon"><i class="material-icons white--text">send</i></a>
+						<a heref="javascript:void(0)" class="send-icon"><v-icon>mdi-send</v-icon></a>
 					</div>
 				</v-flex>
 			</v-layout>

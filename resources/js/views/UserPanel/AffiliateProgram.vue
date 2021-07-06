@@ -26,6 +26,11 @@
                     Income Report
                 </v-tab>
                 <v-tab
+                    :href="'#tab-withdrawal'"
+                >
+                    Withdrawal
+                </v-tab>
+                <v-tab
                     :href="'#tab-referral'"
                 >
                     Referral
@@ -46,7 +51,8 @@
                                         </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3>{{currentMonthCommission.toFixed(2)}}</h3></div>
+                                            <div class="text-center"><h3>{{currentMonthCommission.toFixed(2)}}</h3>
+                                            </div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -70,19 +76,6 @@
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
-
-<!--                                <v-col cols="12" sm="12" md="12" lg="12">-->
-<!--                                    <v-layout class="emb-card mb-6">-->
-<!--                                        <app-card-->
-<!--                                            customClasses="pa-6"-->
-<!--                                            colClasses="xl12 lg12 md12 xs12 sm12"-->
-<!--                                            heading="Click History"-->
-<!--                                        >-->
-<!--                                            <buy-or-sell></buy-or-sell>-->
-<!--                                        </app-card>-->
-<!--                                    </v-layout>-->
-<!--                                </v-col>-->
-
                             </v-row>
                         </v-card-text>
                     </v-card>
@@ -100,7 +93,8 @@
                                         <v-card-title style="font-size: 13px;">Total Unique Click</v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalUniqueClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalUniqueClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -110,18 +104,21 @@
                                         <v-card-title style="font-size: 13px;">Total Click</v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
                                 <v-col cols="12" sm="12" md="4" lg="4">
-                                    <v-card class="text-xs-center" height="100%" dark tile flat color="deep-purple darken-2"
+                                    <v-card class="text-xs-center" height="100%" dark tile flat
+                                            color="deep-purple darken-2"
                                             hover>
                                         <v-card-title style="font-size: 13px;">Total Desktop Click
                                         </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalDesktopClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalDesktopClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -132,18 +129,21 @@
                                         </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalMobileClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalMobileClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
                                 <v-col cols="12" sm="12" md="4" lg="4">
-                                    <v-card class="text-xs-center" height="100%" dark tile flat color="light-blue darken-3"
+                                    <v-card class="text-xs-center" height="100%" dark tile flat
+                                            color="light-blue darken-3"
                                             hover>
                                         <v-card-title style="font-size: 13px;">Total Tablet Click
                                         </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalTabletClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalTabletClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -154,7 +154,8 @@
                                         </v-card-title>
                                         <v-divider></v-divider>
                                         <v-card-text>
-                                            <div class="text-center"><h3 style="color: #fff;">{{generateLinkTotalOtherClick}}</h3></div>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{generateLinkTotalOtherClick}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -169,12 +170,65 @@
                         <v-card-text>
                             <v-row>
                                 <v-col cols="12" sm="12" md="12" lg="12">
+                                    <div class="emb-card pa-4 search-box-wrap">
+                                        <div class="d-flex justify-end align-center">
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="12" lg="12">
                                     <v-data-table
                                         :headers="headers"
                                         :items="earnData"
                                         :items-per-page="5"
                                         class="elevation-1"
                                     ></v-data-table>
+                                </v-col>
+                            </v-row>
+                        </v-card-text>
+                    </v-card>
+
+                </v-tab-item>
+                <v-tab-item
+                    :value="'tab-withdrawal'"
+                >
+                    <v-card>
+                        <v-card-text>
+                            <v-row>
+                                <v-col cols="12" sm="12" md="12" lg="12">
+                                    <div class="emb-card pa-4 search-box-wrap">
+                                        <div class="d-flex justify-end align-center">
+                                            <div class="action-btn-wrap" id="sendWithdrawalButton">
+                                                <v-btn color="primary" :disabled="!withdrawalAvailable" @click="sendWithdrawalRequest">Withdrawal Request</v-btn>
+                                            </div>
+
+                                        </div>
+                                    </div>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="12" lg="12">
+                                    <v-data-table
+                                        :headers="withdrawalTableHeaders"
+                                        :items="withdrawalData"
+                                        :items-per-page="5"
+                                        class="elevation-1"
+                                    >
+                                        <template v-slot:item.request_status="{ item }">
+                                            <v-chip v-if="!item.request_status"
+                                                    class="ma-1"
+                                                    color="red"
+                                                    text-color="white"
+                                            >
+                                                Pending
+                                            </v-chip>
+                                            <v-chip v-else
+                                                    class="ma-1"
+                                                    color="green"
+                                                    text-color="white"
+                                            >
+                                                Success
+                                            </v-chip>
+                                        </template>
+
+                                    </v-data-table>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -190,13 +244,13 @@
                                     <v-card color="grey lighten-3">
                                         <v-card-text>
                                             <v-text-field
-                                            v-model="generateLink"
-                                            :append-icon="'mdi-content-copy'"
-                                            label="Referral Link"
-                                            type="text"
-                                            ref="linkToCopy"
-                                            @click:append="toggleCopy"
-                                        ></v-text-field>
+                                                v-model="generateLink"
+                                                :append-icon="'mdi-content-copy'"
+                                                label="Referral Link"
+                                                type="text"
+                                                ref="linkToCopy"
+                                                @click:append="toggleCopy"
+                                            ></v-text-field>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -206,7 +260,9 @@
                                         :items="referralTableData"
                                         :items-per-page="5"
                                         class="elevation-1"
-                                    ></v-data-table>
+                                    >
+
+                                    </v-data-table>
                                 </v-col>
                             </v-row>
                         </v-card-text>
@@ -233,6 +289,7 @@
                 lastMonthCommission: 0.0,
                 accountBalance: 0.0,
                 membership_name: null,
+                userHasMembershipID: 0,
                 generateLinkTotalUniqueClick: 0.0,
                 generateLinkTotalClick: 0.0,
                 generateLinkTotalDesktopClick: 0.0,
@@ -246,24 +303,31 @@
                         sortable: false,
                         value: 'count',
                     },
-                    { text: 'Description', value: 'description' },
-                    { text: 'Amount', value: 'earn_amount' },
-                    { text: 'Date', value: 'created_at' },
+                    {text: 'Description', value: 'description'},
+                    {text: 'Amount', value: 'earn_amount'},
+                    {text: 'Date', value: 'created_at'},
                 ],
                 earnData: [],
-                referralTableHeaders: [
+                withdrawalAvailable: false,
+                withdrawalTableHeaders: [
                     {
                         text: '#',
                         align: 'start',
                         sortable: false,
                         value: 'count',
                     },
-                    { text: 'Full Name', value: 'full_name' },
-                    { text: 'Email', value: 'email' },
-                    { text: 'Membership', value: 'membership' },
-                    { text: 'Register Date', value: 'created_at' },
-                    // { text: 'Total Commission', value: 'total_commission' },
-                    // { text: 'Last Commission Date', value: 'last_commission_date' },
+                    {text: 'Request Number', value: 'request_number'},
+                    {text: 'Request Date', value: 'created_at'},
+                    {text: 'Request Amount', value: 'request_amount'},
+                    {text: 'Request Status', value: 'request_status'},
+                ],
+                withdrawalData: [],
+                referralTableHeaders: [
+                    {text: '#',align: 'start',sortable: false,value: 'count'},
+                    {text: 'Full Name', value: 'full_name'},
+                    {text: 'Email', value: 'email'},
+                    {text: 'Membership', value: 'membership'},
+                    {text: 'Register Date', value: 'created_at'},
                 ],
                 referralTableData: [],
             }
@@ -271,6 +335,11 @@
         created() {
             this.getAffiliateData();
             this.toggleGenerate();
+
+        },
+        mounted() {
+            this.checkAvailableWithdrawal();
+            this.getMemberWithdrawalRequestHistory();
         },
         methods: {
 
@@ -280,6 +349,7 @@
                     this.currentMonthCommission = response.data.currentMonthCommission;
                     this.lastMonthCommission = response.data.lastMonthCommission;
                     this.membership_name = response.data.membership_name;
+                    this.userHasMembershipID = response.data.userHasMembershipID;
                     this.accountBalance = response.data.accountBalance;
                     this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
                     this.generateLinkTotalClick = response.data.generateLinkTotalClick;
@@ -288,7 +358,7 @@
                     this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
 
                     let count = 1;
-                    for (const key in response.data.referral){
+                    for (const key in response.data.referral) {
                         this.referralTableData.push({
                             count: count++,
                             full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
@@ -301,7 +371,7 @@
                     }
 
                     let count1 = 1;
-                    for (const key in response.data.earnHistory){
+                    for (const key in response.data.earnHistory) {
                         this.earnData.push({
                             count: count1++,
                             description: response.data.earnHistory[key].description,
@@ -323,6 +393,7 @@
                     });
                 });
             },
+
             toggleCopy() {
                 let textToCopy = this.$refs.linkToCopy.$el.querySelector('input')
                 textToCopy.select()
@@ -330,7 +401,7 @@
             },
 
             toggleGenerate() {
-                axios.get( '/api/users/referral-link').then(response => {
+                axios.get('/api/users/referral-link').then(response => {
                     this.generateLink = decodeURIComponent(response.data.referralLink);
                 }, error => {
                     const errors = error.response.data.message;
@@ -344,13 +415,92 @@
                     });
                 });
             },
+
             clickToggleDrawer() {
                 this.drawer = !this.drawer
             },
+
             clickDeleteTask(task) {
                 const i = this.tasks.indexOf(task)
                 this.tasks.splice(i, 1)
             },
+
+            getMemberWithdrawalRequestHistory(){
+                axios.get('/api/withdrawal/history').then(response => {
+                    let count = 1;
+                    for (const key in response.data.withdrawalHistory) {
+                        this.withdrawalData.push({
+                            count: count++,
+                            request_number: response.data.withdrawalHistory[key].request_number,
+                            request_amount: response.data.withdrawalHistory[key].request_amount.toFixed(2),
+                            created_at: response.data.withdrawalHistory[key].created_at,
+                            request_status: response.data.withdrawalHistory[key].request_status,
+                        });
+                    }
+                }, error => {
+                    const errors = error.response.data.message;
+                    let html = '';
+                    for (const i in errors) {
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
+            },
+
+            checkAvailableWithdrawal(){
+                axios.get('/api/withdrawal/check-available').then(response => {
+
+                    if(response.data.check){
+                        this.withdrawalAvailable = true;
+                    }
+
+                }, error => {
+                    const errors = error.response.data.message;
+                    let html = '';
+                    for (const i in errors) {
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
+            },
+            sendWithdrawalRequest(){
+
+                const withdrawalData = {
+                    'userMembership':this.userHasMembershipID,
+                    'withdrawalAmount':this.accountBalance
+                }
+
+                axios.post('/api/withdrawal/create',withdrawalData).then(response => {
+
+                    this.$snotify.success(response.data.message,{
+                        closeOnClick: false,
+                        pauseOnHover: false,
+                        timeout: 1000,
+                        showProgressBar:false,
+                    });
+                    setTimeout(() => {
+                       window.location.href="";
+                    }, 100);
+
+                }, error => {
+                    const errors = error.response.data.message;
+                    let html = '';
+                    for (const i in errors) {
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
+            }
+
         },
 
     }

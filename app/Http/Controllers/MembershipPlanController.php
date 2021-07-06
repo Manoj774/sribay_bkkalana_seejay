@@ -35,6 +35,7 @@ class MembershipPlanController extends Controller
         $request->validate([
             'name' => 'required|unique:categories|max:250',
             'price' => 'required|numeric',
+            'value_for_point' => 'required|numeric',
             'no_of_link_click_per_day' => 'required|numeric',
             'task_rewards' => 'required|numeric',
             'total_reward_per_day' => 'required|numeric',
@@ -46,6 +47,7 @@ class MembershipPlanController extends Controller
         $membershipPlan = new MembershipPlan([
             'name' => $request->name,
             'price' => $request->price,
+            'value_for_point' => $request->valueForPoint,
             'no_of_link_click_per_day' => $request->no_of_link_click_per_day,
             'task_rewards' => $request->task_rewards,
             'total_reward_per_day' => $request->total_reward_per_day,
@@ -96,6 +98,7 @@ class MembershipPlanController extends Controller
         $request->validate([
             'name' => 'required|unique:categories|max:250',
             'price' => 'required|numeric',
+            'value_for_point' => 'required|numeric',
             'no_of_link_click_per_day' => 'required|numeric',
             'task_rewards' => 'required|numeric',
             'total_reward_per_day' => 'required|numeric',
@@ -110,6 +113,7 @@ class MembershipPlanController extends Controller
         }
         $membershipPlan->name = $request->name;
         $membershipPlan->price = $request->price;
+        $membershipPlan->value_for_point = $request->valueForPoint;
         $membershipPlan->no_of_link_click_per_day = $request->no_of_link_click_per_day;
         $membershipPlan->task_rewards = $request->task_rewards;
         $membershipPlan->total_reward_per_day = $request->total_reward_per_day;

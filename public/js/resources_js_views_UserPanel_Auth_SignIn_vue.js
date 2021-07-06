@@ -51,6 +51,7 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'login',
   data: function data() {
@@ -329,6 +330,23 @@ var render = function() {
                                       "\n                                        Sign In\n                                    "
                                     )
                                   ]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "p",
+                                  [
+                                    _c(
+                                      "router-link",
+                                      {
+                                        staticClass: "accent--text",
+                                        attrs: {
+                                          to: "/session/forgot-password"
+                                        }
+                                      },
+                                      [_vm._v("Forgot password")]
+                                    )
+                                  ],
+                                  1
                                 ),
                                 _vm._v(" "),
                                 _c(

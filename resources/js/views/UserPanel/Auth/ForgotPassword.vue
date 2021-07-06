@@ -11,10 +11,8 @@
 						<v-flex sm10 md6 lg6 xl6 class="emb-card form-margin pa-4 d-inline-block white">
 							<h3 class="accent--text">Forgot Password ?</h3>
 							<h4>No Problem</h4>
-							<v-form ref="form" v-model="valid">
-								<v-text-field type="email" :rules="emailRules" placeholder="Enter Your Email*">
-								</v-text-field>
-								<v-text-field class="mb-4" type="email" :rules="emailRules" placeholder="Retype Your Email*">
+							<v-form ref="form">
+								<v-text-field type="email"  v-model="email" :rules="emailRules" placeholder="Enter Your Email*" required>
 								</v-text-field>
 								<v-btn class="accent mb-4 ma-0" large @click.stop.prevent="saveDetails">
 									Submit
@@ -36,6 +34,7 @@
 		data() {
 			return {
 				valid: false,
+                email:null,
 				emailRules: [
 					v => !!v || 'E-mail is required',
 					v => /.+@.+/.test(v) || 'E-mail must be valid'
@@ -44,10 +43,26 @@
 		},
 		methods: {
 			saveDetails() {
-				this.$refs.form.validate();
-				if (this.valid == true) {
-					this.$router.go('/session/forgot-password');
-				}
+
+			    if (this.email == null){
+                    this.$toast.open({
+                        message: "The E-mail is required",
+                        type: 'error',
+                    });
+                    return;
+                }
+
+                axios.post("/api/auth/reset-password", {email: this.email}).then(result => {
+                    this.$toast.open({
+                        message: result.data.message,
+                        type: 'success',
+                    });
+                }).catch(error => {
+                    this.$toast.open({
+                        message: error.response.data.message,
+                        type: 'error',
+                    });
+                });
 			}
 		}
 	}

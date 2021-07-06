@@ -38,35 +38,27 @@
                 :data="featureProductData"
 			>
 			</emb-feature-product>
-			<emb-day-deal
-				:data="dayDealData"
+			<emb-day-deal v-if="countDownProductData != null"
+				:data="countDownProductData"
 			>
 			</emb-day-deal>
 			<emb-detail-offer></emb-detail-offer>
-<!--			<emb-feature-product-->
-<!--				secTitle="New Arrivals"-->
-<!--				:data="latestArrivalData"-->
+
+<!--			<embTestimonial-->
+<!--				secTitle="Customer Reviews"-->
+<!--				:data="TestimonialData"-->
 <!--			>-->
-<!--			</emb-feature-product>-->
-			<embTestimonial
-				secTitle="Customer Reviews"
-				:data="TestimonialData"
-			>
-			</embTestimonial>
-<!--			<emb-blog-->
-<!--				secTitle="Latest From Blogs"-->
-<!--				:data="blogData"-->
-<!--			>-->
-<!--			</emb-blog>-->
+<!--			</embTestimonial>-->
+
 			<emb-subscribe
 				heading="Subscribe our Newsletter"
 				description="Stay up to date with our latest new and products">
 			</emb-subscribe>
-			<emb-shop-card
-				secTitle="Shop By Brands"
-				:data="shopCard"
-			>
-			</emb-shop-card>
+<!--			<emb-shop-card-->
+<!--				secTitle="Shop By Brands"-->
+<!--				:data="shopCard"-->
+<!--			>-->
+<!--			</emb-shop-card>-->
 		</div>
 	</div>
 </template>
@@ -116,7 +108,7 @@ export default {
       homeBannerData,
       featuresData,
       featureProductData:[],
-      dayDealData,
+        countDownProductData:null,
       latestArrivalData,
       TestimonialData,
       shopCard,
@@ -124,7 +116,7 @@ export default {
     };
   },
   mounted() {
-    this.getBlogData();
+    this.getCountDownProduct();
       this.getFeaturesProduct();
   },
   methods: {
@@ -132,9 +124,8 @@ export default {
           axios.get('/api/product/feature-products').then(response => {
               const responseData = response.data.products;
               this.featureProductData = responseData;
-              console.log(this.products);
-          }, response => {
-              const errors = response.data.message;
+          }, err => {
+              const errors = err.response.data.message;
               var html = '';
               for (const i in errors){
                   html += errors[i];
@@ -145,15 +136,22 @@ export default {
               });
           });
       },
-    getBlogData() {
-      // api
-      //   .get("blogs.json")
-      //   .then(response => {
-      //     this.blogData = response.data;
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
+    getCountDownProduct() {
+        axios.get('/api/product/count-down-product').then(response => {
+            const responseData = response.data.product;
+            this.countDownProductData = responseData;
+
+        }, err => {
+            const errors = err.response.data.message;
+            var html = '';
+            for (const i in errors){
+                html += errors[i];
+            }
+            this.$toast.open({
+                message: html,
+                type: 'error',
+            });
+        });
     }
   }
 };

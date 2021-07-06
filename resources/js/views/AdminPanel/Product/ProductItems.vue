@@ -1,20 +1,20 @@
 <template>
    <div class="shop-content-wrap">
-		<template v-if="gridListView==true && listData != null">
-			<v-row>
-				<v-col
-					v-for="(category,index) in listData"
-					cols="12"
-					sm="6"
-					md="4"
-					lg="3"
-					:key="index"
-				>
-					<product-item :data="category" @deleteProduct="itemDeleted"></product-item>
-				</v-col>
-			</v-row>
-		</template>
-		<template v-else>
+<!--		<template v-if="gridListView==true && listData != null">-->
+<!--			<v-row>-->
+<!--				<v-col-->
+<!--					v-for="(category,index) in listData"-->
+<!--					cols="12"-->
+<!--					sm="6"-->
+<!--					md="4"-->
+<!--					lg="3"-->
+<!--					:key="index"-->
+<!--				>-->
+<!--					<product-item :data="category" @deleteProduct="itemDeleted"></product-item>-->
+<!--				</v-col>-->
+<!--			</v-row>-->
+<!--		</template>-->
+		<template >
 			<product-items-list-view :data="listData" @deleteProduct="itemDeleted"></product-items-list-view>
 		</template>
 
@@ -90,7 +90,15 @@ export default {
                     );
                 }
             }).catch(error => {
-                console.log(error);
+                const errors = error.response.data.message;
+                var html = '';
+                for (const i in errors){
+                    html += errors[i];
+                }
+                this.$toast.open({
+                    message: html,
+                    type: 'error',
+                });
             });
         }else{
             axios.get('/api/product').then(response => {

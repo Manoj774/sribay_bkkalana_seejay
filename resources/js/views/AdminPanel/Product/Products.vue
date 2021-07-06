@@ -1,34 +1,39 @@
 <template>
 	<div>
-		<div class="emb-card pa-4 search-box-wrap">
-			<div class="d-flex justify-start align-center">
-				<div class="dash-title-wrap">
-					<h5 class="dash-title mb-0">Search</h5>
-				</div>
-				<div class="search-input d-flex justify-space-between align-center">
-					<div class="input-wrap">
-							<v-text-field label="Search Projects" v-model="searchText">
-								</v-text-field>
-					</div>
-					<div class="action-btn-wrap">
-						<v-btn color="primary" class="mr-3" @click="productSearch(searchText)">Search</v-btn>
-						<v-btn color="primary"  to="/sriBay-admin/product-add">
-							Add Product
-							<v-icon>mdi-plus-thick</v-icon>
-						</v-btn>
-					</div>
-				</div>
-			</div>
-		</div>
-		<v-layout row wrap class="pt-12 ma-0">
-			<v-flex xs12 sm8 md9 py-0>
-				<h5 class="mb-0 pt-2">Product grid</h5>
-			</v-flex>
-			<v-flex xs12 sm4 md3 py-0 text-right>
-				<v-icon class="pa-2" @click="switchToGridView(true)">mdi-apps</v-icon>
-				<v-icon class="pa-2" @click="switchToListView(false)">mdi-format-list-bulleted </v-icon>
-			</v-flex>
-		</v-layout>
+        <v-card>
+            <v-card-text>
+                <v-row>
+                    <v-col cols="12" sm="12" lg="6" md="6">
+                        <v-text-field label="Search Projects" v-model="searchText">
+                        </v-text-field>
+                    </v-col>
+                    <v-col cols="12" sm="12" lg="1" md="1" class="mt-4">
+                        <v-btn color="primary" class="mr-3" @click="productSearch(searchText)">Search</v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="12" lg="1" md="1" class="mt-4">
+                        <v-btn color="primary"  to="/sriBay-admin/product-add">
+                            Add Product
+                            <v-icon>mdi-plus-thick</v-icon>
+                        </v-btn>
+                    </v-col>
+                    <v-col cols="12" sm="12" lg="2" md="2" class="mt-4">
+                        <v-btn color="error--text" class="ml-15" @click="removeCountdownProduct">
+                            Remove Countdown Product
+                            <v-icon class="error--text">mdi-delete</v-icon>
+                        </v-btn>
+                    </v-col>
+                </v-row>
+            </v-card-text>
+        </v-card>
+<!--		<v-layout row wrap class="pt-12 ma-0">-->
+<!--			<v-flex xs12 sm8 md9 py-0>-->
+<!--				<h5 class="mb-0 pt-2">Product grid</h5>-->
+<!--			</v-flex>-->
+<!--			<v-flex xs12 sm4 md3 py-0 text-right>-->
+<!--				<v-icon class="pa-2" @click="switchToGridView(true)">mdi-apps</v-icon>-->
+<!--				<v-icon class="pa-2" @click="switchToListView(false)">mdi-format-list-bulleted </v-icon>-->
+<!--			</v-flex>-->
+<!--		</v-layout>-->
 		<div class="d-md-inline-flex mb-5">
 <!--			<v-select class="mr-md-5" :items="typeItems" label="Type"></v-select>-->
 <!--			<v-select class="mr-md-5" :items="recentItems" label="Recent"></v-select>-->
@@ -64,7 +69,28 @@ export default {
     },
     productSearch(){
         this.$refs.products.getProductsData(this.searchText);
+    },
+    removeCountdownProduct(){
+        axios.delete('/api/product/remove-countdown-product').then(response => {
+            this.$snotify.success(response.data.message, {
+                closeOnClick: false,
+                pauseOnHover: false,
+                timeout: 1000,
+                showProgressBar: false,
+            });
+        }, err => {
+            const errors = err.response.data.message;
+            let html = '';
+            for (const i in errors) {
+                html += errors[i];
+            }
+            this.$toast.open({
+                message: html,
+                type: 'error',
+            });
+        });
     }
+
   }
 };
 </script>

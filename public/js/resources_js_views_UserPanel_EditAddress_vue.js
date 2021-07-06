@@ -69,6 +69,11 @@ __webpack_require__.r(__webpack_exports__);
           return !!v || 'E-mail is required';
         }, function (v) {
           return /.+@.+/.test(v) || 'E-mail must be valid';
+        }],
+        phoneNumber: [function (v) {
+          return !!v || 'Phone Number is required';
+        }, function (v) {
+          return v.length <= 10 || 'Name must be less than 10 characters';
         }]
       },
       profileData: {
@@ -573,8 +578,9 @@ var render = function() {
                                       attrs: {
                                         type: "tel",
                                         max: "10",
+                                        counter: 10,
                                         label: "Phone Number",
-                                        rules: _vm.inputRules.basictextRules
+                                        rules: _vm.inputRules.phoneNumber
                                       },
                                       model: {
                                         value: _vm.profileData.phone_number,

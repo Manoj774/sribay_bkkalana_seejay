@@ -129,7 +129,13 @@ export const menus = [
 ]
 
 export const adminPanelMenus = [
-
+    {
+        path: '/sribay-admin/dashboard',
+        name:"Dashboard",
+        icon: 'mdi-poll',
+        children:null,
+        active: true
+    },
     {
       path: '/sribay-admin/products',
       name:"message.products",
@@ -160,6 +166,14 @@ export const adminPanelMenus = [
 
     },
     {
+        path: '/sribay-admin/withdrawal-request',
+        name:"Withdrawal Request",
+        icon: 'mdi-account-star',
+        active: false,
+        children: null
+
+    },
+    {
         path: '/sribay-admin/customers',
         name:"Customers",
         icon: 'mdi-account-group',
@@ -174,13 +188,6 @@ export const adminPanelMenus = [
         active: false,
         children: null
 
-    },
-    {
-        path: '/sribay-admin/reports',
-        name:"message.reports",
-        icon: 'mdi-poll',
-        children:null,
-        active: true
     },
     {
         path: '/sribay-admin/users',

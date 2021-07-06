@@ -277,7 +277,7 @@ __webpack_require__.r(__webpack_exports__);
   props: ['data'],
   data: function data() {
     return {
-      selectedPreviewImage: this.data.productGallery[0]
+      selectedPreviewImage: this.data.productGallery[0].image
     };
   },
   methods: {
@@ -929,14 +929,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
 // layout components
 
 
@@ -978,7 +970,7 @@ __webpack_require__.r(__webpack_exports__);
       homeBannerData: _assets_data_homeBannerData__WEBPACK_IMPORTED_MODULE_11__.default,
       featuresData: _assets_data_featuresData__WEBPACK_IMPORTED_MODULE_12__.default,
       featureProductData: [],
-      dayDealData: _assets_data_dayDealData__WEBPACK_IMPORTED_MODULE_13__.default,
+      countDownProductData: null,
       latestArrivalData: _assets_data_latestArrivalData__WEBPACK_IMPORTED_MODULE_14__.default,
       TestimonialData: _assets_data_TestimonialData__WEBPACK_IMPORTED_MODULE_15__.default,
       shopCard: _assets_data_shopCard__WEBPACK_IMPORTED_MODULE_16__.default,
@@ -986,7 +978,7 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   mounted: function mounted() {
-    this.getBlogData();
+    this.getCountDownProduct();
     this.getFeaturesProduct();
   },
   methods: {
@@ -996,9 +988,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/api/product/feature-products').then(function (response) {
         var responseData = response.data.products;
         _this.featureProductData = responseData;
-        console.log(_this.products);
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (err) {
+        var errors = err.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -1011,14 +1002,25 @@ __webpack_require__.r(__webpack_exports__);
         });
       });
     },
-    getBlogData: function getBlogData() {// api
-      //   .get("blogs.json")
-      //   .then(response => {
-      //     this.blogData = response.data;
-      //   })
-      //   .catch(error => {
-      //     console.log(error);
-      //   });
+    getCountDownProduct: function getCountDownProduct() {
+      var _this2 = this;
+
+      axios.get('/api/product/count-down-product').then(function (response) {
+        var responseData = response.data.product;
+        _this2.countDownProductData = responseData;
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this2.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -2535,18 +2537,18 @@ var render = function() {
                             { staticClass: "font-weight-regular mb-6" },
                             [
                               _vm._v(
-                                "\n\t\t\t\t\t\t\t" +
-                                  _vm._s(_vm.data.sectitle) +
-                                  "\n\t\t\t\t\t\t"
+                                "\n\t\t\t\t\t\t\t\t" +
+                                  _vm._s(_vm.data.title) +
+                                  "\n\t\t\t\t\t\t\t"
                               )
                             ]
                           ),
                           _vm._v(" "),
                           _c("h5", { staticClass: "font-weight-regular" }, [
                             _vm._v(
-                              "\n\t\t\t\t\t\t\t" +
-                                _vm._s(_vm.data.subtitle) +
-                                "\n\t\t\t\t\t\t"
+                              "\n\t\t\t\t\t\t\t\t" +
+                                _vm._s(_vm.data.sub_title) +
+                                "\n\t\t\t\t\t\t\t"
                             )
                           ]),
                           _vm._v(" "),
@@ -2561,7 +2563,7 @@ var render = function() {
                                   _c("emb-currency-sign", {
                                     staticClass: "font-color"
                                   }),
-                                  _vm._v("42.46")
+                                  _vm._v(_vm._s(_vm.data.sell_price.toFixed(2)))
                                 ],
                                 1
                               )
@@ -2577,19 +2579,20 @@ var render = function() {
                             },
                             [
                               _vm._v(
-                                "\n\t\t\t\t\t\t\t" +
-                                  _vm._s(_vm.data.metaainfo) +
-                                  " "
+                                "\n                                Now only "
                               ),
                               _c("emb-currency-sign", {
                                 staticClass: "accent--text"
                               }),
-                              _vm._v("36.00\n\t\t\t\t\t\t")
+                              _vm._v(
+                                _vm._s(_vm.data.deal_price.toFixed(2)) +
+                                  "\n\t\t\t\t\t\t\t"
+                              )
                             ],
                             1
                           ),
                           _vm._v(" "),
-                          _c("p", [_vm._v(_vm._s(_vm.data.paragraph))]),
+                          _c("p", [_vm._v(_vm._s(_vm.data.description))]),
                           _vm._v(" "),
                           _c(
                             "div",
@@ -2598,10 +2601,10 @@ var render = function() {
                               _c("emb-timer", {
                                 staticClass: "mb-4",
                                 attrs: {
-                                  starttime: "Dec 1, 2018 15:37:25",
-                                  endtime: "Dec 25, 2025 16:37:25",
+                                  starttime: _vm.data.date_from,
+                                  endtime: _vm.data.date_to,
                                   trans:
-                                    '{  \n\t\t\t\t\t\t\t\t\t"day":"Day",\n\t\t\t\t\t\t\t\t\t"hours":"Hours",\n\t\t\t\t\t\t\t\t\t"minutes":"Minutes",\n\t\t\t\t\t\t\t\t\t"seconds":"Seconds",\n\t\t\t\t\t\t\t\t\t"expired":"Event has been expired.",\n\t\t\t\t\t\t\t\t\t"running":"Till the end of event.",\n\t\t\t\t\t\t\t\t\t"upcoming":"Till start of event.",\n\t\t\t\t\t\t\t\t\t"status": {\n\t\t\t\t\t\t\t\t\t\t"expired":"Expired",\n\t\t\t\t\t\t\t\t\t\t"running":"Running",\n\t\t\t\t\t\t\t\t\t\t"upcoming":"Future"\n\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t}'
+                                    '{\n\t\t\t\t\t\t\t\t\t\t"day":"Day",\n\t\t\t\t\t\t\t\t\t\t"hours":"Hours",\n\t\t\t\t\t\t\t\t\t\t"minutes":"Minutes",\n\t\t\t\t\t\t\t\t\t\t"seconds":"Seconds",\n\t\t\t\t\t\t\t\t\t\t"expired":"Event has been expired.",\n\t\t\t\t\t\t\t\t\t\t"running":"Till the end of event.",\n\t\t\t\t\t\t\t\t\t\t"upcoming":"Till start of event.",\n\t\t\t\t\t\t\t\t\t\t"status": {\n\t\t\t\t\t\t\t\t\t\t\t"expired":"Expired",\n\t\t\t\t\t\t\t\t\t\t\t"running":"Running",\n\t\t\t\t\t\t\t\t\t\t\t"upcoming":"Future"\n\t\t\t\t\t\t\t\t\t\t}\n\t\t\t\t\t\t\t\t\t}'
                                 }
                               })
                             ],
@@ -2613,10 +2616,14 @@ var render = function() {
                             {
                               attrs: {
                                 color: "accent",
-                                to: "/products/men/103"
+                                to: "/product-detail/" + _vm.data.product_id
                               }
                             },
-                            [_vm._v("\n\t\t\t\t\t\t\tShop Now\n\t\t\t\t\t\t")]
+                            [
+                              _vm._v(
+                                "\n\t\t\t\t\t\t\t\tShop Now\n\t\t\t\t\t\t\t"
+                              )
+                            ]
                           )
                         ],
                         1
@@ -2643,7 +2650,9 @@ var render = function() {
                               },
                               on: {
                                 click: function($event) {
-                                  return _vm.togglePreviewImage(productImage)
+                                  return _vm.togglePreviewImage(
+                                    productImage.image
+                                  )
                                 }
                               }
                             },
@@ -2656,7 +2665,7 @@ var render = function() {
                                     staticClass: "emb-card",
                                     attrs: {
                                       alt: "deal of the day",
-                                      src: productImage,
+                                      src: productImage.image,
                                       "aspect-ratio": "0.8",
                                       "max-width": "217",
                                       "max-height": "217"
@@ -3326,13 +3335,8 @@ var render = function() {
                           staticClass: "send-icon",
                           attrs: { heref: "javascript:void(0)" }
                         },
-                        [
-                          _c(
-                            "i",
-                            { staticClass: "material-icons white--text" },
-                            [_vm._v("send")]
-                          )
-                        ]
+                        [_c("v-icon", [_vm._v("mdi-send")])],
+                        1
                       )
                     ],
                     1
@@ -3571,23 +3575,17 @@ var render = function() {
           attrs: { secTitle: "Featured Products", data: _vm.featureProductData }
         }),
         _vm._v(" "),
-        _c("emb-day-deal", { attrs: { data: _vm.dayDealData } }),
+        _vm.countDownProductData != null
+          ? _c("emb-day-deal", { attrs: { data: _vm.countDownProductData } })
+          : _vm._e(),
         _vm._v(" "),
         _c("emb-detail-offer"),
-        _vm._v(" "),
-        _c("embTestimonial", {
-          attrs: { secTitle: "Customer Reviews", data: _vm.TestimonialData }
-        }),
         _vm._v(" "),
         _c("emb-subscribe", {
           attrs: {
             heading: "Subscribe our Newsletter",
             description: "Stay up to date with our latest new and products"
           }
-        }),
-        _vm._v(" "),
-        _c("emb-shop-card", {
-          attrs: { secTitle: "Shop By Brands", data: _vm.shopCard }
         })
       ],
       1

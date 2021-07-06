@@ -341,6 +341,62 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "AffiliateProgram",
@@ -355,6 +411,7 @@ __webpack_require__.r(__webpack_exports__);
       lastMonthCommission: 0.0,
       accountBalance: 0.0,
       membership_name: null,
+      userHasMembershipID: 0,
       generateLinkTotalUniqueClick: 0.0,
       generateLinkTotalClick: 0.0,
       generateLinkTotalDesktopClick: 0.0,
@@ -377,6 +434,26 @@ __webpack_require__.r(__webpack_exports__);
         value: 'created_at'
       }],
       earnData: [],
+      withdrawalAvailable: false,
+      withdrawalTableHeaders: [{
+        text: '#',
+        align: 'start',
+        sortable: false,
+        value: 'count'
+      }, {
+        text: 'Request Number',
+        value: 'request_number'
+      }, {
+        text: 'Request Date',
+        value: 'created_at'
+      }, {
+        text: 'Request Amount',
+        value: 'request_amount'
+      }, {
+        text: 'Request Status',
+        value: 'request_status'
+      }],
+      withdrawalData: [],
       referralTableHeaders: [{
         text: '#',
         align: 'start',
@@ -394,15 +471,17 @@ __webpack_require__.r(__webpack_exports__);
       }, {
         text: 'Register Date',
         value: 'created_at'
-      } // { text: 'Total Commission', value: 'total_commission' },
-      // { text: 'Last Commission Date', value: 'last_commission_date' },
-      ],
+      }],
       referralTableData: []
     };
   },
   created: function created() {
     this.getAffiliateData();
     this.toggleGenerate();
+  },
+  mounted: function mounted() {
+    this.checkAvailableWithdrawal();
+    this.getMemberWithdrawalRequestHistory();
   },
   methods: {
     getAffiliateData: function getAffiliateData() {
@@ -412,6 +491,7 @@ __webpack_require__.r(__webpack_exports__);
         _this.currentMonthCommission = response.data.currentMonthCommission;
         _this.lastMonthCommission = response.data.lastMonthCommission;
         _this.membership_name = response.data.membership_name;
+        _this.userHasMembershipID = response.data.userHasMembershipID;
         _this.accountBalance = response.data.accountBalance;
         _this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
         _this.generateLinkTotalClick = response.data.generateLinkTotalClick;
@@ -486,6 +566,88 @@ __webpack_require__.r(__webpack_exports__);
     clickDeleteTask: function clickDeleteTask(task) {
       var i = this.tasks.indexOf(task);
       this.tasks.splice(i, 1);
+    },
+    getMemberWithdrawalRequestHistory: function getMemberWithdrawalRequestHistory() {
+      var _this3 = this;
+
+      axios.get('/api/withdrawal/history').then(function (response) {
+        var count = 1;
+
+        for (var key in response.data.withdrawalHistory) {
+          _this3.withdrawalData.push({
+            count: count++,
+            request_number: response.data.withdrawalHistory[key].request_number,
+            request_amount: response.data.withdrawalHistory[key].request_amount.toFixed(2),
+            created_at: response.data.withdrawalHistory[key].created_at,
+            request_status: response.data.withdrawalHistory[key].request_status
+          });
+        }
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this3.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    checkAvailableWithdrawal: function checkAvailableWithdrawal() {
+      var _this4 = this;
+
+      axios.get('/api/withdrawal/check-available').then(function (response) {
+        if (response.data.check) {
+          _this4.withdrawalAvailable = true;
+        }
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this4.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    sendWithdrawalRequest: function sendWithdrawalRequest() {
+      var _this5 = this;
+
+      var withdrawalData = {
+        'userMembership': this.userHasMembershipID,
+        'withdrawalAmount': this.accountBalance
+      };
+      axios.post('/api/withdrawal/create', withdrawalData).then(function (response) {
+        _this5.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = "";
+        }, 100);
+      }, function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this5.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -17438,9 +17600,9 @@ var render = function() {
         [
           _c("h1", { staticClass: "font-weight-bold text-h4 basil--text" }, [
             _vm._v(
-              "\n                Affiliate Dashboard - " +
+              "\n            Affiliate Dashboard - " +
                 _vm._s(_vm.membership_name) +
-                "\n            "
+                "\n        "
             )
           ]),
           _vm._v(" "),
@@ -17462,19 +17624,23 @@ var render = function() {
             },
             [
               _c("v-tab", { attrs: { href: "#tab-overview" } }, [
-                _vm._v("\n                    Overview\n                ")
+                _vm._v("\n                Overview\n            ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-traffic-report" } }, [
-                _vm._v("\n                    Traffic Report\n                ")
+                _vm._v("\n                Traffic Report\n            ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-income-report" } }, [
-                _vm._v("\n                    Income Report\n                ")
+                _vm._v("\n                Income Report\n            ")
+              ]),
+              _vm._v(" "),
+              _c("v-tab", { attrs: { href: "#tab-withdrawal" } }, [
+                _vm._v("\n                Withdrawal\n            ")
               ]),
               _vm._v(" "),
               _c("v-tab", { attrs: { href: "#tab-referral" } }, [
-                _vm._v("\n                    Referral\n                ")
+                _vm._v("\n                Referral\n            ")
               ])
             ],
             1
@@ -17537,7 +17703,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "This Month Estimated Commission\n                                        "
+                                            "This Month Estimated Commission\n                                    "
                                           )
                                         ]
                                       ),
@@ -17600,7 +17766,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Last Month Estimated Commission\n                                        "
+                                            "Last Month Estimated Commission\n                                    "
                                           )
                                         ]
                                       ),
@@ -17760,9 +17926,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalUniqueClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalUniqueClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -17823,9 +17990,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -17871,7 +18039,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Desktop Click\n                                        "
+                                            "Total Desktop Click\n                                    "
                                           )
                                         ]
                                       ),
@@ -17890,9 +18058,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalDesktopClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalDesktopClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -17938,7 +18107,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Mobile Click\n                                        "
+                                            "Total Mobile Click\n                                    "
                                           )
                                         ]
                                       ),
@@ -17957,9 +18126,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalMobileClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalMobileClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -18005,7 +18175,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Tablet Click\n                                        "
+                                            "Total Tablet Click\n                                    "
                                           )
                                         ]
                                       ),
@@ -18024,9 +18194,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalTabletClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalTabletClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -18072,7 +18243,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "Total Other Click\n                                        "
+                                            "Total Other Click\n                                    "
                                           )
                                         ]
                                       ),
@@ -18091,9 +18262,10 @@ var render = function() {
                                               },
                                               [
                                                 _vm._v(
-                                                  _vm._s(
-                                                    _vm.generateLinkTotalOtherClick
-                                                  )
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.generateLinkTotalOtherClick
+                                                    )
                                                 )
                                               ]
                                             )
@@ -18143,6 +18315,33 @@ var render = function() {
                                   }
                                 },
                                 [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "emb-card pa-4 search-box-wrap"
+                                    },
+                                    [
+                                      _c("div", {
+                                        staticClass:
+                                          "d-flex justify-end align-center"
+                                      })
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
                                   _c("v-data-table", {
                                     staticClass: "elevation-1",
                                     attrs: {
@@ -18150,6 +18349,153 @@ var render = function() {
                                       items: _vm.earnData,
                                       "items-per-page": 5
                                     }
+                                  })
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              ),
+              _vm._v(" "),
+              _c(
+                "v-tab-item",
+                { attrs: { value: "tab-withdrawal" } },
+                [
+                  _c(
+                    "v-card",
+                    [
+                      _c(
+                        "v-card-text",
+                        [
+                          _c(
+                            "v-row",
+                            [
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "emb-card pa-4 search-box-wrap"
+                                    },
+                                    [
+                                      _c(
+                                        "div",
+                                        {
+                                          staticClass:
+                                            "d-flex justify-end align-center"
+                                        },
+                                        [
+                                          _c(
+                                            "div",
+                                            {
+                                              staticClass: "action-btn-wrap",
+                                              attrs: {
+                                                id: "sendWithdrawalButton"
+                                              }
+                                            },
+                                            [
+                                              _c(
+                                                "v-btn",
+                                                {
+                                                  attrs: {
+                                                    color: "primary",
+                                                    disabled: !_vm.withdrawalAvailable
+                                                  },
+                                                  on: {
+                                                    click:
+                                                      _vm.sendWithdrawalRequest
+                                                  }
+                                                },
+                                                [_vm._v("Withdrawal Request")]
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  )
+                                ]
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "12",
+                                    lg: "12"
+                                  }
+                                },
+                                [
+                                  _c("v-data-table", {
+                                    staticClass: "elevation-1",
+                                    attrs: {
+                                      headers: _vm.withdrawalTableHeaders,
+                                      items: _vm.withdrawalData,
+                                      "items-per-page": 5
+                                    },
+                                    scopedSlots: _vm._u([
+                                      {
+                                        key: "item.request_status",
+                                        fn: function(ref) {
+                                          var item = ref.item
+                                          return [
+                                            !item.request_status
+                                              ? _c(
+                                                  "v-chip",
+                                                  {
+                                                    staticClass: "ma-1",
+                                                    attrs: {
+                                                      color: "red",
+                                                      "text-color": "white"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                            Pending\n                                        "
+                                                    )
+                                                  ]
+                                                )
+                                              : _c(
+                                                  "v-chip",
+                                                  {
+                                                    staticClass: "ma-1",
+                                                    attrs: {
+                                                      color: "green",
+                                                      "text-color": "white"
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "\n                                            Success\n                                        "
+                                                    )
+                                                  ]
+                                                )
+                                          ]
+                                        }
+                                      }
+                                    ])
                                   })
                                 ],
                                 1

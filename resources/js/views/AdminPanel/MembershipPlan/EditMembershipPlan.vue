@@ -44,6 +44,18 @@
                                     <v-col cols="12" sm="12" md="4" lg="4">
                                         <v-text-field
                                             class="name-input"
+                                            label="Value For Point"
+                                            type="number"
+                                            required
+                                            v-model="membership.value_for_point"
+                                            :rules="valueForPoint"
+                                            @blur="calculateIncomes"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
                                             label="No of Link Click Per Day"
                                             type="number"
                                             required
@@ -184,6 +196,7 @@
             membership:{
                 name:"",
                 price:"",
+                value_for_point:'',
                 no_of_link_click_per_day:"",
                 task_rewards:"",
                 total_reward_per_day:"",
@@ -203,6 +216,9 @@
             priceRules: [
                 v => !!v || 'Price is required',
             ],
+            valueForPoint: [
+                v => !!v || 'Value For Point',
+            ],
             nuOfLinkPerDayRules: [
                 v => !!v || 'No of Link Click Per Day is required',
             ],
@@ -221,12 +237,7 @@
         },
         methods:{
             getMemberShipDetails(id){
-                axios.get(this.$serverUrl+'api/membership/'+id+'/edit',{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-                    },
-                }).then(response => {
+                axios.get('/api/membership/'+id+'/edit').then(response => {
                     this.membership = response.data.membershipPlan;
                 }, response => {
                     const errors = response.data.message;
@@ -245,23 +256,18 @@
                 this.membership.total_reward_per_day = calculateDailyReward;
             },
             calculateIncomes(){
-                const calculateDailyIncome = this.membership.total_reward_per_day * 50;
+                const calculateDailyIncome = this.membership.total_reward_per_day * this.membership.value_for_point;
                 this.membership.daily_income = calculateDailyIncome;
                 const calculateWeeklyIncome = calculateDailyIncome * 7;
                 this.membership.weekly_income = calculateWeeklyIncome;
                 const calculateMonthlyIncome = calculateWeeklyIncome * 4;
                 this.membership.monthly_income = calculateMonthlyIncome;
-                const calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + (this.membership.bonus_rewards * 50);
+                const calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + (this.membership.bonus_rewards * this.membership.value_for_point);
                 this.membership.monthly_income_with_bonus = calculateMonthlyIncomeWithBonus;
                 this.membership.annual_revenue = calculateMonthlyIncomeWithBonus * 12;
             },
             submitUpdateMembershipPlanFrom(){
-                axios.put(this.$serverUrl+'api/membership/'+this.membership.id, this.membership,{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-                    },
-                }).then(response => {
+                axios.put('/api/membership/'+this.membership.id, this.membership).then(response => {
                     this.$toast.open({
                         message: response.data.message,
                         type: 'success',

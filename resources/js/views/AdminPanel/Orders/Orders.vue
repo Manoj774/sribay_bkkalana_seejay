@@ -117,7 +117,7 @@
                         class = "export-excel-wrapper"
                         :data = "invoiceData"
                         :fields = "json_fields"
-                        name = "Orders.xls">
+                        :name = "'Orders.xls'">
                         <v-btn type="primary" color="red" size = "small"> Export EXCEL </v-btn>
                     </download-excel>
                 </v-col>
@@ -265,7 +265,6 @@
 
     import jsPDF from 'jspdf'
     import html2canvas from "html2canvas"
-
     export default {
         data() {
             return {
@@ -370,7 +369,6 @@
             getInvoice() {
                 axios.get('/api/orders').then(response => {
                     this.invoiceData = response.data.orders;
-                    console.log(this.invoiceData)
                 }, err => {
                     const errors = err.response.data.message;
                     var html = '';

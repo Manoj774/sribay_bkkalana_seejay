@@ -304,14 +304,6 @@ var render = function() {
                 _c(
                   "v-btn",
                   {
-                    attrs: { color: "primary", to: "/admin-panel/product-add" }
-                  },
-                  [_vm._v("\n                                Members\n")]
-                ),
-                _vm._v(" "),
-                _c(
-                  "v-btn",
-                  {
                     attrs: {
                       color: "primary",
                       to: "/sriBay-admin/add-membership-plan"

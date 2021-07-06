@@ -14,27 +14,27 @@
 					</router-link>
 				</v-flex>
 				<v-flex xs12 sm12 md6 lg6 xl6 pl-5 deal-content>
-					<div class="day-deal-content"> 
+					<div class="day-deal-content">
 						<div class="mb-12">
 							<h2 class="font-weight-regular mb-6">
-								{{data.sectitle}}
+								{{data.title}}
 							</h2>
 							<h5 class="font-weight-regular">
-								{{data.subtitle}}
+								{{data.sub_title}}
 							</h5>
 							<p class="d-inline-block mr-1">
-								<strike class="px-1"><emb-currency-sign class="font-color"></emb-currency-sign>42.46</strike>
+								<strike class="px-1"><emb-currency-sign class="font-color"></emb-currency-sign>{{data.sell_price.toFixed(2)}}</strike>
 							</p>
 							<p class="accent--text d-inline-block sec-content">
-								{{data.metaainfo}} <emb-currency-sign class="accent--text"></emb-currency-sign>36.00
+                                Now only <emb-currency-sign class="accent--text"></emb-currency-sign>{{data.deal_price.toFixed(2)}}
 							</p>
-							<p>{{data.paragraph}}</p>
+							<p>{{data.description}}</p>
 							<div  class="timer mb-6">
-								<emb-timer 
+								<emb-timer
 									class="mb-4"
-									starttime="Dec 1, 2018 15:37:25" 
-									endtime="Dec 25, 2025 16:37:25" 
-									trans='{  
+									:starttime="data.date_from"
+									:endtime="data.date_to"
+									trans='{
 										"day":"Day",
 										"hours":"Hours",
 										"minutes":"Minutes",
@@ -51,22 +51,22 @@
 								>
 								</emb-timer>
 							</div>
-							<v-btn color="accent" to="/products/men/103">
+							<v-btn color="accent" :to="'/product-detail/'+data.product_id">
 								Shop Now
 							</v-btn>
 						</div>
 						<v-layout row wrap cmx-0>
 							<v-flex xs4 sm4 md4 lg4 xl4
-								class="product-gallery" 
+								class="product-gallery"
 								v-for="(productImage,key) in data.productGallery"
 								:key="key"
-								@click="togglePreviewImage(productImage)"
+								@click="togglePreviewImage(productImage.image)"
 							>
 								<a href="javascript:void(0)">
 									<v-img
 										alt="deal of the day"
 										class="emb-card"
-										:src="productImage"
+										:src="productImage.image"
 										aspect-ratio="0.8"
 										max-width="217"
 										max-height="217"
@@ -86,7 +86,7 @@ export default {
 	props:['data'],
 	data(){
 		return{
-			selectedPreviewImage: this.data.productGallery[0],
+			selectedPreviewImage: this.data.productGallery[0].image,
 		}
 	},
 	methods: {

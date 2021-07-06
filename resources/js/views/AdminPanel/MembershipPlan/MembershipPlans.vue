@@ -4,10 +4,10 @@
                 <div class="emb-card pa-4 search-box-wrap">
                     <div class="d-flex justify-end align-center">
                         <div class="action-btn-wrap">
-                            <v-btn color="primary"  to="/admin-panel/product-add">
-                                Members
-<!--                                <v-icon>mdi-plus-thick</v-icon>-->
-                            </v-btn>
+<!--                            <v-btn color="primary"  to="/admin-panel/product-add">-->
+<!--                                Members-->
+<!--&lt;!&ndash;                                <v-icon>mdi-plus-thick</v-icon>&ndash;&gt;-->
+<!--                            </v-btn>-->
                             <v-btn color="primary"  to="/sriBay-admin/add-membership-plan">
                                 Add Membership Plan
                                 <v-icon>mdi-plus-thick</v-icon>

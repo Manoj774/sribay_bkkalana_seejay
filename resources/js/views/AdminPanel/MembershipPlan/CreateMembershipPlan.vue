@@ -44,6 +44,18 @@
                                     <v-col cols="12" sm="12" md="4" lg="4">
                                         <v-text-field
                                             class="name-input"
+                                            label="Value For Point"
+                                            type="number"
+                                            required
+                                            v-model="membership.value_for_point"
+                                            :rules="valueForPoint"
+                                            @blur="calculateIncomes"
+                                        >
+                                        </v-text-field>
+                                    </v-col>
+                                    <v-col cols="12" sm="12" md="4" lg="4">
+                                        <v-text-field
+                                            class="name-input"
                                             label="No of Link Click Per Day"
                                             type="number"
                                             required
@@ -149,7 +161,6 @@
                                             label="Registered Commission"
                                             type="number"
                                             required
-                                            readonly
                                             v-model="membership.registered_commission"
                                         >
                                         </v-text-field>
@@ -160,7 +171,6 @@
                                             label="Referral Commission"
                                             type="number"
                                             required
-                                            readonly
                                             v-model="membership.referral_commission"
                                         >
                                         </v-text-field>
@@ -185,7 +195,8 @@
         data: () => ({
             membership:{
                 name:"",
-                price:"",
+                price:'',
+                value_for_point:'',
                 no_of_link_click_per_day:"",
                 task_rewards:"",
                 total_reward_per_day:"",
@@ -195,8 +206,8 @@
                 monthly_income:"",
                 monthly_income_with_bonus:"",
                 annual_revenue:"",
-                registered_commission:0.0,
-                referral_commission:0.0,
+                registered_commission:'',
+                referral_commission:'',
 
             },
             membershipNameRules: [
@@ -205,6 +216,9 @@
             ],
             priceRules: [
                 v => !!v || 'Price is required',
+            ],
+            valueForPoint: [
+                v => !!v || 'Value For Point',
             ],
             nuOfLinkPerDayRules: [
                 v => !!v || 'No of Link Click Per Day is required',
@@ -225,23 +239,18 @@
                 this.membership.total_reward_per_day = calculateDailyReward.toFixed(2);
             },
             calculateIncomes(){
-                const calculateDailyIncome = this.membership.total_reward_per_day * 50;
+                const calculateDailyIncome = this.membership.total_reward_per_day * this.membership.value_for_point;
                 this.membership.daily_income = calculateDailyIncome.toFixed(2);
                 const calculateWeeklyIncome = calculateDailyIncome * 7;
                 this.membership.weekly_income = calculateWeeklyIncome.toFixed(2);
                 const calculateMonthlyIncome = calculateWeeklyIncome * 4;
                 this.membership.monthly_income = calculateMonthlyIncome.toFixed(2);
-                const calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + (this.membership.bonus_rewards * 50);
+                const calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + (this.membership.bonus_rewards * this.membership.value_for_point);
                 this.membership.monthly_income_with_bonus = calculateMonthlyIncomeWithBonus.toFixed(2);
                 this.membership.annual_revenue = calculateMonthlyIncomeWithBonus * 12;
             },
             submitNewMembershipPlanFrom(){
-                axios.post(this.$serverUrl+'api/membership/create', this.membership,{
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-                    },
-                }).then(response => {
+                axios.post('/api/membership/create', this.membership).then(response => {
                     this.$toast.open({
                         message: response.data.message,
                         type: 'success',

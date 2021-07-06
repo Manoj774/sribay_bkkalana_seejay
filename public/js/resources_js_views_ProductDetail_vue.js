@@ -464,6 +464,16 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["cart", "wishlist"])),
@@ -535,9 +545,9 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         product_id: this.buyNowItem.id,
         image: this.buyNowItem.images[0].image_url,
         name: this.buyNowItem.product_name,
-        price: this.buyNowItem.sell_price,
+        price: this.buyNowItem.countDownProduct == null ? this.buyNowItem.sell_price : this.buyNowItem.countDownProduct.deal_price,
         quantity: this.buyNowItem.quantity ? this.buyNowItem.quantity : 1,
-        total: this.buyNowItem.sell_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
+        total: this.buyNowItem.countDownProduct == null ? this.buyNowItem.sell_price : this.buyNowItem.countDownProduct.deal_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
         aff_user_id: this.selectedProduct.user
       };
       axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
@@ -701,14 +711,13 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
           product_id: item.id,
           image: item.images[0].image_url,
           name: item.product_name,
-          price: item.sell_price,
+          price: item.countDownProduct == null ? item.sell_price : item.countDownProduct.deal_price,
           quantity: item.quantity ? item.quantity : 1,
-          total: item.sell_price * (item.quantity ? item.quantity : 1),
+          total: item.countDownProduct == null ? item.sell_price : item.countDownProduct.deal_price * (item.quantity ? item.quantity : 1),
           aff_user_id: item.user
         };
         axios.post('/api/cart/add-to-cart', newProduct).then(function (response) {
-          window.location.href = _this7.$router.history.current.path; // console.log(this.$router.history.current);
-          // console.log(response.data.message)
+          window.location.href = _this7.$router.history.current.path;
         }, function (error) {
           var errors = error.response.data.message;
           var html = '';
@@ -1076,23 +1085,77 @@ var render = function() {
                                   )
                                 ]),
                                 _vm._v(" "),
-                                _c(
-                                  "h4",
-                                  { staticClass: "accent--text" },
-                                  [
-                                    _c("emb-currency-sign"),
-                                    _vm._v(
-                                      "\n                                    " +
-                                        _vm._s(
-                                          _vm.selectedProduct.sell_price.toFixed(
-                                            2
+                                _vm.selectedProduct.countDownProduct == null
+                                  ? _c("div", [
+                                      _c(
+                                        "h4",
+                                        { staticClass: "accent--text" },
+                                        [
+                                          _c("emb-currency-sign"),
+                                          _vm._v(
+                                            "\n                                    " +
+                                              _vm._s(
+                                                _vm.selectedProduct.sell_price.toFixed(
+                                                  2
+                                                )
+                                              ) +
+                                              "\n                                    "
                                           )
-                                        ) +
-                                        "\n                                "
-                                    )
-                                  ],
-                                  1
-                                ),
+                                        ],
+                                        1
+                                      )
+                                    ])
+                                  : _c("div", [
+                                      _c(
+                                        "h5",
+                                        { staticClass: "d-inline-block mr-1" },
+                                        [
+                                          _c(
+                                            "strike",
+                                            { staticClass: "px-1" },
+                                            [
+                                              _c("emb-currency-sign", {
+                                                staticClass: "font-color"
+                                              }),
+                                              _vm._v(
+                                                _vm._s(
+                                                  _vm.selectedProduct.sell_price.toFixed(
+                                                    2
+                                                  )
+                                                )
+                                              )
+                                            ],
+                                            1
+                                          )
+                                        ],
+                                        1
+                                      ),
+                                      _vm._v(" "),
+                                      _c(
+                                        "h4",
+                                        {
+                                          staticClass:
+                                            "accent--text d-inline-block sec-content"
+                                        },
+                                        [
+                                          _vm._v(
+                                            "\n                                        Now only "
+                                          ),
+                                          _c("emb-currency-sign", {
+                                            staticClass: "accent--text"
+                                          }),
+                                          _vm._v(
+                                            _vm._s(
+                                              _vm.selectedProduct.countDownProduct.deal_price.toFixed(
+                                                2
+                                              )
+                                            ) +
+                                              "\n                                    "
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ]),
                                 _vm._v(" "),
                                 _c(
                                   "ul",
@@ -1112,7 +1175,7 @@ var render = function() {
                                                   staticClass:
                                                     "font-weight-medium"
                                                 },
-                                                [_vm._v("Availablity")]
+                                                [_vm._v("Availability")]
                                               ),
                                               _vm._v(" : "),
                                               _c(
@@ -1131,7 +1194,7 @@ var render = function() {
                                                   staticClass:
                                                     "font-weight-medium"
                                                 },
-                                                [_vm._v("Availablity")]
+                                                [_vm._v("Availability")]
                                               ),
                                               _vm._v(" : "),
                                               _c(
@@ -1149,15 +1212,7 @@ var render = function() {
                                     _vm._v(" "),
                                     _c("li"),
                                     _vm._v(" "),
-                                    _c("li", [
-                                      _c(
-                                        "span",
-                                        { staticClass: "font-weight-medium" },
-                                        [_vm._v("Tags")]
-                                      ),
-                                      _vm._v(" "),
-                                      _c("span", [_vm._v(":")])
-                                    ])
+                                    _c("li")
                                   ]
                                 ),
                                 _vm._v(" "),

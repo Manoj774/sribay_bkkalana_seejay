@@ -18,6 +18,7 @@ class CreateMembershipPlansTable extends Migration
             $table->string('name')->nullable(false);
             $table->double('price');
             $table->integer('no_of_link_click_per_day');
+            $table->double('value_for_point');
             $table->double('task_rewards');
             $table->double('total_reward_per_day');
             $table->double('bonus_rewards');

@@ -404,7 +404,7 @@ var render = function() {
                                   staticClass: "mb-4",
                                   attrs: {
                                     type: "password",
-                                    label: "Retype Passowrd*",
+                                    label: "Retype Password*",
                                     rules: _vm.inputRules.basictextRules
                                   },
                                   model: {

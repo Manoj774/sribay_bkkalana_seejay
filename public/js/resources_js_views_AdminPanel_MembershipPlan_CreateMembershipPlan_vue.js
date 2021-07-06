@@ -192,13 +192,24 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateMembership",
   data: function data() {
     return {
       membership: {
         name: "",
-        price: "",
+        price: '',
+        value_for_point: '',
         no_of_link_click_per_day: "",
         task_rewards: "",
         total_reward_per_day: "",
@@ -208,8 +219,8 @@ __webpack_require__.r(__webpack_exports__);
         monthly_income: "",
         monthly_income_with_bonus: "",
         annual_revenue: "",
-        registered_commission: 0.0,
-        referral_commission: 0.0
+        registered_commission: '',
+        referral_commission: ''
       },
       membershipNameRules: [function (v) {
         return !!v || 'Membership Name is required';
@@ -218,6 +229,9 @@ __webpack_require__.r(__webpack_exports__);
       }],
       priceRules: [function (v) {
         return !!v || 'Price is required';
+      }],
+      valueForPoint: [function (v) {
+        return !!v || 'Value For Point';
       }],
       nuOfLinkPerDayRules: [function (v) {
         return !!v || 'No of Link Click Per Day is required';
@@ -239,25 +253,20 @@ __webpack_require__.r(__webpack_exports__);
       this.membership.total_reward_per_day = calculateDailyReward.toFixed(2);
     },
     calculateIncomes: function calculateIncomes() {
-      var calculateDailyIncome = this.membership.total_reward_per_day * 50;
+      var calculateDailyIncome = this.membership.total_reward_per_day * this.membership.value_for_point;
       this.membership.daily_income = calculateDailyIncome.toFixed(2);
       var calculateWeeklyIncome = calculateDailyIncome * 7;
       this.membership.weekly_income = calculateWeeklyIncome.toFixed(2);
       var calculateMonthlyIncome = calculateWeeklyIncome * 4;
       this.membership.monthly_income = calculateMonthlyIncome.toFixed(2);
-      var calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + this.membership.bonus_rewards * 50;
+      var calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + this.membership.bonus_rewards * this.membership.value_for_point;
       this.membership.monthly_income_with_bonus = calculateMonthlyIncomeWithBonus.toFixed(2);
       this.membership.annual_revenue = calculateMonthlyIncomeWithBonus * 12;
     },
     submitNewMembershipPlanFrom: function submitNewMembershipPlanFrom() {
       var _this = this;
 
-      axios.post(this.$serverUrl + 'api/membership/create', this.membership, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-        }
-      }).then(function (response) {
+      axios.post('/api/membership/create', this.membership).then(function (response) {
         _this.$toast.open({
           message: response.data.message,
           type: 'success'
@@ -499,6 +508,43 @@ var render = function() {
                                             )
                                           },
                                           expression: "membership.price"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: {
+                                        cols: "12",
+                                        sm: "12",
+                                        md: "4",
+                                        lg: "4"
+                                      }
+                                    },
+                                    [
+                                      _c("v-text-field", {
+                                        staticClass: "name-input",
+                                        attrs: {
+                                          label: "Value For Point",
+                                          type: "number",
+                                          required: "",
+                                          rules: _vm.valueForPoint
+                                        },
+                                        on: { blur: _vm.calculateIncomes },
+                                        model: {
+                                          value: _vm.membership.value_for_point,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.membership,
+                                              "value_for_point",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "membership.value_for_point"
                                         }
                                       })
                                     ],
@@ -849,8 +895,7 @@ var render = function() {
                                         attrs: {
                                           label: "Registered Commission",
                                           type: "number",
-                                          required: "",
-                                          readonly: ""
+                                          required: ""
                                         },
                                         model: {
                                           value:
@@ -887,8 +932,7 @@ var render = function() {
                                         attrs: {
                                           label: "Referral Commission",
                                           type: "number",
-                                          required: "",
-                                          readonly: ""
+                                          required: ""
                                         },
                                         model: {
                                           value:

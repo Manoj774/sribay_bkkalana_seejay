@@ -205,7 +205,17 @@ __webpack_require__.r(__webpack_exports__);
             });
           }
         })["catch"](function (error) {
-          console.log(error);
+          var errors = error.response.data.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
         });
       } else {
         axios.get('/api/product').then(function (response) {
@@ -285,10 +295,99 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   props: ["data", "deleteProduct"],
   data: function data() {
     return {
+      dialog: false,
+      to_date_modal: false,
+      form_date_modal: false,
+      countDownProduct: {
+        product_id: null,
+        form_date: null,
+        to_date: null,
+        title: "",
+        subtitle: "",
+        description: "",
+        dealPrice: ""
+      },
       headers: [{
         text: "ID",
         sortable: false,
@@ -314,15 +413,18 @@ __webpack_require__.r(__webpack_exports__);
     };
   },
   methods: {
-    deleteItem: function deleteItem(data) {
-      this.$refs.deleteConfirmationDialog.openDialog();
-      this.selectedItem = data;
+    countDownProductDialog: function countDownProductDialog(item) {
+      this.dialog = true;
+      this.countDownProduct.product_id = item;
     },
-    ondeleteItemFromListView: function ondeleteItemFromListView() {
+    countDownProductDialogClose: function countDownProductDialogClose() {
+      this.dialog = false;
+      this.countDownProduct.product_id = null;
+    },
+    countDownProductConfirm: function countDownProductConfirm() {
       var _this = this;
 
-      this.$refs.deleteConfirmationDialog.close();
-      axios["delete"]('/api/product/' + this.selectedItem.id).then(function (response) {
+      axios.post('/api/product/create-countdown-product', this.countDownProduct).then(function (response) {
         _this.$snotify.success(response.data.message, {
           closeOnClick: false,
           pauseOnHover: false,
@@ -342,6 +444,39 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    deleteItem: function deleteItem(data) {
+      this.$refs.deleteConfirmationDialog.openDialog();
+      this.selectedItem = data;
+    },
+    ondeleteItemFromListView: function ondeleteItemFromListView() {
+      var _this2 = this;
+
+      this.$refs.deleteConfirmationDialog.close();
+      axios["delete"]('/api/product/' + this.selectedItem.id).then(function (response) {
+        _this2.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = '';
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this2.$toast.open({
           message: html,
           type: 'error'
         });
@@ -406,6 +541,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -428,6 +568,30 @@ __webpack_require__.r(__webpack_exports__);
     },
     productSearch: function productSearch() {
       this.$refs.products.getProductsData(this.searchText);
+    },
+    removeCountdownProduct: function removeCountdownProduct() {
+      var _this = this;
+
+      axios["delete"]('/api/product/remove-countdown-product').then(function (response) {
+        _this.$snotify.success(response.data.message, {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -883,35 +1047,12 @@ var render = function() {
     "div",
     { staticClass: "shop-content-wrap" },
     [
-      _vm.gridListView == true && _vm.listData != null
-        ? [
-            _c(
-              "v-row",
-              _vm._l(_vm.listData, function(category, index) {
-                return _c(
-                  "v-col",
-                  {
-                    key: index,
-                    attrs: { cols: "12", sm: "6", md: "4", lg: "3" }
-                  },
-                  [
-                    _c("product-item", {
-                      attrs: { data: category },
-                      on: { deleteProduct: _vm.itemDeleted }
-                    })
-                  ],
-                  1
-                )
-              }),
-              1
-            )
-          ]
-        : [
-            _c("product-items-list-view", {
-              attrs: { data: _vm.listData },
-              on: { deleteProduct: _vm.itemDeleted }
-            })
-          ]
+      [
+        _c("product-items-list-view", {
+          attrs: { data: _vm.listData },
+          on: { deleteProduct: _vm.itemDeleted }
+        })
+      ]
     ],
     2
   )
@@ -959,9 +1100,9 @@ var render = function() {
               var item = ref.item
               return [
                 _vm._v(
-                  "\n                " +
+                  "\n            " +
                     _vm._s(item.name.substring(0, 50) + "....") +
-                    "\n            "
+                    "\n        "
                 )
               ]
             }
@@ -971,6 +1112,25 @@ var render = function() {
             fn: function(ref) {
               var item = ref.item
               return [
+                _c(
+                  "v-btn",
+                  { attrs: { icon: "", color: "black", small: "" } },
+                  [
+                    _c(
+                      "v-icon",
+                      {
+                        on: {
+                          click: function($event) {
+                            return _vm.countDownProductDialog(item.id)
+                          }
+                        }
+                      },
+                      [_vm._v("mdi-clock-time-eight")]
+                    )
+                  ],
+                  1
+                ),
+                _vm._v(" "),
                 _c(
                   "router-link",
                   { attrs: { to: "/sriBay-admin/product-edit/" + item.id } },
@@ -1013,6 +1173,272 @@ var render = function() {
         ])
       }),
       _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { persistent: "", "max-width": "500" },
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c(
+                "v-card-title",
+                [
+                  _c("h5", [_vm._v("Countdown Product")]),
+                  _vm._v(" "),
+                  _c(
+                    "v-form",
+                    { ref: "form" },
+                    [
+                      _c(
+                        "v-row",
+                        [
+                          _c(
+                            "v-col",
+                            {
+                              attrs: {
+                                sm: "12",
+                                cols: "12",
+                                md: "12",
+                                lg: "12"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: { label: "Title", required: "" },
+                                model: {
+                                  value: _vm.countDownProduct.title,
+                                  callback: function($$v) {
+                                    _vm.$set(_vm.countDownProduct, "title", $$v)
+                                  },
+                                  expression: "countDownProduct.title"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              attrs: {
+                                sm: "12",
+                                cols: "12",
+                                md: "12",
+                                lg: "12"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: { label: "Sub Title", required: "" },
+                                model: {
+                                  value: _vm.countDownProduct.subtitle,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.countDownProduct,
+                                      "subtitle",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "countDownProduct.subtitle"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              attrs: {
+                                sm: "12",
+                                cols: "12",
+                                md: "12",
+                                lg: "12"
+                              }
+                            },
+                            [
+                              _c("v-text-field", {
+                                attrs: {
+                                  label: "Deal Price",
+                                  type: "number",
+                                  required: ""
+                                },
+                                model: {
+                                  value: _vm.countDownProduct.dealPrice,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.countDownProduct,
+                                      "dealPrice",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "countDownProduct.dealPrice"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              attrs: {
+                                sm: "12",
+                                cols: "12",
+                                md: "12",
+                                lg: "12"
+                              }
+                            },
+                            [
+                              _c("v-textarea", {
+                                attrs: {
+                                  solo: "",
+                                  name: "input-7-4",
+                                  label: "Description"
+                                },
+                                model: {
+                                  value: _vm.countDownProduct.description,
+                                  callback: function($$v) {
+                                    _vm.$set(
+                                      _vm.countDownProduct,
+                                      "description",
+                                      $$v
+                                    )
+                                  },
+                                  expression: "countDownProduct.description"
+                                }
+                              })
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            {
+                              attrs: {
+                                cols: "12",
+                                sm: "12",
+                                md: "12",
+                                lg: "12"
+                              }
+                            },
+                            [
+                              _c(
+                                "v-row",
+                                [
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: { cols: "12", sm: "12", md: "6" }
+                                    },
+                                    [
+                                      _c("v-datetime-picker", {
+                                        attrs: {
+                                          label: "Select From Datetime"
+                                        },
+                                        model: {
+                                          value: _vm.countDownProduct.form_date,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.countDownProduct,
+                                              "form_date",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "countDownProduct.form_date"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: { cols: "12", sm: "12", md: "6" }
+                                    },
+                                    [
+                                      _c("v-datetime-picker", {
+                                        attrs: { label: "Select To Datetime" },
+                                        model: {
+                                          value: _vm.countDownProduct.to_date,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.countDownProduct,
+                                              "to_date",
+                                              $$v
+                                            )
+                                          },
+                                          expression: "countDownProduct.to_date"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "3", sm: "3", md: "3", lg: "3" } },
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  staticClass: "primary",
+                                  on: { click: _vm.countDownProductConfirm }
+                                },
+                                [_vm._v("Save")]
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-col",
+                            { attrs: { cols: "3", sm: "3", md: "3", lg: "3" } },
+                            [
+                              _c(
+                                "v-btn",
+                                {
+                                  staticClass: "default-color1",
+                                  on: { click: _vm.countDownProductDialogClose }
+                                },
+                                [_vm._v("Cancel")]
+                              )
+                            ],
+                            1
+                          )
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  )
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
       _c("emb-delete-confirmation-2", {
         ref: "deleteConfirmationDialog",
         attrs: {
@@ -1054,119 +1480,113 @@ var render = function() {
   return _c(
     "div",
     [
-      _c("div", { staticClass: "emb-card pa-4 search-box-wrap" }, [
-        _c("div", { staticClass: "d-flex justify-start align-center" }, [
-          _vm._m(0),
-          _vm._v(" "),
+      _c(
+        "v-card",
+        [
           _c(
-            "div",
-            {
-              staticClass:
-                "search-input d-flex justify-space-between align-center"
-            },
+            "v-card-text",
             [
               _c(
-                "div",
-                { staticClass: "input-wrap" },
-                [
-                  _c("v-text-field", {
-                    attrs: { label: "Search Projects" },
-                    model: {
-                      value: _vm.searchText,
-                      callback: function($$v) {
-                        _vm.searchText = $$v
-                      },
-                      expression: "searchText"
-                    }
-                  })
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
-                { staticClass: "action-btn-wrap" },
+                "v-row",
                 [
                   _c(
-                    "v-btn",
-                    {
-                      staticClass: "mr-3",
-                      attrs: { color: "primary" },
-                      on: {
-                        click: function($event) {
-                          return _vm.productSearch(_vm.searchText)
+                    "v-col",
+                    { attrs: { cols: "12", sm: "12", lg: "6", md: "6" } },
+                    [
+                      _c("v-text-field", {
+                        attrs: { label: "Search Projects" },
+                        model: {
+                          value: _vm.searchText,
+                          callback: function($$v) {
+                            _vm.searchText = $$v
+                          },
+                          expression: "searchText"
                         }
-                      }
-                    },
-                    [_vm._v("Search")]
+                      })
+                    ],
+                    1
                   ),
                   _vm._v(" "),
                   _c(
-                    "v-btn",
+                    "v-col",
                     {
-                      attrs: {
-                        color: "primary",
-                        to: "/sriBay-admin/product-add"
-                      }
+                      staticClass: "mt-4",
+                      attrs: { cols: "12", sm: "12", lg: "1", md: "1" }
                     },
                     [
-                      _vm._v("\n\t\t\t\t\t\t\tAdd Product\n\t\t\t\t\t\t\t"),
-                      _c("v-icon", [_vm._v("mdi-plus-thick")])
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "mr-3",
+                          attrs: { color: "primary" },
+                          on: {
+                            click: function($event) {
+                              return _vm.productSearch(_vm.searchText)
+                            }
+                          }
+                        },
+                        [_vm._v("Search")]
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    {
+                      staticClass: "mt-4",
+                      attrs: { cols: "12", sm: "12", lg: "1", md: "1" }
+                    },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          attrs: {
+                            color: "primary",
+                            to: "/sriBay-admin/product-add"
+                          }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            Add Product\n                            "
+                          ),
+                          _c("v-icon", [_vm._v("mdi-plus-thick")])
+                        ],
+                        1
+                      )
+                    ],
+                    1
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-col",
+                    {
+                      staticClass: "mt-4",
+                      attrs: { cols: "12", sm: "12", lg: "2", md: "2" }
+                    },
+                    [
+                      _c(
+                        "v-btn",
+                        {
+                          staticClass: "ml-15",
+                          attrs: { color: "error--text" },
+                          on: { click: _vm.removeCountdownProduct }
+                        },
+                        [
+                          _vm._v(
+                            "\n                            Remove Countdown Product\n                            "
+                          ),
+                          _c("v-icon", { staticClass: "error--text" }, [
+                            _vm._v("mdi-delete")
+                          ])
+                        ],
+                        1
+                      )
                     ],
                     1
                   )
                 ],
                 1
-              )
-            ]
-          )
-        ])
-      ]),
-      _vm._v(" "),
-      _c(
-        "v-layout",
-        { staticClass: "pt-12 ma-0", attrs: { row: "", wrap: "" } },
-        [
-          _c("v-flex", { attrs: { xs12: "", sm8: "", md9: "", "py-0": "" } }, [
-            _c("h5", { staticClass: "mb-0 pt-2" }, [_vm._v("Product grid")])
-          ]),
-          _vm._v(" "),
-          _c(
-            "v-flex",
-            {
-              attrs: {
-                xs12: "",
-                sm4: "",
-                md3: "",
-                "py-0": "",
-                "text-right": ""
-              }
-            },
-            [
-              _c(
-                "v-icon",
-                {
-                  staticClass: "pa-2",
-                  on: {
-                    click: function($event) {
-                      return _vm.switchToGridView(true)
-                    }
-                  }
-                },
-                [_vm._v("mdi-apps")]
-              ),
-              _vm._v(" "),
-              _c(
-                "v-icon",
-                {
-                  staticClass: "pa-2",
-                  on: {
-                    click: function($event) {
-                      return _vm.switchToListView(false)
-                    }
-                  }
-                },
-                [_vm._v("mdi-format-list-bulleted ")]
               )
             ],
             1
@@ -1193,16 +1613,7 @@ var render = function() {
     1
   )
 }
-var staticRenderFns = [
-  function() {
-    var _vm = this
-    var _h = _vm.$createElement
-    var _c = _vm._self._c || _h
-    return _c("div", { staticClass: "dash-title-wrap" }, [
-      _c("h5", { staticClass: "dash-title mb-0" }, [_vm._v("Search")])
-    ])
-  }
-]
+var staticRenderFns = []
 render._withStripped = true
 
 

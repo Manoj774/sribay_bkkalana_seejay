@@ -52,7 +52,7 @@
                                         v-model="register.confirm_password"
                                         class="mb-4"
                                         type="password"
-                                        label="Retype Passowrd*"
+                                        label="Retype Password*"
                                         :rules="inputRules.basictextRules"
                                     >
                                     </v-text-field>

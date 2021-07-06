@@ -23,6 +23,7 @@ const MembershipPlanEdit = () => import('../views/AdminPanel/MembershipPlan/Edit
 
 //Members
 const Members = () => import('../views/AdminPanel/Members/Members');
+const MembersWithdrawalRequest = () => import('../views/AdminPanel/Members/MembersWithdrawalRequest');
 
 //Customers
 const Customers = () => import('../views/AdminPanel/Customers/Customers.vue');
@@ -68,11 +69,11 @@ export default {
             component: Dashboard,
             name:'DashBoard'
         },
-		{
-			path: '/sriBay-admin/reports',
-			component: Reports,
-			name:'Reports'
-		},
+		// {
+		// 	path: '/sriBay-admin/reports',
+		// 	component: Reports,
+		// 	name:'Reports'
+		// },
 		{
 			path: '/sriBay-admin/orders',
 			component: Orders,
@@ -107,6 +108,11 @@ export default {
             path: '/sriBay-admin/members',
             component: Members,
             name:'Members',
+        },
+        {
+            path: '/sriBay-admin/withdrawal-request',
+            component: MembersWithdrawalRequest,
+            name:'MembersWithdrawalRequest',
         },
         {
             path: '/sriBay-admin/add-membership-plan',

@@ -27,6 +27,7 @@ const PrivacyPolicy = () => import('../views/PrivacyPolicy');
 const SubscriptionPlan = () => import('../views/SubscriptionPlan');
 const Register = () => import('../views/UserPanel/Auth/Register');
 const ForgotPassword = () => import('../views/UserPanel/Auth/ForgotPassword');
+const ResetPassword = () => import('../views/UserPanel/Auth/ResetPassword');
 const ThankYou = () => import('../views/UserPanel/Auth/ThankYou');
 const SignIn = () => import('../views/UserPanel/Auth/SignIn');
 
@@ -203,11 +204,22 @@ export default {
             component: Register,
             name:'Register'
         },
-		{
-			path: '/session/forgot-password',
-			component: ForgotPassword,
-			name:'ForgotPassword'
-		},
+        {
+            path: '/session/forgot-password',
+            name: 'forgot-password',
+            component: ForgotPassword,
+            meta: {
+                auth:false
+            }
+        },
+        {
+            path: '/reset-password/:token',
+            name: 'reset-password',
+            component: ResetPassword,
+            meta: {
+                auth:false
+            }
+        },
 		{
 			path: '/session/thank-you',
 			component: ThankYou,

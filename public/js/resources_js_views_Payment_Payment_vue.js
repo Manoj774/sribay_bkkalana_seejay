@@ -142,6 +142,11 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         email: ''
       },
       inputRules: {
+        phoneNumber: [function (v) {
+          return !!v || 'Phone Number is required';
+        }, function (v) {
+          return v.length <= 10 || 'Name must be less than 10 characters';
+        }],
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty.';
         }],
@@ -813,9 +818,10 @@ var render = function() {
                                                     [
                                                       _c("v-text-field", {
                                                         attrs: {
+                                                          counter: 10,
                                                           rules:
                                                             _vm.inputRules
-                                                              .basictextRules,
+                                                              .phoneNumber,
                                                           max: "10",
                                                           label: "Mobile*",
                                                           required: ""

@@ -25,6 +25,12 @@ import VueResource from 'vue-resource'
 import VueToast from 'vue-toast-notification';
 import 'vue-toast-notification/dist/theme-sugar.css';
 import VueQuillEditor from 'vue-quill-editor'
+import moment from 'moment'
+import DatetimePicker from 'vuetify-datetime-picker'
+// (Optional) import 'vuetify-datetime-picker/src/stylus/main.styl'
+
+
+Vue.prototype.moment = moment
 
 
 import 'quill/dist/quill.core.css' // import styles
@@ -61,6 +67,7 @@ const options = {
 Vue.use(VueRouter);
 Vue.use(VueResource)
 Vue.use(VueMoment)
+Vue.use(DatetimePicker)
 Vue.use(InstantSearch)
 Vue.use(VueToast)
 Vue.use(VueQuillEditor)
@@ -180,7 +187,7 @@ router.beforeEach((to, from, next) => {
 //         next()
 //     }
 // })
-Vue.prototype.$serverUrl = 'http://127.0.0.1:8000/'
+
 const app = new Vue({
     el: '#app',
     store,

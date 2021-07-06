@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Category;
+use App\Models\CountDownProduct;
 use App\Models\GenerateLinkClick;
 use App\Models\MemberEarnHistory;
 use App\Models\Product;
@@ -193,38 +194,49 @@ class ProductController extends Controller
             ]);
 
             if ($generateLinkClicks->save()) {
+
                 $generateLinkClick = DB::table('generate_link_clicks')
                     ->where('user_id','=',$userId)
                     ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
                     ->groupBy('ip_address')
                     ->get();
+
                 if (count($generateLinkClick) >= 35) {
+
                     $userMembership = DB::table('user_has_member_ships')
-                        ->select( 'user_has_member_ships.id AS userHasMemberShipId', 'weekly_income')
+                        ->select( 'user_has_member_ships.id AS userHasMemberShipId', 'membership_plans.weekly_income')
                         ->join('membership_plans', 'user_has_member_ships.membership_id', '=', 'membership_plans.id')
                         ->where('user_id','=',$userId)
                         ->first();
-                    if (!$userMembership){
+
+                    if ($userMembership){
+
                         $memberEarnHistory = DB::table('member_earn_histories')
                             ->where('user_id','=',$userId)
                             ->where('description','=','Weekly Reward')
                             ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
                             ->first();
+
                         if (!$memberEarnHistory){
+
                             $memberEarn = new MemberEarnHistory([
                                 'user_id' => $userId,
                                 'earn_amount' => $userMembership->weekly_income,
                                 'description' => 'Weekly Reward',
                             ]);
+
                             if (!$memberEarn->save()){
                                 Log::error('Member Account not update. Internal Server Error');
                             }
+
                             $memberAccount = UserHasMemberShip::find($userMembership->userHasMemberShipId);
                             $accountTotal = $memberAccount->account_amount + $userMembership->weekly_income;
                             $memberAccount->account_amount = $accountTotal;
+
                             if (!$memberAccount->update()){
                                 Log::error('Member Account not update. Internal Server Error');
                             }
+
                         }
                     }
                 }
@@ -242,6 +254,14 @@ class ProductController extends Controller
         if($user != null){
             $product->user = $userId;
         }
+        $countDownProduct = DB::table('count_down_products')
+            ->where('product_id','=',$productId)
+            ->first();
+
+        if ($countDownProduct){
+            $product->countDownProduct = $countDownProduct;
+        }
+
         if (!$product) {
             return response()->json(['message' => 'Products not found'], 404);
         }
@@ -434,6 +454,69 @@ class ProductController extends Controller
 
     }
 
+
+    public function storeCountDownProduct(Request $request){
+
+        $validator =  Validator::make($request->all(), [
+            'title' => 'required|max:250',
+            'sub_title' => 'required|max:250',
+            'description' => 'required',
+            'product_id' => 'required|numeric',
+            'deal_price' => 'required|numeric',
+            'date_from' => 'required|date',
+            'date_to' => 'required|date',
+        ]);
+
+        $lastCountDownProducts = CountDownProduct::first();
+        if ($lastCountDownProducts != null){
+            $lastCountDownProductDelete = CountDownProduct::find($lastCountDownProducts->id);
+            if (!$lastCountDownProductDelete->delete()){
+                return response()->json(['message' => 'Count down product not  created. Internal Server Error'], 500);
+            }
+        }
+
+        $countDownProduct = new CountDownProduct([
+            'title' => $request->title,
+            'sub_title' => $request->subtitle,
+            'description' => $request->description,
+            'product_id' => $request->product_id,
+            'deal_price' => $request->dealPrice,
+            'date_from' => $request->form_date,
+            'date_to' => $request->to_date,
+        ]);
+
+        if (!$countDownProduct->save()){
+            return response()->json(['message' => 'Count down product not  created. Internal Server Error'], 500);
+        }
+        return response()->json(['message' => 'Count down product has been created'], 201);
+    }
+
+
+    public function getCountDownProduct(){
+        $countDownProduct = DB::table('count_down_products')
+            ->select('count_down_products.*','products.sell_price')
+            ->join('products','count_down_products.product_id','=','products.id')
+            ->first();
+        $countDownProductImages = DB::table('product_images')
+            ->select('id','image_url AS image')
+            ->where('product_id', $countDownProduct->product_id)->get();
+        $countDownProduct->productGallery = $countDownProductImages;
+        return response()->json(['product' => $countDownProduct], 200);
+    }
+
+
+    public function removeCountdownProduct(){
+        $lastCountDownProducts = CountDownProduct::all();
+
+        if ($lastCountDownProducts){
+            $lastCountDownProductDelete = CountDownProduct::find($lastCountDownProducts[0]->id);
+            if (!$lastCountDownProductDelete->delete()){
+                return response()->json(['message' => 'Count down product not  remove. Internal Server Error'], 500);
+            }
+        }
+    }
+
+
     /**
      * Remove the specified product image.
      *
@@ -452,6 +535,9 @@ class ProductController extends Controller
         }
         return response()->json(['message' => 'Product image not deleted. Internal Server Error'], 500);
     }
+
+
+
 
     /**
      * destroy the specified product in storage.

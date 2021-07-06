@@ -38,18 +38,28 @@
                                 <h5>{{selectedProduct.product_name}}</h5>
                                 <!--								<a href="javascript:void(0)" class="color-inherit text-underline mb-4 d-inline-block" @click="showReviewPopup">ADD A REVIEW</a>-->
                                 <!--								<emb-review-popup ref="productReviewPopup"></emb-review-popup>-->
-                                <h4 class="accent--text">
+                                <div  v-if="selectedProduct.countDownProduct == null">
+                                    <h4 class="accent--text">
                                     <emb-currency-sign></emb-currency-sign>
                                     {{selectedProduct.sell_price.toFixed(2)}}
-                                </h4>
+                                    </h4>
+                                </div>
+                                <div v-else>
+                                    <h5 class="d-inline-block mr-1">
+                                        <strike class="px-1"><emb-currency-sign class="font-color"></emb-currency-sign>{{selectedProduct.sell_price.toFixed(2)}}</strike>
+                                    </h5>
+                                    <h4 class="accent--text d-inline-block sec-content">
+                                        Now only <emb-currency-sign class="accent--text"></emb-currency-sign>{{selectedProduct.countDownProduct.deal_price.toFixed(2)}}
+                                    </h4>
+                                </div>
                                 <ul class="product-availablity list-unstyled pl-0 mb-4 mt-4">
                                     <li>
                                         <template v-if="selectedProduct.stat === 1">
-                                            <span class="font-weight-medium">Availablity</span> : <span
+                                            <span class="font-weight-medium">Availability</span> : <span
                                             class="font-weight-regular">In Stocks</span>
                                         </template>
                                         <template v-else>
-                                            <span class="font-weight-medium">Availablity</span> : <span
+                                            <span class="font-weight-medium">Availability</span> : <span
                                             class="font-weight-regular">Out Of Stocks</span>
                                         </template>
                                     </li>
@@ -57,8 +67,8 @@
                                         <!--										<span class="font-weight-medium">Product Code</span> : <span class="font-weight-regular">{{selectedProduct.product_code}}</span>-->
                                     </li>
                                     <li>
-                                        <span class="font-weight-medium">Tags</span>
-                                        <span>:</span>
+<!--                                        <span class="font-weight-medium">Tags</span>-->
+<!--                                        <span>:</span>-->
                                         <!--										<span class="font-weight-regular"	v-for="(tag,key) in selectedProduct.tags" :key="key">-->
                                         <!--											{{tag}}-->
                                         <!--										</span>-->
@@ -508,9 +518,9 @@
                     product_id: this.buyNowItem.id,
                     image: this.buyNowItem.images[0].image_url,
                     name: this.buyNowItem.product_name,
-                    price: this.buyNowItem.sell_price,
+                    price: this.buyNowItem.countDownProduct == null ? this.buyNowItem.sell_price : this.buyNowItem.countDownProduct.deal_price,
                     quantity: this.buyNowItem.quantity ? this.buyNowItem.quantity : 1,
-                    total: this.buyNowItem.sell_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
+                    total: this.buyNowItem.countDownProduct == null ? this.buyNowItem.sell_price : this.buyNowItem.countDownProduct.deal_price * (this.buyNowItem.quantity ? this.buyNowItem.quantity : 1),
                     aff_user_id: this.selectedProduct.user
                 }
                 axios.post('/api/cart/add-to-cart', newProduct).then(response => {
@@ -651,15 +661,13 @@
                         product_id: item.id,
                         image: item.images[0].image_url,
                         name: item.product_name,
-                        price: item.sell_price,
+                        price: item.countDownProduct == null ? item.sell_price : item.countDownProduct.deal_price,
                         quantity: item.quantity ? item.quantity : 1,
-                        total: item.sell_price * (item.quantity ? item.quantity : 1),
+                        total: item.countDownProduct == null ? item.sell_price : item.countDownProduct.deal_price * (item.quantity ? item.quantity : 1),
                         aff_user_id: item.user
                     }
                     axios.post('/api/cart/add-to-cart', newProduct).then(response => {
                         window.location.href = this.$router.history.current.path;
-                        // console.log(this.$router.history.current);
-                        // console.log(response.data.message)
                     }, error => {
                         const errors = error.response.data.message;
                         var html = '';

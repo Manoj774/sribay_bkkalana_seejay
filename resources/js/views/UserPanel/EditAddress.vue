@@ -29,7 +29,7 @@
                         <v-text-field type="email" v-model="profileData.email" v-if="$route.query.type == 'ship-address'" label="Email" :rules="inputRules.emailRules"></v-text-field>
                      </v-flex>
                       <v-flex xs12 sm12 md12 lg12 xl12 py-2>
-                          <v-text-field type="tel" max="10" v-model="profileData.phone_number" v-if="$route.query.type == 'ship-address'" label="Phone Number" :rules="inputRules.basictextRules"></v-text-field>
+                          <v-text-field type="tel" max="10" :counter="10" v-model="profileData.phone_number" v-if="$route.query.type == 'ship-address'" label="Phone Number" :rules="inputRules.phoneNumber"></v-text-field>
                       </v-flex>
                      <v-flex xs12 sm12 md12 lg12 xl12 py-2>
                         <v-btn class="accent mx-0 mb-4"  @click.stop.prevent="saveDetails" type="billing">Save</v-btn>
@@ -54,6 +54,10 @@
                 emailRules: [
                     v => !!v || 'E-mail is required',
                     v => /.+@.+/.test(v) || 'E-mail must be valid'
+                ],
+                phoneNumber: [
+                    v => !!v || 'Phone Number is required',
+                    v => v.length <= 10 || 'Name must be less than 10 characters',
                 ],
             },
 

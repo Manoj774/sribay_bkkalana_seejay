@@ -42,12 +42,11 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
     return {
       valid: false,
+      email: null,
       emailRules: [function (v) {
         return !!v || 'E-mail is required';
       }, function (v) {
@@ -57,11 +56,29 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     saveDetails: function saveDetails() {
-      this.$refs.form.validate();
+      var _this = this;
 
-      if (this.valid == true) {
-        this.$router.go('/session/forgot-password');
+      if (this.email == null) {
+        this.$toast.open({
+          message: "The E-mail is required",
+          type: 'error'
+        });
+        return;
       }
+
+      axios.post("/api/auth/reset-password", {
+        email: this.email
+      }).then(function (result) {
+        _this.$toast.open({
+          message: result.data.message,
+          type: 'success'
+        });
+      })["catch"](function (error) {
+        _this.$toast.open({
+          message: error.response.data.message,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -223,31 +240,21 @@ var render = function() {
                         _vm._v(" "),
                         _c(
                           "v-form",
-                          {
-                            ref: "form",
-                            model: {
-                              value: _vm.valid,
-                              callback: function($$v) {
-                                _vm.valid = $$v
-                              },
-                              expression: "valid"
-                            }
-                          },
+                          { ref: "form" },
                           [
                             _c("v-text-field", {
                               attrs: {
                                 type: "email",
                                 rules: _vm.emailRules,
-                                placeholder: "Enter Your Email*"
-                              }
-                            }),
-                            _vm._v(" "),
-                            _c("v-text-field", {
-                              staticClass: "mb-4",
-                              attrs: {
-                                type: "email",
-                                rules: _vm.emailRules,
-                                placeholder: "Retype Your Email*"
+                                placeholder: "Enter Your Email*",
+                                required: ""
+                              },
+                              model: {
+                                value: _vm.email,
+                                callback: function($$v) {
+                                  _vm.email = $$v
+                                },
+                                expression: "email"
                               }
                             }),
                             _vm._v(" "),

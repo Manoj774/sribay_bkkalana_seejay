@@ -58,7 +58,7 @@
          saveDetails(){
 				this.$refs.form.validate();
             if(this.valid == true){
-               this.$snotify.success('Your account Information Updated succesfully',{
+               this.$snotify.success('Your account Information Updated successfully',{
                   closeOnClick: false,
                   pauseOnHover: false,
                   timeout: 1000,

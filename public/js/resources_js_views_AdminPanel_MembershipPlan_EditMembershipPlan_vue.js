@@ -190,6 +190,18 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateMembership",
   data: function data() {
@@ -197,6 +209,7 @@ __webpack_require__.r(__webpack_exports__);
       membership: {
         name: "",
         price: "",
+        value_for_point: '',
         no_of_link_click_per_day: "",
         task_rewards: "",
         total_reward_per_day: "",
@@ -216,6 +229,9 @@ __webpack_require__.r(__webpack_exports__);
       }],
       priceRules: [function (v) {
         return !!v || 'Price is required';
+      }],
+      valueForPoint: [function (v) {
+        return !!v || 'Value For Point';
       }],
       nuOfLinkPerDayRules: [function (v) {
         return !!v || 'No of Link Click Per Day is required';
@@ -238,12 +254,7 @@ __webpack_require__.r(__webpack_exports__);
     getMemberShipDetails: function getMemberShipDetails(id) {
       var _this = this;
 
-      axios.get(this.$serverUrl + 'api/membership/' + id + '/edit', {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-        }
-      }).then(function (response) {
+      axios.get('/api/membership/' + id + '/edit').then(function (response) {
         _this.membership = response.data.membershipPlan;
       }, function (response) {
         var errors = response.data.message;
@@ -264,25 +275,20 @@ __webpack_require__.r(__webpack_exports__);
       this.membership.total_reward_per_day = calculateDailyReward;
     },
     calculateIncomes: function calculateIncomes() {
-      var calculateDailyIncome = this.membership.total_reward_per_day * 50;
+      var calculateDailyIncome = this.membership.total_reward_per_day * this.membership.value_for_point;
       this.membership.daily_income = calculateDailyIncome;
       var calculateWeeklyIncome = calculateDailyIncome * 7;
       this.membership.weekly_income = calculateWeeklyIncome;
       var calculateMonthlyIncome = calculateWeeklyIncome * 4;
       this.membership.monthly_income = calculateMonthlyIncome;
-      var calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + this.membership.bonus_rewards * 50;
+      var calculateMonthlyIncomeWithBonus = calculateMonthlyIncome + this.membership.bonus_rewards * this.membership.value_for_point;
       this.membership.monthly_income_with_bonus = calculateMonthlyIncomeWithBonus;
       this.membership.annual_revenue = calculateMonthlyIncomeWithBonus * 12;
     },
     submitUpdateMembershipPlanFrom: function submitUpdateMembershipPlanFrom() {
       var _this2 = this;
 
-      axios.put(this.$serverUrl + 'api/membership/' + this.membership.id, this.membership, {
-        headers: {
-          'Content-Type': 'application/json',
-          'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
-        }
-      }).then(function (response) {
+      axios.put('/api/membership/' + this.membership.id, this.membership).then(function (response) {
         _this2.$toast.open({
           message: response.data.message,
           type: 'success'
@@ -527,6 +533,43 @@ var render = function() {
                                             )
                                           },
                                           expression: "membership.price"
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  ),
+                                  _vm._v(" "),
+                                  _c(
+                                    "v-col",
+                                    {
+                                      attrs: {
+                                        cols: "12",
+                                        sm: "12",
+                                        md: "4",
+                                        lg: "4"
+                                      }
+                                    },
+                                    [
+                                      _c("v-text-field", {
+                                        staticClass: "name-input",
+                                        attrs: {
+                                          label: "Value For Point",
+                                          type: "number",
+                                          required: "",
+                                          rules: _vm.valueForPoint
+                                        },
+                                        on: { blur: _vm.calculateIncomes },
+                                        model: {
+                                          value: _vm.membership.value_for_point,
+                                          callback: function($$v) {
+                                            _vm.$set(
+                                              _vm.membership,
+                                              "value_for_point",
+                                              $$v
+                                            )
+                                          },
+                                          expression:
+                                            "membership.value_for_point"
                                         }
                                       })
                                     ],

@@ -3,7 +3,7 @@
 		<v-container grid-list-xl py-0>
 			<div class="footer-top">
 				<v-layout row wrap>
-					<v-flex xs12 sm12 md4 lg5 xl5>
+					<v-flex xs12 sm12 md6 lg7 xl5>
 						<div class="about-wrap">
 							<h6 class="white--text mb-6">{{title}}</h6>
 							<span class="white--text">{{description}}</span>
@@ -28,17 +28,6 @@
 									v-for="(list,key) in session"
 									:key="key"
 								>
-									<router-link :to="list.path">{{$t(list.menuItem)}}</router-link>
-								</li>
-							</ul>
-						</div>
-					</v-flex>
-					<v-flex xs12 sm3 md2 lg2 xl>
-						<h6 class="white--text mb-4">Categories</h6>
-						<div class="policy-menu">
-							<ul class="list-unstyled pl-0">
-								<li v-for="(list,key) in categories"
-									:key="key">
 									<router-link :to="list.path">{{$t(list.menuItem)}}</router-link>
 								</li>
 							</ul>
@@ -113,32 +102,6 @@ export default {
 				{
 					menuItem:"message.register",
 					path:'/session/register',
-				},
-				{
-					menuItem:"message.forgotPassword",
-					path:"/session/forgot-password",
-				},
-				{
-					menuItem:"message.thankYou",
-					path:"/session/thank-you"
-				}
-			],
-			categories:[
-				{
-					menuItem:"message.men",
-					path:"/products/men"
-				},
-				{
-					menuItem:"message.women",
-					path:"/products/women"
-				},
-				{
-					menuItem:"message.accessories",
-					path:"/products/accesories"
-				},
-				{
-					menuItem:"message.gadgets",
-					path:"/products/gadgets"
 				}
 			],
 			socialLinks:[

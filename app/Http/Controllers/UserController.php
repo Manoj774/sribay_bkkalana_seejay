@@ -459,7 +459,7 @@ class UserController extends Controller
             ->sum('earn_amount');
 
         $accountBalance = DB::table('user_has_member_ships')
-            ->select('account_amount','membership_plans.name AS membership_name')
+            ->select('account_amount','membership_plans.name AS membership_name','membership_id','user_has_member_ships.id AS userHasMembershipId')
             ->join('membership_plans','membership_plans.id','=','user_has_member_ships.membership_id')
             ->where('user_id', '=', $request->user()->id)
             ->first();
@@ -546,6 +546,7 @@ class UserController extends Controller
             'currentMonthCommission' => $currentMonthCommission,
             'lastMonthCommission' => $lastMonthCommission,
             'membership_name' => $accountBalance->membership_name,
+            'userHasMembershipID' => $accountBalance->userHasMembershipId,
             'accountBalance' => $accountBalance->account_amount,
             'generateLinkTotalUniqueClick' => $generateLinkTotalUniqueClick,
             'generateLinkTotalClick' => $generateLinkTotalClick,
