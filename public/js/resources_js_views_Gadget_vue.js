@@ -88,6 +88,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   props: ['data'],
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["wishlist"])),
   methods: {
+    capitalizeFirstLetter: function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
     /**
      * method for adding item to cart
     */
@@ -761,31 +765,6 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
-                { staticClass: "wishlist-icon" },
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { icon: "" },
-                      on: {
-                        click: function($event) {
-                          return _vm.addItemToWishlist(_vm.data)
-                        }
-                      }
-                    },
-                    [
-                      _c("v-icon", { staticClass: "grey--text" }, [
-                        _vm._v("mdi-cards-heart ")
-                      ])
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
                 { staticClass: "add-to-cart" },
                 [
                   _c(
@@ -811,7 +790,11 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "emb-card-content pa-4" }, [
             _c("h6", { staticClass: "font-weight-medium text-capitalize" }, [
-              _vm._v(_vm._s(_vm.data.product_name.substring(0, 50) + "...."))
+              _vm._v(
+                _vm._s(
+                  _vm.data.product_name.toLowerCase().substring(0, 50) + "...."
+                )
+              )
             ]),
             _vm._v(" "),
             _c(

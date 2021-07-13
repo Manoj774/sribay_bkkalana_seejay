@@ -317,24 +317,17 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "SubscriptionPlan",
   data: function data() {
     return {
+      tab: null,
       memberships: [],
       e1: 1,
       planId: 0,
       planPrice: 0,
       userId: 0,
+      payment_slip: null,
       login: {
         email: null,
         password: null
@@ -351,6 +344,7 @@ __webpack_require__.r(__webpack_exports__);
       user: JSON.parse(sessionStorage.getItem('user')),
       login_valid: false,
       register_valid: false,
+      bank_payment_valid: false,
       emailRules: [function (v) {
         return !!v || 'E-mail is required';
       }, function (v) {
@@ -360,7 +354,12 @@ __webpack_require__.r(__webpack_exports__);
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty';
         }]
-      }
+      },
+      paymentSlipRules: [function (v) {
+        return !!v || 'E-mail is required';
+      }, function (value) {
+        return !value || value.size < 2000000 || 'Payment slip size should be less than 2 MB!';
+      }]
     };
   },
   created: function created() {
@@ -408,31 +407,13 @@ __webpack_require__.r(__webpack_exports__);
         this.e1 = 2;
       }
     },
-    // loginUser(){
-    //     this.$refs.login_form.validate();
-    //     if(this.login_valid === true){
-    //         axios.post('/api/login', this.login).then(response => {
-    //             sessionStorage.setItem('token', response.data.token)
-    //             sessionStorage.setItem('role', response.data.role)
-    //             sessionStorage.setItem('user', JSON.stringify(response.data.user))
-    //             this.user = response.data.user;
-    //             this.initPayment();
-    //             this.e1 = 3;
-    //         }).catch(error => {
-    //             this.$toast.open({
-    //                 message: error.response.data.message,
-    //                 type: 'error',
-    //             });
-    //         });
-    //     }
-    // },
     registerUser: function registerUser() {
       var _this2 = this;
 
       this.$refs.register_form.validate();
 
       if (this.register_valid === true) {
-        axios.post('/api/create-member-user', this.register).then(function (response) {
+        axios.post('/api/users/create-member-user', this.register).then(function (response) {
           // sessionStorage.setItem('token', response.data.token)
           // sessionStorage.setItem('role', response.data.role)
           // sessionStorage.setItem('user', JSON.stringify(response.data.user))
@@ -504,11 +485,6 @@ __webpack_require__.r(__webpack_exports__);
           payment_stat: 2
         };
         axios.post('/api/users/register-membership', payment).then(function (response) {
-          // this.user = response.data.userData;
-          // sessionStorage.removeItem('role')
-          // sessionStorage.removeItem('user')
-          // sessionStorage.setItem('role', this.user.role)
-          // sessionStorage.setItem('user', JSON.stringify(this.user))
           toast.open({
             message: response.data.message,
             type: 'success'
@@ -529,14 +505,49 @@ __webpack_require__.r(__webpack_exports__);
           message: result.data.description,
           type: 'error'
         });
-        console.log(result);
+      }
+    },
+    selectFile: function selectFile(file) {
+      this.payment_slip = file;
+    },
+    submitBankPayment: function submitBankPayment() {
+      var _this3 = this;
+
+      this.$refs.bank_payment_form.validate();
+
+      if (this.bank_payment_valid) {
+        var user_id = this.user.id;
+        var planId = this.planId;
+        var planPrice = this.planPrice;
+        var formData = new FormData();
+        formData.append('bank_slip', this.payment_slip);
+        formData.append('user', user_id);
+        formData.append('subscription_plan', planId);
+        formData.append('payment_method', "Bank Payment");
+        formData.append('amount', planPrice);
+        formData.append('payment_stat', 0);
+        axios.post('/api/users/register-membership', formData).then(function (response) {
+          _this3.$toast.open({
+            message: response.data.message,
+            type: 'success'
+          });
+
+          setTimeout(function () {
+            window.location.href = '/';
+          }, 4000);
+        })["catch"](function (error) {
+          _this3.$toast.open({
+            message: error.response.data.message,
+            type: 'error'
+          });
+        });
       }
     },
     finish: function finish() {
-      var _this3 = this;
+      var _this4 = this;
 
       this.intervalid1 = setInterval(function () {
-        _this3.$router.go(_this3.$router.currentRoute);
+        _this4.$router.go(_this4.$router.currentRoute);
       }, 2000);
     },
     back: function back() {
@@ -663,7 +674,7 @@ var render = function() {
                     { attrs: { complete: _vm.e1 > 1, step: "1" } },
                     [
                       _vm._v(
-                        "\n                    Choose Subscription Plan\n                "
+                        "\n                        Choose Subscription Plan\n                    "
                       )
                     ]
                   ),
@@ -675,7 +686,7 @@ var render = function() {
                     { attrs: { complete: _vm.e1 > 2, step: "2" } },
                     [
                       _vm._v(
-                        "\n                    Professional Data\n                "
+                        "\n                        Professional Data\n                    "
                       )
                     ]
                   ),
@@ -685,7 +696,11 @@ var render = function() {
                   _c(
                     "v-stepper-step",
                     { attrs: { complete: _vm.e1 > 3, step: "3" } },
-                    [_vm._v("\n                    Payment\n                ")]
+                    [
+                      _vm._v(
+                        "\n                        Payment\n                    "
+                      )
+                    ]
                   )
                 ],
                 1
@@ -695,350 +710,140 @@ var render = function() {
                 "v-stepper-items",
                 [
                   _c("v-stepper-content", { attrs: { step: "1" } }, [
-                    _c("div", { attrs: { id: "pricing-container" } }, [
-                      _c("div", { attrs: { id: "pricing-switch" } }),
-                      _vm._v(" "),
-                      _c(
-                        "div",
-                        { attrs: { id: "pricing-cards" } },
-                        _vm._l(_vm.memberships, function(item, index) {
-                          return _c("div", { key: index }, [
+                    _c("div", { staticClass: "row" }, [
+                      _c("div", { staticClass: "col-md-12 mb-5" }, [
+                        _c("h2", { staticClass: "main-head" }, [
+                          _vm._v("Subscription Plans")
+                        ])
+                      ])
+                    ]),
+                    _vm._v(" "),
+                    _c(
+                      "div",
+                      { staticClass: "row" },
+                      _vm._l(_vm.memberships, function(item, index) {
+                        return _c(
+                          "div",
+                          { key: index, staticClass: "col-md-3" },
+                          [
                             _c(
                               "div",
-                              { staticClass: "price-card price-card--hero" },
+                              { staticClass: "pricing-table turquoise" },
                               [
-                                _c(
-                                  "div",
-                                  { staticClass: "price-card--header" },
-                                  [_c("h4", [_vm._v(_vm._s(item.name))])]
-                                ),
+                                _c("div", { staticClass: "pricing-label" }, [
+                                  _vm._v("Fixed Price")
+                                ]),
+                                _vm._v(" "),
+                                _c("h2", [_vm._v(_vm._s(item.name))]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "pricing-features" }, [
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Bonus Rewards Per Month"),
+                                    _c("span", [
+                                      _vm._v(_vm._s(item.bonus_rewards))
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Daily Income"),
+                                    _c("span", [
+                                      _vm._v(
+                                        "Rs. " +
+                                          _vm._s(item.daily_income.toFixed(2))
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Weekly Income"),
+                                    _c("span", [
+                                      _vm._v(
+                                        "Rs. " +
+                                          _vm._s(item.weekly_income.toFixed(2))
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Monthly Income"),
+                                    _c("span", [
+                                      _vm._v(
+                                        "Rs. " +
+                                          _vm._s(item.monthly_income.toFixed(2))
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Income with Bonus"),
+                                    _c("span", [
+                                      _vm._v(
+                                        "Rs. " +
+                                          _vm._s(
+                                            item.monthly_income_with_bonus.toFixed(
+                                              2
+                                            )
+                                          )
+                                      )
+                                    ])
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("div", { staticClass: "feature" }, [
+                                    _vm._v("Annual Revenue"),
+                                    _c("span", [
+                                      _vm._v(
+                                        "Rs. " +
+                                          _vm._s(item.annual_revenue.toFixed(2))
+                                      )
+                                    ])
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("div", { staticClass: "price-tag" }, [
+                                  _c("span", { staticClass: "symbol" }, [
+                                    _vm._v("Rs. ")
+                                  ]),
+                                  _vm._v(" "),
+                                  _c("span", { staticClass: "amount" }, [
+                                    _vm._v(_vm._s(item.price))
+                                  ])
+                                ]),
                                 _vm._v(" "),
                                 _c(
-                                  "div",
-                                  { staticClass: "price-card--price" },
+                                  "v-btn",
+                                  {
+                                    staticStyle: {
+                                      background: "#44cdd2",
+                                      color: "white"
+                                    },
+                                    attrs: {
+                                      disabled:
+                                        _vm.user != null &&
+                                        _vm.user.membership === item.id
+                                    },
+                                    on: {
+                                      click: function($event) {
+                                        return _vm.chooseSubscriptionPlan(
+                                          item.id,
+                                          item.price
+                                        )
+                                      }
+                                    }
+                                  },
                                   [
-                                    _c(
-                                      "div",
-                                      { staticClass: "price-card--price-text" },
-                                      [
-                                        _c(
-                                          "div",
-                                          {
-                                            staticClass:
-                                              "price-card--price-number toggle-price-content odometer",
-                                            attrs: {
-                                              "data-price-yearly": "900"
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              _vm._s(item.price) +
-                                                "\n                                            "
-                                            )
-                                          ]
-                                        )
-                                      ]
-                                    ),
-                                    _vm._v(" "),
-                                    _c(
-                                      "div",
-                                      {
-                                        staticClass:
-                                          "price-card--price-conditions"
-                                      },
-                                      [
-                                        _c(
-                                          "div",
-                                          {
-                                            staticClass: "toggle-price-content",
-                                            attrs: {
-                                              "data-price-monthly":
-                                                "Billed Monthly",
-                                              "data-price-yearly":
-                                                "Billed Annually"
-                                            }
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Billed Annually\n                                            "
-                                            )
-                                          ]
-                                        )
-                                      ]
+                                    _vm._v(
+                                      "\n                                        Get Started\n                                    "
                                     )
                                   ]
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "price-card--cta" },
-                                  [
-                                    _c(
-                                      "v-btn",
-                                      {
-                                        attrs: {
-                                          color: "teal lighten-1",
-                                          disabled:
-                                            _vm.user != null &&
-                                            _vm.user.membership === item.id
-                                        },
-                                        on: {
-                                          click: function($event) {
-                                            return _vm.chooseSubscriptionPlan(
-                                              item.id,
-                                              item.price
-                                            )
-                                          }
-                                        }
-                                      },
-                                      [
-                                        _vm._v(
-                                          "Get Started\n                                        "
-                                        )
-                                      ]
-                                    )
-                                  ],
-                                  1
-                                ),
-                                _vm._v(" "),
-                                _c(
-                                  "div",
-                                  { staticClass: "price-card--features" },
-                                  [
-                                    _c(
-                                      "ul",
-                                      {
-                                        staticClass:
-                                          "price-card--features--list text-center"
-                                      },
-                                      [
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Bonus Rewards Per Month\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    " +
-                                                    _vm._s(item.bonus_rewards) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Daily Income\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    Rs. " +
-                                                    _vm._s(
-                                                      item.daily_income.toFixed(
-                                                        2
-                                                      )
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Weekly Income\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    Rs. " +
-                                                    _vm._s(
-                                                      item.weekly_income.toFixed(
-                                                        2
-                                                      )
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Monthly Income\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    Rs. " +
-                                                    _vm._s(
-                                                      item.monthly_income.toFixed(
-                                                        2
-                                                      )
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Monthly Income with Bonus\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    Rs. " +
-                                                    _vm._s(
-                                                      item.monthly_income_with_bonus.toFixed(
-                                                        2
-                                                      )
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        ),
-                                        _vm._v(" "),
-                                        _c(
-                                          "li",
-                                          {
-                                            staticClass:
-                                              "price-card--features--item "
-                                          },
-                                          [
-                                            _vm._v(
-                                              "Annual Revenue\n                                                "
-                                            ),
-                                            _c(
-                                              "v-chip",
-                                              {
-                                                staticClass: "ma-2",
-                                                attrs: {
-                                                  color: "cyan",
-                                                  label: "",
-                                                  "text-color": "white"
-                                                }
-                                              },
-                                              [
-                                                _vm._v(
-                                                  "\n                                                    Rs. " +
-                                                    _vm._s(
-                                                      item.annual_revenue.toFixed(
-                                                        2
-                                                      )
-                                                    ) +
-                                                    "\n                                                "
-                                                )
-                                              ]
-                                            )
-                                          ],
-                                          1
-                                        )
-                                      ]
-                                    )
-                                  ]
-                                ),
-                                _vm._v(" "),
-                                _c("div", {
-                                  staticClass:
-                                    "price-card--mobile-features-toggle"
-                                })
-                              ]
+                                )
+                              ],
+                              1
                             )
-                          ])
-                        }),
-                        0
-                      )
-                    ])
+                          ]
+                        )
+                      }),
+                      0
+                    )
                   ]),
                   _vm._v(" "),
                   _c(
@@ -1227,7 +1032,7 @@ var render = function() {
                                         },
                                         [
                                           _vm._v(
-                                            "\n                                        Create\n                                    "
+                                            "\n                                            Create\n                                        "
                                           )
                                         ]
                                       )
@@ -1241,16 +1046,6 @@ var render = function() {
                           )
                         ],
                         1
-                      ),
-                      _vm._v(" "),
-                      _c(
-                        "v-btn",
-                        { staticClass: "mt-4", attrs: { text: "" } },
-                        [
-                          _vm._v(
-                            "\n                        Back\n                    "
-                          )
-                        ]
                       )
                     ],
                     1
@@ -1261,28 +1056,206 @@ var render = function() {
                     { attrs: { step: "3" } },
                     [
                       _c(
-                        "v-row",
-                        { staticStyle: { "justify-content": "center" } },
+                        "v-tabs",
+                        {
+                          staticClass: "mt-5",
+                          attrs: { centered: "", "slider-color": "red" },
+                          model: {
+                            value: _vm.tab,
+                            callback: function($$v) {
+                              _vm.tab = $$v
+                            },
+                            expression: "tab"
+                          }
+                        },
                         [
                           _c(
-                            "v-col",
-                            {
-                              attrs: { cols: "12", sm: "12", md: "5", lg: "5" }
-                            },
-                            [_c("div", { attrs: { id: "card_container" } })]
+                            "v-tab",
+                            { attrs: { href: "#tab-card-payment" } },
+                            [
+                              _vm._v(
+                                "\n                                Card Payment\n                            "
+                              )
+                            ]
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-tab",
+                            { attrs: { href: "#tab-bank-payment" } },
+                            [
+                              _vm._v(
+                                "\n                                Bank Payment\n                            "
+                              )
+                            ]
                           )
                         ],
                         1
                       ),
                       _vm._v(" "),
                       _c(
-                        "v-btn",
-                        { attrs: { text: "" }, on: { click: _vm.back } },
+                        "v-tabs-items",
+                        {
+                          model: {
+                            value: _vm.tab,
+                            callback: function($$v) {
+                              _vm.tab = $$v
+                            },
+                            expression: "tab"
+                          }
+                        },
                         [
-                          _vm._v(
-                            "\n                        Back\n                    "
+                          _c(
+                            "v-tab-item",
+                            { attrs: { value: "tab-card-payment" } },
+                            [
+                              _c(
+                                "v-card",
+                                { attrs: { flat: "" } },
+                                [
+                                  _c(
+                                    "v-card-text",
+                                    [
+                                      _c(
+                                        "v-row",
+                                        {
+                                          staticStyle: {
+                                            "justify-content": "center"
+                                          }
+                                        },
+                                        [
+                                          _c(
+                                            "v-col",
+                                            {
+                                              attrs: {
+                                                cols: "12",
+                                                sm: "12",
+                                                md: "5",
+                                                lg: "5"
+                                              }
+                                            },
+                                            [
+                                              _c("div", {
+                                                attrs: { id: "card_container" }
+                                              })
+                                            ]
+                                          )
+                                        ],
+                                        1
+                                      )
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              )
+                            ],
+                            1
+                          ),
+                          _vm._v(" "),
+                          _c(
+                            "v-tab-item",
+                            { attrs: { value: "tab-bank-payment" } },
+                            [
+                              _c(
+                                "v-card",
+                                { attrs: { flat: "" } },
+                                [
+                                  _c("v-card-text", [
+                                    _c(
+                                      "div",
+                                      {
+                                        staticClass:
+                                          "row justify-content-center",
+                                        staticStyle: {
+                                          "justify-content": "center"
+                                        }
+                                      },
+                                      [
+                                        _c(
+                                          "div",
+                                          { staticClass: "col-sm-6" },
+                                          [
+                                            _c(
+                                              "h5",
+                                              { staticClass: "font-italic" },
+                                              [
+                                                _vm._v(
+                                                  "nulla dolor dicta laborum unde molestias ab magni.Lorem ipsum dolor sit amet,\n                                                    consectetur adipisicing elit"
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c("p", [
+                                              _vm._v(
+                                                "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat quibusdam cum blanditiis voluptas,\n                                                    voluptates hic eius maxime dolorum saepe quae animi eveniet nulla dolor dicta laborum unde molestias ab\n                                                    magni.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat quibusdam cum blanditiis\n                                                    voluptas,\n                                                    voluptates hic eius maxime dolorum saepe quae animi eveniet nulla dolor dicta laborum unde molestias ab\n                                                    magni."
+                                              )
+                                            ]),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-form",
+                                              {
+                                                ref: "bank_payment_form",
+                                                model: {
+                                                  value: _vm.bank_payment_valid,
+                                                  callback: function($$v) {
+                                                    _vm.bank_payment_valid = $$v
+                                                  },
+                                                  expression:
+                                                    "bank_payment_valid"
+                                                }
+                                              },
+                                              [
+                                                _c("v-file-input", {
+                                                  attrs: {
+                                                    rules: _vm.paymentSlipRules,
+                                                    accept:
+                                                      "image/png, image/jpeg, image/bmp",
+                                                    placeholder:
+                                                      "Pick an avatar",
+                                                    "prepend-icon":
+                                                      "mdi-camera",
+                                                    label: "Payment Slip"
+                                                  },
+                                                  on: { change: _vm.selectFile }
+                                                }),
+                                                _vm._v(" "),
+                                                _c(
+                                                  "v-btn",
+                                                  {
+                                                    staticStyle: {
+                                                      color: "aliceblue"
+                                                    },
+                                                    attrs: {
+                                                      color: "red lighten-1"
+                                                    },
+                                                    on: {
+                                                      click:
+                                                        _vm.submitBankPayment
+                                                    }
+                                                  },
+                                                  [
+                                                    _vm._v(
+                                                      "Confirm Bank Payment"
+                                                    )
+                                                  ]
+                                                )
+                                              ],
+                                              1
+                                            )
+                                          ],
+                                          1
+                                        )
+                                      ]
+                                    )
+                                  ])
+                                ],
+                                1
+                              )
+                            ],
+                            1
                           )
-                        ]
+                        ],
+                        1
                       )
                     ],
                     1
@@ -1366,7 +1339,7 @@ var render = function() {
                                                       "div",
                                                       {
                                                         staticClass:
-                                                          "emb-card pa-6\n                                                           thankyou-block\n                                                           white pa-6\n                                                           text-center"
+                                                          "emb-card pa-6\n                                                               thankyou-block\n                                                               white pa-6\n                                                               text-center"
                                                       },
                                                       [
                                                         _c(
@@ -1377,7 +1350,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "For every thing you had\n                                                            done with Embryo"
+                                                              "For every thing you had\n                                                                done with Embryo"
                                                             )
                                                           ]
                                                         ),
@@ -1435,7 +1408,7 @@ var render = function() {
                                                           },
                                                           [
                                                             _vm._v(
-                                                              "Buy\n                                                            Embryo Now\n                                                        "
+                                                              "Buy\n                                                                Embryo Now\n                                                            "
                                                             )
                                                           ]
                                                         )
@@ -1469,7 +1442,7 @@ var render = function() {
                         },
                         [
                           _vm._v(
-                            "\n                        Finish\n                    "
+                            "\n                            Finish\n                        "
                           )
                         ]
                       )

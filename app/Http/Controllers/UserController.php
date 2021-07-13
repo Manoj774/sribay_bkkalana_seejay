@@ -65,21 +65,27 @@ class UserController extends Controller
      * @return Response json
      */
     public function getMembers(){
+
         $members = DB::table('users')
             ->select('users.id','users.first_name','users.last_name','users.city',
-                    'users.zip_code','users.email','users.created_at','users.stat',
-                    'user_has_member_ships.account_amount','membership_plans.name AS membership')
+                    'users.zip_code','users.email','users.created_at','users.stat','user_has_member_ships.membership_id',
+                    'user_has_member_ships.account_amount','membership_plans.name AS membership','user_has_member_ships.stat AS affiliate_stat')
             ->join('user_has_member_ships','users.id','=','user_has_member_ships.user_id')
             ->join('membership_plans','user_has_member_ships.membership_id','=','membership_plans.id')
             ->whereNotIn('role', [1,2])->get();
 
         $mem = array();
-
         foreach ($members as $member){
             $orders = DB::table('orders')
                 ->where('user_id','=',$member->id)
                 ->count('id');
+            $member_ship_payment = DB::table('payments')
+                ->where('user_id','=',$member->id)
+                ->where('membership','=',$member->membership_id)
+                ->where('payment_method','=','Bank Payment')
+                ->where('payment_stat','=',0)->first();
             $member->orders = $orders;
+            $member->payment_details = $member_ship_payment;
             $mem[] = $member;
         }
 
@@ -108,7 +114,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
 
         $bankDetails = UserHasMemberShip::where('user_id','=',$id)->first();
@@ -151,7 +157,7 @@ class UserController extends Controller
             'zip_code' => 'required',
         ]);
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
         $userShipping = CustomerShippingAddress::find($request->id);
         if (!$userShipping) {
@@ -198,7 +204,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
 
         $h = new Hashids('', 5);
@@ -241,40 +247,77 @@ class UserController extends Controller
             'user' => 'required',
             'subscription_plan' => 'required',
             'payment_method' => 'required',
-            'card_number' => 'required',
-            'received_date' => 'required',
-            'transaction_id' => 'required',
             'amount' => 'required',
             'payment_stat' => 'required',
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
+
+        if ($request->payment_method == "CARD"){
+            $validator = Validator::make($request->all(), [
+                'card_number' => 'required',
+                'received_date' => 'required',
+                'transaction_id' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => $validator->errors()->all()], 401);
+            }
+        }
+
+        if ($request->payment_method == "Bank Payment"){
+            $validator = Validator::make($request->all(), [
+                'bank_slip' => 'required',
+            ]);
+            if ($validator->fails()) {
+                return response()->json(['message' => $validator->errors()->all()], 401);
+            }
         }
 
         $payment = new Payment([
             'payment_stat' => $request->payment_stat,
             'payment_method' => $request->payment_method,
             'amount' => $request->amount,
-            'transaction_id' => $request->transaction_id,
-            'card_no' => $request->card_number,
-            'received_date' => $request->received_date,
             'membership' => $request->subscription_plan,
             'user_id' => $request->user,
         ]);
+
+
+        if ($request->payment_method == "CARD"){
+
+            $payment->transaction_id = $request->transaction_id;
+            $payment->card_no = $request->card_number;
+            $payment->received_date = $request->received_date;
+        }
+
+        if ($request->payment_method == "Bank Payment"){
+            $courseImage = '';
+            $destinationPath = '';
+            $image_path = '';
+            if ($image = $request->file('bank_slip')) {
+                $destinationPath = public_path('images/payment_slip/');
+                $paymentSlipImage = date('YmdHis') . "." . $image->getClientOriginalExtension();
+                $image->move($destinationPath, $paymentSlipImage);
+                $image_path = '/images/payment_slip/' . $paymentSlipImage;
+            }
+            $payment->payment_slip = $image_path;
+        }
+
 
         if ($payment->save()) {
 
             $membership = MembershipPlan::find($request->subscription_plan);
 
-            $userHasMembership = UserHasMemberShip::where('user_id','=',$request->user)
-                                 ->first();
+            $userHasMembership = UserHasMemberShip::where('user_id','=',$request->user)->first();
 
             if ($userHasMembership){
 
                 $userHasMembership->membership_id = $request->subscription_plan;
                 $userHasMembership->account_amount = ($userHasMembership->account_amount + $membership->registered_commission);
-
+                if ($request->payment_method == "Bank Payment"){
+                    $userHasMembership->stat = false;
+                }
                 if (!$userHasMembership->update()) {
                     return response()->json(['message' => 'User Membership update failed. Internal Server Error'], 500);
                 }
@@ -286,6 +329,9 @@ class UserController extends Controller
                     'membership_id' => $request->subscription_plan,
                     'account_amount' => $membership->registered_commission,
                 ]);
+                if ($request->payment_method == "Bank Payment"){
+                    $userHasMembership->stat = false;
+                }
                 if (!$userHasMembership->save()) {
                     return response()->json(['message' => 'User Membership create failed. Internal Server Error'], 500);
                 }
@@ -308,7 +354,7 @@ class UserController extends Controller
                 return response()->json(['message' => 'User role not update. Internal Server Error'], 500);
             }
 
-            if ($user->referral_id){
+            if ($user->referral_id && $request->payment_method == "CARD"){
 
                 $userHasMembership = UserHasMemberShip::where('user_id','=',$user->referral_id)->first();
 
@@ -330,6 +376,9 @@ class UserController extends Controller
 
                 }
 
+            }
+            if ($request->payment_method == "Bank Payment"){
+                return response()->json(['message' => 'Membership purchasing successfully. Pending Approval.'], 200);
             }
             return response()->json(['message' => 'Membership purchasing successfully'], 200);
         }
@@ -367,7 +416,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
 
         $user = new User([
@@ -403,7 +452,7 @@ class UserController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
         $user = User::find($request->user()->id);
         if (!$user) {
@@ -458,12 +507,20 @@ class UserController extends Controller
             ->whereBetween('created_at', [$lastMonthStart, $lastMonthEnd])
             ->sum('earn_amount');
 
+
         $accountBalance = DB::table('user_has_member_ships')
-            ->select('account_amount','membership_plans.name AS membership_name','membership_id','user_has_member_ships.id AS userHasMembershipId')
+            ->select('user_has_member_ships.account_amount','membership_plans.task_rewards AS membership_task_rewards','membership_plans.name AS membership_name','membership_id','user_has_member_ships.id AS userHasMembershipId','user_has_member_ships.stat AS affiliate_activate')
             ->join('membership_plans','membership_plans.id','=','user_has_member_ships.membership_id')
             ->where('user_id', '=', $request->user()->id)
             ->first();
 
+        $memberPoint =DB::table('generate_link_clicks')
+            ->where('user_id','=',$request->user()->id)
+            ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+            ->groupBy('ip_address')
+            ->get();
+
+        $weekly_points = count($memberPoint) * $accountBalance->membership_task_rewards;
 
         $generateLinkTotalUniqueClick = DB::table('generate_link_clicks')
             ->where('user_id', '=', $request->user()->id)
@@ -547,6 +604,7 @@ class UserController extends Controller
             'lastMonthCommission' => $lastMonthCommission,
             'membership_name' => $accountBalance->membership_name,
             'userHasMembershipID' => $accountBalance->userHasMembershipId,
+            'affiliate_activate' => $accountBalance->affiliate_activate,
             'accountBalance' => $accountBalance->account_amount,
             'generateLinkTotalUniqueClick' => $generateLinkTotalUniqueClick,
             'generateLinkTotalClick' => $generateLinkTotalClick,
@@ -554,6 +612,7 @@ class UserController extends Controller
             'generateLinkTotalMobileClick' => $generateLinkTotalMobileClick,
             'generateLinkTotalTabletClick' => $generateLinkTotalTabletClick,
             'generateLinkTotalOtherClick' => $generateLinkTotalOtherClick,
+            'weeklyPoints' => $weekly_points,
             'earnHistory' => $earnHistory,
             'referral' => $referralsData
         ];
@@ -572,6 +631,19 @@ class UserController extends Controller
             return response()->json(['message' => 'User status update failed. Internal Server Error'], 500);
         }
         return response()->json(['message' => 'User status has been updated'], 201);
+    }
+
+    public function changeMemberAffiliateStatus(Request $request){
+        $userHasMembership = DB::table('user_has_member_ships')->where('user_id','=',$request->id)->first();
+        $userHasMembershipStatus = UserHasMemberShip::find($userHasMembership->id);
+        if (!$userHasMembershipStatus) {
+            return response()->json(['message' => 'Member not found'], 404);
+        }
+        $userHasMembershipStatus->stat = $request->status;
+        if (!$userHasMembershipStatus->update()){
+            return response()->json(['message' => 'Member affiliate status update failed. Internal Server Error'], 500);
+        }
+        return response()->json(['message' => 'User affiliate status has been updated'], 201);
     }
 
     public function getGenerateReferralLink(Request $request){

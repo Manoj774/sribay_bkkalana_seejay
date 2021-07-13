@@ -88,6 +88,10 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
   props: ['data'],
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["wishlist"])),
   methods: {
+    capitalizeFirstLetter: function capitalizeFirstLetter(string) {
+      return string.charAt(0).toUpperCase() + string.slice(1);
+    },
+
     /**
      * method for adding item to cart
     */
@@ -335,26 +339,6 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 
 
@@ -403,21 +387,19 @@ __webpack_require__.r(__webpack_exports__);
     getProductsData: function getProductsData() {
       var _this = this;
 
-      this.listData = [];
-      this.product = {
-        product_categories: null,
-        searchText: null,
-        minPrice: 0,
-        maxPrice: null
-      };
       axios.get('/api/product').then(function (response) {
+        _this.listData = [];
+        _this.product = {
+          product_categories: null,
+          minPrice: 0,
+          maxPrice: null
+        };
         _this.products = response.data.products;
         var count = 1;
 
         for (var categoryKey in _this.products) {
           _this.listData.push(_this.products[categoryKey]);
-        } // console.log(this.listData);
-
+        }
       })["catch"](function (error) {
         console.log(error);
       });
@@ -425,10 +407,10 @@ __webpack_require__.r(__webpack_exports__);
     getProductsDataWithCategory: function getProductsDataWithCategory(category) {
       var _this2 = this;
 
-      this.listData = [];
       axios.get('/api/product-by-category/' + category).then(function (response) {
         _this2.products = response.data.products;
         var count = 1;
+        _this2.listData = [];
 
         for (var categoryKey in _this2.products) {
           _this2.listData.push(_this2.products[categoryKey]);
@@ -467,8 +449,8 @@ __webpack_require__.r(__webpack_exports__);
       if (this.product.searchText === '') {
         this.getProductsData();
       } else {
-        this.listData = [];
         axios.post('/api/product/filter', this.product).then(function (response) {
+          _this4.listData = [];
           _this4.products = response.data.products;
           var count = 1;
 
@@ -798,31 +780,6 @@ var render = function() {
               _vm._v(" "),
               _c(
                 "div",
-                { staticClass: "wishlist-icon" },
-                [
-                  _c(
-                    "v-btn",
-                    {
-                      attrs: { icon: "" },
-                      on: {
-                        click: function($event) {
-                          return _vm.addItemToWishlist(_vm.data)
-                        }
-                      }
-                    },
-                    [
-                      _c("v-icon", { staticClass: "grey--text" }, [
-                        _vm._v("mdi-cards-heart ")
-                      ])
-                    ],
-                    1
-                  )
-                ],
-                1
-              ),
-              _vm._v(" "),
-              _c(
-                "div",
                 { staticClass: "add-to-cart" },
                 [
                   _c(
@@ -848,7 +805,11 @@ var render = function() {
           _vm._v(" "),
           _c("div", { staticClass: "emb-card-content pa-4" }, [
             _c("h6", { staticClass: "font-weight-medium text-capitalize" }, [
-              _vm._v(_vm._s(_vm.data.product_name.substring(0, 50) + "...."))
+              _vm._v(
+                _vm._s(
+                  _vm.data.product_name.toLowerCase().substring(0, 50) + "...."
+                )
+              )
             ]),
             _vm._v(" "),
             _c(

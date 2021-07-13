@@ -397,6 +397,16 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "AffiliateProgram",
@@ -418,6 +428,8 @@ __webpack_require__.r(__webpack_exports__);
       generateLinkTotalMobileClick: 0.0,
       generateLinkTotalTabletClick: 0.0,
       generateLinkTotalOtherClick: 0.0,
+      affiliateActivate: false,
+      total_weekly_points: 0,
       headers: [{
         text: '#',
         align: 'start',
@@ -488,39 +500,50 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       axios.get('/api/users/affiliate').then(function (response) {
-        _this.currentMonthCommission = response.data.currentMonthCommission;
-        _this.lastMonthCommission = response.data.lastMonthCommission;
-        _this.membership_name = response.data.membership_name;
-        _this.userHasMembershipID = response.data.userHasMembershipID;
-        _this.accountBalance = response.data.accountBalance;
-        _this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
-        _this.generateLinkTotalClick = response.data.generateLinkTotalClick;
-        _this.generateLinkTotalDesktopClick = response.data.generateLinkTotalDesktopClick;
-        _this.generateLinkTotalMobileClick = response.data.generateLinkTotalMobileClick;
-        _this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
-        var count = 1;
+        _this.affiliateActivate = response.data.affiliate_activate;
+        console.log(_this.affiliateActivate);
 
-        for (var key in response.data.referral) {
-          _this.referralTableData.push({
-            count: count++,
-            full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
-            email: response.data.referral[key].email,
-            membership: response.data.referral[key].referralMembership,
-            created_at: response.data.referral[key].created_at // total_commission: response.data.referral[key].referralEarnCommission,
-            // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
+        if (_this.affiliateActivate == 1) {
+          _this.currentMonthCommission = response.data.currentMonthCommission;
+          _this.lastMonthCommission = response.data.lastMonthCommission;
+          _this.membership_name = response.data.membership_name;
+          _this.userHasMembershipID = response.data.userHasMembershipID;
+          _this.accountBalance = response.data.accountBalance;
+          _this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
+          _this.generateLinkTotalClick = response.data.generateLinkTotalClick;
+          _this.generateLinkTotalDesktopClick = response.data.generateLinkTotalDesktopClick;
+          _this.generateLinkTotalMobileClick = response.data.generateLinkTotalMobileClick;
+          _this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
+          _this.total_weekly_points = response.data.weeklyPoints;
+          var count = 1;
 
-          });
-        }
+          for (var key in response.data.referral) {
+            _this.referralTableData.push({
+              count: count++,
+              full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
+              email: response.data.referral[key].email,
+              membership: response.data.referral[key].referralMembership,
+              created_at: response.data.referral[key].created_at // total_commission: response.data.referral[key].referralEarnCommission,
+              // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
 
-        var count1 = 1;
+            });
+          }
 
-        for (var _key in response.data.earnHistory) {
-          _this.earnData.push({
-            count: count1++,
-            description: response.data.earnHistory[_key].description,
-            earn_amount: response.data.earnHistory[_key].earn_amount.toFixed(2),
-            created_at: response.data.earnHistory[_key].created_at
-          });
+          var count1 = 1;
+
+          for (var _key in response.data.earnHistory) {
+            _this.earnData.push({
+              count: count1++,
+              description: response.data.earnHistory[_key].description,
+              earn_amount: response.data.earnHistory[_key].earn_amount.toFixed(2),
+              created_at: response.data.earnHistory[_key].created_at
+            });
+          }
+        } else {
+          var html = '<h1 class="font-weight-bold text-h4 basil--text text-center mt-16 text-danger" style="color: red;">';
+          html += 'Waiting for activate';
+          html += '</h1>';
+          $('#affiliate_data').html(html);
         }
       }, function (err) {
         var errors = err.response.data.message;
@@ -17399,6 +17422,8 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony import */ var _AffiliateProgram_vue_vue_type_template_id_81347668_scoped_true___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./AffiliateProgram.vue?vue&type=template&id=81347668&scoped=true& */ "./resources/js/views/UserPanel/AffiliateProgram.vue?vue&type=template&id=81347668&scoped=true&");
 /* harmony import */ var _AffiliateProgram_vue_vue_type_script_lang_js___WEBPACK_IMPORTED_MODULE_1__ = __webpack_require__(/*! ./AffiliateProgram.vue?vue&type=script&lang=js& */ "./resources/js/views/UserPanel/AffiliateProgram.vue?vue&type=script&lang=js&");
 /* harmony import */ var _node_modules_vue_loader_lib_runtime_componentNormalizer_js__WEBPACK_IMPORTED_MODULE_2__ = __webpack_require__(/*! !../../../../node_modules/vue-loader/lib/runtime/componentNormalizer.js */ "./node_modules/vue-loader/lib/runtime/componentNormalizer.js");
+/* harmony import */ var _AffiliateProgram_vue_vue_type_custom_index_0_blockType_h1_class_font_weight_bold_20text_h4_20basil_text_20text_center_20mt_16_20text_danger_style_color_3A_20red_3B__WEBPACK_IMPORTED_MODULE_3__ = __webpack_require__(/*! ./AffiliateProgram.vue?vue&type=custom&index=0&blockType=h1&class=font-weight-bold%20text-h4%20basil--text%20text-center%20mt-16%20text-danger&style=color%3A%20red%3B */ "./resources/js/views/UserPanel/AffiliateProgram.vue?vue&type=custom&index=0&blockType=h1&class=font-weight-bold%20text-h4%20basil--text%20text-center%20mt-16%20text-danger&style=color%3A%20red%3B");
+/* harmony import */ var _AffiliateProgram_vue_vue_type_custom_index_0_blockType_h1_class_font_weight_bold_20text_h4_20basil_text_20text_center_20mt_16_20text_danger_style_color_3A_20red_3B__WEBPACK_IMPORTED_MODULE_3___default = /*#__PURE__*/__webpack_require__.n(_AffiliateProgram_vue_vue_type_custom_index_0_blockType_h1_class_font_weight_bold_20text_h4_20basil_text_20text_center_20mt_16_20text_danger_style_color_3A_20red_3B__WEBPACK_IMPORTED_MODULE_3__);
 
 
 
@@ -17416,6 +17441,10 @@ var component = (0,_node_modules_vue_loader_lib_runtime_componentNormalizer_js__
   null
   
 )
+
+/* custom blocks */
+;
+if (typeof (_AffiliateProgram_vue_vue_type_custom_index_0_blockType_h1_class_font_weight_bold_20text_h4_20basil_text_20text_center_20mt_16_20text_danger_style_color_3A_20red_3B__WEBPACK_IMPORTED_MODULE_3___default()) === 'function') _AffiliateProgram_vue_vue_type_custom_index_0_blockType_h1_class_font_weight_bold_20text_h4_20basil_text_20text_center_20mt_16_20text_danger_style_color_3A_20red_3B__WEBPACK_IMPORTED_MODULE_3___default()(component)
 
 /* hot reload */
 if (false) { var api; }
@@ -17469,6 +17498,16 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "staticRenderFns": () => (/* reexport safe */ _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BuyOrSell_vue_vue_type_template_id_22163220___WEBPACK_IMPORTED_MODULE_0__.staticRenderFns)
 /* harmony export */ });
 /* harmony import */ var _node_modules_vue_loader_lib_loaders_templateLoader_js_vue_loader_options_node_modules_vue_loader_lib_index_js_vue_loader_options_BuyOrSell_vue_vue_type_template_id_22163220___WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! -!../../../../node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!../../../../node_modules/vue-loader/lib/index.js??vue-loader-options!./BuyOrSell.vue?vue&type=template&id=22163220& */ "./node_modules/vue-loader/lib/loaders/templateLoader.js??vue-loader-options!./node_modules/vue-loader/lib/index.js??vue-loader-options!./resources/js/components/Widgets/BuyOrSell.vue?vue&type=template&id=22163220&");
+
+
+/***/ }),
+
+/***/ "./resources/js/views/UserPanel/AffiliateProgram.vue?vue&type=custom&index=0&blockType=h1&class=font-weight-bold%20text-h4%20basil--text%20text-center%20mt-16%20text-danger&style=color%3A%20red%3B":
+/*!***********************************************************************************************************************************************************************************************************!*\
+  !*** ./resources/js/views/UserPanel/AffiliateProgram.vue?vue&type=custom&index=0&blockType=h1&class=font-weight-bold%20text-h4%20basil--text%20text-center%20mt-16%20text-danger&style=color%3A%20red%3B ***!
+  \***********************************************************************************************************************************************************************************************************/
+/***/ (() => {
+
 
 
 /***/ }),
@@ -17596,7 +17635,15 @@ var render = function() {
     [
       _c(
         "v-col",
-        { attrs: { cols: "12", sm: "12", md: "12", lg: "12" } },
+        {
+          attrs: {
+            cols: "12",
+            sm: "12",
+            md: "12",
+            lg: "12",
+            id: "affiliate_data"
+          }
+        },
         [
           _c("h1", { staticClass: "font-weight-bold text-h4 basil--text" }, [
             _vm._v(
@@ -17844,6 +17891,70 @@ var render = function() {
                                                 )
                                               )
                                             ])
+                                          ]
+                                        )
+                                      ])
+                                    ],
+                                    1
+                                  )
+                                ],
+                                1
+                              ),
+                              _vm._v(" "),
+                              _c(
+                                "v-col",
+                                {
+                                  attrs: {
+                                    cols: "12",
+                                    sm: "12",
+                                    md: "4",
+                                    lg: "4"
+                                  }
+                                },
+                                [
+                                  _c(
+                                    "v-card",
+                                    {
+                                      staticClass: "text-xs-center",
+                                      attrs: {
+                                        height: "100%",
+                                        dark: "",
+                                        tile: "",
+                                        flat: "",
+                                        color: "red darken-4",
+                                        hover: ""
+                                      }
+                                    },
+                                    [
+                                      _c(
+                                        "v-card-title",
+                                        {
+                                          staticStyle: { "font-size": "13px" }
+                                        },
+                                        [_vm._v("Weekly Points")]
+                                      ),
+                                      _vm._v(" "),
+                                      _c("v-divider"),
+                                      _vm._v(" "),
+                                      _c("v-card-text", [
+                                        _c(
+                                          "div",
+                                          { staticClass: "text-center" },
+                                          [
+                                            _c(
+                                              "h3",
+                                              {
+                                                staticStyle: { color: "#fff" }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                            " +
+                                                    _vm._s(
+                                                      _vm.total_weekly_points
+                                                    )
+                                                )
+                                              ]
+                                            )
                                           ]
                                         )
                                       ])

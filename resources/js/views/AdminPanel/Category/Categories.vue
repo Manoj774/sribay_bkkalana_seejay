@@ -179,8 +179,8 @@ export default {
         axios.get('/api/category').then(response => {
             const responseData = response.data.categories;
             this.categories = responseData;
-          }, response => {
-            const errors = response.body.message;
+          }, err => {
+            const errors = err.response.body.message;
             var html = '';
             for (const i in errors){
               html += errors[i];
@@ -199,8 +199,8 @@ export default {
               this.parentCategories.push(responseData[i]);
             }
 
-          }, response => {
-            const errors = response.body.message;
+          }, err => {
+            const errors = err.response.body.message;
             var html = '';
             for (const i in errors){
               html += errors[i];
@@ -223,8 +223,8 @@ export default {
               this.editCategory = true;
               this.editCategoryId = id;
               this.editedIndex = 1;
-          }, response => {
-              const errors = response.data.message;
+          }, err => {
+              const errors = err.response.data.message;
               var html = '';
               for (const i in errors){
                   html += errors[i];
@@ -263,8 +263,8 @@ export default {
                 this.editCategoryId = 0;
                 this.editedIndex = 0;
                 this.$router.go(this.$router.currentRoute)
-            }, response => {
-                const errors = response.data.message;
+            }, err => {
+                const errors = err.response.data.message;
                 var html = '';
                 for (const i in errors){
                     html += errors[i];
@@ -281,8 +281,8 @@ export default {
                     type: 'success',
                 });
                 this.$router.go(this.$router.currentRoute)
-            }, response => {
-                const errors = response.data.message;
+            }, err => {
+                const errors = err.response.data.message;
                 var html = '';
                 for (const i in errors){
                     html += errors[i];

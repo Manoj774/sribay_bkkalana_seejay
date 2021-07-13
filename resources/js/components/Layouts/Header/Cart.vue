@@ -2,14 +2,17 @@
 	<div class="mr-3">
 		<v-menu transition="scale-transition" class="cart" min-width="300" max-width="300" offset-y light>
 			<template v-slot:activator="{ on }">
-				<v-btn class="cart-btn" fab dark small color="accent" v-on="on">
-					<v-badge right large color="accent">
-						<template v-if="cart.length > 0">
+				<v-btn class="cart-btn" fab dark small color="accent" v-on="on" v-if="cart.length > 0">
+					<v-badge right large color="accent" >
+						<template >
 							<span slot="badge">{{cart.length}}</span>
 						</template>
 						<v-icon dark>mdi-cart-minus</v-icon>
 					</v-badge>
 				</v-btn>
+                <v-btn class="cart-btn" fab dark small color="accent" v-on="on" v-else>
+                    <v-icon dark>mdi-cart-minus</v-icon>
+                </v-btn>
 			</template>
 			<div v-if="cart && cart.length > 0" class="cart-menu-list white">
 				<emb-perfect-scrollbar class="scroll-area" style="max-height:280px">

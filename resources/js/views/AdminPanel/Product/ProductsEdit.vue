@@ -322,10 +322,15 @@
                     });
                     window.location.href='';
                 }, err => {
+                    const valid_errors = err.response.data.errors;
                     const errors = err.response.data.message;
                     let html = '';
-                    for (const i in errors){
-                        html += errors[i];
+                    if (valid_errors != null){
+                        for (const i in valid_errors){
+                            html += valid_errors[i];
+                        }
+                    }else if (errors != null){
+                        html += errors;
                     }
                     this.$toast.open({
                         message: html,

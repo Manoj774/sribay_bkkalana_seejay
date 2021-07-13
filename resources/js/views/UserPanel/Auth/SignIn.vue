@@ -22,7 +22,7 @@
                                         type="password"
                                         placeholder="Password*"
                                         v-model="login.password"
-                                        :rules="inputRules.basictextRules"
+                                        :rules="passwordRules"
                                     >
                                     </v-text-field>
                                     <v-btn class="accent mb-3 ma-0" large @click="loginUser">
@@ -54,9 +54,10 @@
                     v => !!v || 'E-mail is required',
                     v => /.+@.+/.test(v) || 'E-mail must be valid'
                 ],
-                inputRules: {
-                    basictextRules: [v => !!v || 'This field should not be empty']
-                }
+                passwordRules: [
+                    (value) => !!value || 'Please type password.',
+                    (value) => (value && value.length >= 6) || 'minimum 6 characters',
+                ],
             }
         },
         created() {

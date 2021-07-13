@@ -4426,8 +4426,8 @@ __webpack_require__.r(__webpack_exports__);
       axios.get('/api/category').then(function (response) {
         var responseData = response.data.categories;
         _this.categories = responseData;
-      }, function (response) {
-        var errors = response.body.message;
+      }, function (err) {
+        var errors = err.response.body.message;
         var html = '';
 
         for (var i in errors) {
@@ -4449,8 +4449,8 @@ __webpack_require__.r(__webpack_exports__);
         for (var i in responseData) {
           _this2.parentCategories.push(responseData[i]);
         }
-      }, function (response) {
-        var errors = response.body.message;
+      }, function (err) {
+        var errors = err.response.body.message;
         var html = '';
 
         for (var i in errors) {
@@ -4477,8 +4477,8 @@ __webpack_require__.r(__webpack_exports__);
         _this3.editCategory = true;
         _this3.editCategoryId = id;
         _this3.editedIndex = 1;
-      }, function (response) {
-        var errors = response.data.message;
+      }, function (err) {
+        var errors = err.response.data.message;
         var html = '';
 
         for (var i in errors) {
@@ -4522,8 +4522,8 @@ __webpack_require__.r(__webpack_exports__);
           _this4.editedIndex = 0;
 
           _this4.$router.go(_this4.$router.currentRoute);
-        }, function (response) {
-          var errors = response.data.message;
+        }, function (err) {
+          var errors = err.response.data.message;
           var html = '';
 
           for (var i in errors) {
@@ -4543,8 +4543,8 @@ __webpack_require__.r(__webpack_exports__);
           });
 
           _this4.$router.go(_this4.$router.currentRoute);
-        }, function (response) {
-          var errors = response.data.message;
+        }, function (err) {
+          var errors = err.response.data.message;
           var html = '';
 
           for (var i in errors) {

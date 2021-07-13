@@ -26,7 +26,7 @@ class ContactUsController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['status' => 400,'message' => $validator],400);
+            return response()->json(['status' => 400,'message' => $validator->errors()->all()],400);
         }
 
         $data['data'] = array(

@@ -76,24 +76,37 @@ class WithdrawalRequestController extends Controller
 
     public function checkAvailable()
     {
-
         $generateLinkClick = DB::table('generate_link_clicks')
             ->where('user_id', '=', Auth::user()->id)
             ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
             ->groupBy('ip_address')
             ->get();
 
-        if (count($generateLinkClick) >= 35) {
+        $nowDate = Carbon::now();
+        $userMembership = DB::table('user_has_member_ships')
+            ->select('membership_plans.withdrawal_date','user_has_member_ships.created_at')
+            ->join('membership_plans','user_has_member_ships.membership_id','=','membership_plans.id')
+            ->whereDate('membership_plans.withdrawal_date', '<=', $nowDate)
+            ->where('user_id','=',Auth::user()->id)->first();
 
-            $withdrawalRequests = DB::table('withdrawal_requests')
-                ->where('user_id', '=', Auth::user()->id)
-                ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
-                ->first();
-            if (!$withdrawalRequests) {
-                return response()->json(['check' => true], 200);
+
+        if ($userMembership){
+            $formatted_dt1=Carbon::parse($userMembership->created_at);
+            $formatted_dt2=Carbon::parse($nowDate);
+            $date_diff=$formatted_dt1->diffInDays($formatted_dt2);
+
+            if (count($generateLinkClick) >= 35 && $date_diff >= 7) {
+                $withdrawalRequests = DB::table('withdrawal_requests')
+                    ->where('user_id', '=', Auth::user()->id)
+                    ->whereBetween('created_at', [Carbon::now()->startOfWeek(), Carbon::now()->endOfWeek()])
+                    ->first();
+                if (!$withdrawalRequests) {
+                    return response()->json(['check' => true], 200);
+                }
+                return response()->json(['check' => false], 200);
             }
-            return response()->json(['check' => false], 200);
         }
+
         return response()->json(['check' => false], 200);
     }
 

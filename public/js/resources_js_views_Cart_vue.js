@@ -269,13 +269,6 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
@@ -843,7 +836,7 @@ var render = function() {
                                   "layout align-center justify-space-between subtotal"
                               },
                               [
-                                _c("p", [_vm._v("Shipping")]),
+                                _c("p", [_vm._v("Free Shipping")]),
                                 _vm._v(" "),
                                 _c(
                                   "span",
@@ -852,30 +845,6 @@ var render = function() {
                                     _vm._v(
                                       "\n                           " +
                                         _vm._s(_vm.shipping) +
-                                        "\n                        "
-                                    )
-                                  ],
-                                  1
-                                )
-                              ]
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "div",
-                              {
-                                staticClass:
-                                  "layout align-center justify-space-between subtotal"
-                              },
-                              [
-                                _c("p", [_vm._v("Tax(GST)")]),
-                                _vm._v(" "),
-                                _c(
-                                  "span",
-                                  [
-                                    _c("emb-currency-sign"),
-                                    _vm._v(
-                                      "\n                           " +
-                                        _vm._s(_vm.tax) +
                                         "\n                        "
                                     )
                                   ],

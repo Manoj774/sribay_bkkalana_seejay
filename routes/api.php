@@ -100,6 +100,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::post('/users/change-status',[UserController::class,'changeUserStatus']);
     Route::put('/members/update-bank-info/{id}',[UserController::class,'updateBankInfo']);
     Route::get('/members/bank-info/{id}',[UserController::class,'getMemberBankInfo']);
+    Route::post('/members/change-affiliate-status',[UserController::class,'changeMemberAffiliateStatus']);
 
 
     Route::get('/withdrawal/',[WithdrawalRequestController::class,'index']);
@@ -109,6 +110,7 @@ Route::middleware(['auth:sanctum'])->group(function () {
     Route::get('/withdrawal/check-available',[WithdrawalRequestController::class,'checkAvailable']);
     Route::post('/withdrawal/create',[WithdrawalRequestController::class,'store']);
     Route::put('/withdrawal/update-requests',[WithdrawalRequestController::class,'update']);
+    Route::post('/withdrawal/create-withdrawal-date',[MembershipPlanController::class,'storeWithdrawalDate']);
 
 
     Route::get('/orders',[OrderController::class,'index']);

@@ -32,116 +32,44 @@
 
                 <v-stepper-items>
                     <v-stepper-content step="1">
-                        <div id="pricing-container">
-
-                            <div id="pricing-switch"></div>
-
-                            <div id="pricing-cards">
-                                <div v-for="(item, index) in memberships" :key="index">
-                                    <div class="price-card price-card--hero">
-
-                                        <div class="price-card--header">
-                                            <h4>{{item.name}}</h4>
-                                            <!--                <p>for growing your business</p> -->
-                                        </div>
-                                        <!--                        <div class="price-card&#45;&#45;hero-text">-->
-                                        <!--                            Most Popular Plan-->
-                                        <!--                        </div>-->
-
-                                        <div class="price-card--price">
-                                            <div class="price-card--price-text">
-                                                <div class="price-card--price-number toggle-price-content odometer"
-                                                     data-price-yearly="900">{{item.price}}
-                                                </div>
-                                            </div>
-                                            <div class="price-card--price-conditions">
-                                                <div class="toggle-price-content" data-price-monthly="Billed Monthly"
-                                                     data-price-yearly="Billed Annually">Billed Annually
-                                                </div>
-                                            </div>
-                                        </div>
-
-                                        <div class="price-card--cta">
-                                            <v-btn
-                                                color="teal lighten-1"
-                                                @click="chooseSubscriptionPlan(item.id,item.price)"
-                                                :disabled="user != null && user.membership === item.id"
-                                            >Get Started
-                                            </v-btn>
-                                        </div>
-
-                                        <div class="price-card--features">
-                                            <ul class="price-card--features--list text-center">
-                                                <li class="price-card--features--item ">Bonus Rewards Per Month
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        {{item.bonus_rewards}}
-                                                    </v-chip>
-                                                </li>
-                                                <li class="price-card--features--item ">Daily Income
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        Rs. {{item.daily_income.toFixed(2)}}
-                                                    </v-chip>
-                                                </li>
-                                                <li class="price-card--features--item ">Weekly Income
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        Rs. {{item.weekly_income.toFixed(2)}}
-                                                    </v-chip>
-                                                </li>
-                                                <li class="price-card--features--item ">Monthly Income
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        Rs. {{item.monthly_income.toFixed(2)}}
-                                                    </v-chip>
-                                                </li>
-                                                <li class="price-card--features--item ">Monthly Income with Bonus
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        Rs. {{item.monthly_income_with_bonus.toFixed(2)}}
-                                                    </v-chip>
-                                                </li>
-                                                <li class="price-card--features--item ">Annual Revenue
-                                                    <v-chip
-                                                        class="ma-2"
-                                                        color="cyan"
-                                                        label
-                                                        text-color="white"
-                                                    >
-                                                        Rs. {{item.annual_revenue.toFixed(2)}}
-                                                    </v-chip>
-                                                </li>
-
-
-                                            </ul>
-                                        </div>
-
-                                        <div class="price-card--mobile-features-toggle"></div>
-
+                        <div class="row">
+                            <div class="col-md-12 mb-5">
+                                <h2 class="main-head">Subscription Plans</h2>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-3" v-for="(item, index) in memberships" :key="index">
+                                <div class="pricing-table turquoise">
+                                    <!-- Table Head -->
+                                    <div class="pricing-label">Fixed Price</div>
+                                    <h2>{{item.name}}</h2>
+<!--                                    <h5>Billed Annually</h5>-->
+                                    <!-- Features -->
+                                    <div class="pricing-features">
+                                        <div class="feature">Bonus Rewards Per Month<span>{{item.bonus_rewards}}</span></div>
+                                        <div class="feature">Daily Income<span>Rs. {{item.daily_income.toFixed(2)}}</span></div>
+                                        <div class="feature">Weekly Income<span>Rs. {{item.weekly_income.toFixed(2)}}</span></div>
+                                        <div class="feature">Monthly Income<span>Rs. {{item.monthly_income.toFixed(2)}}</span></div>
+                                        <div class="feature">Income with Bonus<span>Rs. {{item.monthly_income_with_bonus.toFixed(2)}}</span></div>
+                                        <div class="feature">Annual Revenue<span>Rs. {{item.annual_revenue.toFixed(2)}}</span></div>
                                     </div>
+                                    <!-- Price -->
+                                    <div class="price-tag">
+                                        <span class="symbol">Rs. </span>
+                                        <span class="amount">{{item.price}}</span>
+<!--                                        <span class="after">/Annually</span>-->
+                                    </div>
+                                    <!-- Button -->
+                                    <v-btn
+                                        style="background: #44cdd2;color: white"
+                                        @click="chooseSubscriptionPlan(item.id,item.price)"
+                                        :disabled="user != null && user.membership === item.id"
+                                    >
+                                        Get Started
+                                    </v-btn>
                                 </div>
                             </div>
+                            <!-- Red Table -->
 
                         </div>
                     </v-stepper-content>
@@ -238,20 +166,83 @@
                             </v-col>
                         </v-row>
 
-                        <v-btn text class="mt-4">
-                            Back
-                        </v-btn>
+<!--                        <v-btn text class="mt-4">-->
+<!--                            Back-->
+<!--                        </v-btn>-->
                     </v-stepper-content>
 
                     <v-stepper-content step="3">
-                        <v-row style="justify-content: center">
-                            <v-col cols="12" sm="12" md="5" lg="5">
-                                <div id="card_container"></div>
-                            </v-col>
-                        </v-row>
-                        <v-btn @click="back" text>
-                            Back
-                        </v-btn>
+                        <v-tabs
+                            v-model="tab"
+                            centered
+                            slider-color="red"
+                            class="mt-5"
+                        >
+                            <v-tab :href="'#tab-card-payment'">
+                                Card Payment
+                            </v-tab>
+                            <v-tab :href="'#tab-bank-payment'">
+                                Bank Payment
+                            </v-tab>
+                        </v-tabs>
+
+                        <v-tabs-items v-model="tab">
+                            <v-tab-item
+                                :value="'tab-card-payment'"
+                            >
+                                <v-card
+                                    flat
+                                >
+                                    <v-card-text>
+                                        <v-row style="justify-content: center">
+                                            <v-col cols="12" sm="12" md="5" lg="5">
+                                                <div id="card_container"></div>
+                                            </v-col>
+                                        </v-row>
+                                    </v-card-text>
+                                </v-card>
+                            </v-tab-item>
+                            <v-tab-item
+                                :value="'tab-bank-payment'"
+                            >
+                                <v-card
+                                    flat
+                                >
+                                    <v-card-text>
+                                        <div class="row justify-content-center" style="justify-content: center">
+                                            <div class="col-sm-6">
+                                                <h5 class="font-italic">nulla dolor dicta laborum unde molestias ab magni.Lorem ipsum dolor sit amet,
+                                                    consectetur adipisicing elit</h5>
+                                                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat quibusdam cum blanditiis voluptas,
+                                                    voluptates hic eius maxime dolorum saepe quae animi eveniet nulla dolor dicta laborum unde molestias ab
+                                                    magni.Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quaerat quibusdam cum blanditiis
+                                                    voluptas,
+                                                    voluptates hic eius maxime dolorum saepe quae animi eveniet nulla dolor dicta laborum unde molestias ab
+                                                    magni.</p>
+                                                <v-form ref="bank_payment_form"  v-model="bank_payment_valid">
+                                                    <v-file-input
+                                                        :rules="paymentSlipRules"
+                                                        accept="image/png, image/jpeg, image/bmp"
+                                                        placeholder="Pick an avatar"
+                                                        prepend-icon="mdi-camera"
+                                                        label="Payment Slip"
+                                                        @change="selectFile"
+                                                    ></v-file-input>
+
+                                                    <v-btn color="red lighten-1" @click="submitBankPayment" style="color: aliceblue" >Confirm Bank Payment</v-btn>
+                                                </v-form>
+                                            </div>
+
+                                        </div>
+
+                                    </v-card-text>
+                                </v-card>
+                            </v-tab-item>
+                        </v-tabs-items>
+
+<!--                        <v-btn @click="back" text>-->
+<!--                            Back-->
+<!--                        </v-btn>-->
                     </v-stepper-content>
 
                     <v-stepper-content step="4">
@@ -317,11 +308,13 @@
     export default {
         name: "SubscriptionPlan",
         data: () => ({
+            tab: null,
             memberships: [],
             e1: 1,
             planId: 0,
             planPrice: 0,
             userId: 0,
+            payment_slip:null,
             login: {
                 email: null,
                 password: null
@@ -338,13 +331,18 @@
             user: JSON.parse(sessionStorage.getItem('user')),
             login_valid: false,
             register_valid: false,
+            bank_payment_valid:false,
             emailRules: [
                 v => !!v || 'E-mail is required',
                 v => /.+@.+/.test(v) || 'E-mail must be valid'
             ],
             inputRules: {
                 basictextRules: [v => !!v || 'This field should not be empty']
-            }
+            },
+            paymentSlipRules: [
+                v => !!v || 'E-mail is required',
+                value => !value || value.size < 2000000 || 'Payment slip size should be less than 2 MB!',
+            ],
         }),
         created() {
             this.getSubscriptionPlans();
@@ -390,28 +388,10 @@
                 }
 
             },
-            // loginUser(){
-            //     this.$refs.login_form.validate();
-            //     if(this.login_valid === true){
-            //         axios.post('/api/login', this.login).then(response => {
-            //             sessionStorage.setItem('token', response.data.token)
-            //             sessionStorage.setItem('role', response.data.role)
-            //             sessionStorage.setItem('user', JSON.stringify(response.data.user))
-            //             this.user = response.data.user;
-            //             this.initPayment();
-            //             this.e1 = 3;
-            //         }).catch(error => {
-            //             this.$toast.open({
-            //                 message: error.response.data.message,
-            //                 type: 'error',
-            //             });
-            //         });
-            //     }
-            // },
             registerUser() {
                 this.$refs.register_form.validate();
                 if (this.register_valid === true) {
-                    axios.post('/api/create-member-user', this.register).then(response => {
+                    axios.post('/api/users/create-member-user', this.register).then(response => {
                         // sessionStorage.setItem('token', response.data.token)
                         // sessionStorage.setItem('role', response.data.role)
                         // sessionStorage.setItem('user', JSON.stringify(response.data.user))
@@ -481,11 +461,6 @@
                         payment_stat: 2,
                     }
                     axios.post('/api/users/register-membership', payment).then(response => {
-                        // this.user = response.data.userData;
-                        // sessionStorage.removeItem('role')
-                        // sessionStorage.removeItem('user')
-                        // sessionStorage.setItem('role', this.user.role)
-                        // sessionStorage.setItem('user', JSON.stringify(this.user))
                         toast.open({
                             message: response.data.message,
                             type: 'success',
@@ -509,9 +484,42 @@
                         message: result.data.description,
                         type: 'error',
                     });
-                    console.log(result);
                 }
 
+            },
+            selectFile(file) {
+                this.payment_slip = file;
+            },
+            submitBankPayment(){
+                this.$refs.bank_payment_form.validate();
+                if (this.bank_payment_valid){
+                    let user_id = this.user.id;
+                    let planId = this.planId;
+                    let planPrice = this.planPrice;
+                    const formData = new FormData();
+                    formData.append('bank_slip', this.payment_slip);
+                    formData.append('user', user_id);
+                    formData.append('subscription_plan', planId);
+                    formData.append('payment_method', "Bank Payment");
+                    formData.append('amount', planPrice);
+                    formData.append('payment_stat', 0);
+                    axios.post('/api/users/register-membership', formData).then(response => {
+                        this.$toast.open({
+                            message: response.data.message,
+                            type: 'success',
+                        });
+                        setTimeout(
+                            function () {
+                                window.location.href = '/';
+                            }, 4000);
+
+                    }).catch(error => {
+                        this.$toast.open({
+                            message: error.response.data.message,
+                            type: 'error',
+                        });
+                    });
+                }
             },
             finish() {
                 this.intervalid1 = setInterval(() => {

@@ -36,8 +36,6 @@
                             <v-flex xs12 sm12 md6 lg6 xl5>
                                 <router-link to="/">Back to shop</router-link>
                                 <h5>{{selectedProduct.product_name}}</h5>
-                                <!--								<a href="javascript:void(0)" class="color-inherit text-underline mb-4 d-inline-block" @click="showReviewPopup">ADD A REVIEW</a>-->
-                                <!--								<emb-review-popup ref="productReviewPopup"></emb-review-popup>-->
                                 <div  v-if="selectedProduct.countDownProduct == null">
                                     <h4 class="accent--text">
                                     <emb-currency-sign></emb-currency-sign>
@@ -55,48 +53,36 @@
                                 <ul class="product-availablity list-unstyled pl-0 mb-4 mt-4">
                                     <li>
                                         <template v-if="selectedProduct.stat === 1">
-                                            <span class="font-weight-medium">Availability</span> : <span
-                                            class="font-weight-regular">In Stocks</span>
+                                            <v-chip
+                                                color="success"
+                                                label
+                                                text-color="white"
+                                            >
+                                                <span class="font-weight-regular">In Stocks</span>
+                                            </v-chip>
+
                                         </template>
                                         <template v-else>
-                                            <span class="font-weight-medium">Availability</span> : <span
-                                            class="font-weight-regular">Out Of Stocks</span>
+                                            <v-chip
+                                                color="red"
+                                                label
+                                                text-color="white"
+                                            >
+                                                <span class="font-weight-regular">Out Of Stocks</span>
+                                            </v-chip>
+
                                         </template>
                                     </li>
                                     <li>
-                                        <!--										<span class="font-weight-medium">Product Code</span> : <span class="font-weight-regular">{{selectedProduct.product_code}}</span>-->
                                     </li>
                                     <li>
-<!--                                        <span class="font-weight-medium">Tags</span>-->
-<!--                                        <span>:</span>-->
-                                        <!--										<span class="font-weight-regular"	v-for="(tag,key) in selectedProduct.tags" :key="key">-->
-                                        <!--											{{tag}}-->
-                                        <!--										</span>-->
+
                                     </li>
                                 </ul>
-                                <!--								<div class="bullet-points mb-4">-->
-                                <!--									<ul class="features pl-13">-->
-                                <!--										<li v-for="(Features,key) in selectedProduct.features" 	:key="key">-->
-                                <!--											{{Features}}-->
-                                <!--										</li>-->
-                                <!--									</ul>-->
-                                <!--								</div>-->
+
                                 <div class="select-group mb-4">
                                     <v-layout wrap>
-                                        <!--										<v-flex xs12 sm4 lg4 md4 lg3 xl3 pb-0  v-if="selectedProduct.type == 'men' || selectedProduct.type == 'women'" >-->
-                                        <!--											<v-select-->
-                                        <!--												:items="['Pink','Orange','Black']"-->
-                                        <!--												label="Color"-->
-                                        <!--											>-->
-                                        <!--											</v-select>-->
-                                        <!--										</v-flex>-->
-                                        <!--										<v-flex xs12 sm4 lg4 md4 lg3 xl3 pb-0  v-if="selectedProduct.type == 'men' || selectedProduct.type == 'women'" >-->
-                                        <!--											<v-select-->
-                                        <!--												:items="['XXL','XL','M','L','S']"-->
-                                        <!--												label="Size"-->
-                                        <!--											>-->
-                                        <!--											</v-select>-->
-                                        <!--										</v-flex>-->
+
                                         <v-flex xs12 sm4 lg4 md4 lg3 xl3 pb-0>
                                             <v-select
                                                 v-model="selectedProduct.quantity"
@@ -107,12 +93,6 @@
                                         </v-flex>
                                     </v-layout>
                                 </div>
-<!--                                <div class="mb-6">-->
-<!--                                    <a href="javascript:void(0)" class="color-inherit text-underline"-->
-<!--                                       @click="addItemToWishlist(selectedProduct)">-->
-<!--                                        Add To WishList-->
-<!--                                    </a>-->
-<!--                                </div>-->
                                 <div class="mb-6 btn-wrap">
                                     <v-btn
                                         v-if="ifItemExistInCart(selectedProduct)"
@@ -138,10 +118,13 @@
 
 
                                 </div>
-                                <div v-if="role == 3">
+                                <div >
                                     <v-row>
-                                        <v-col cols="12">
-                                            <span class="font-weight-medium">Affiliate</span>
+                                        <v-col cols="12" class="ml-3">
+                                            <span class="font-weight-medium">Affiliate Commission Rate</span>
+                                        </v-col>
+                                        <v-col cols="12" >
+
                                             <v-text-field
                                                 v-model="generateLink"
                                                 :append-icon="'mdi-content-copy '"
@@ -151,6 +134,7 @@
                                                 ref="productLinkToCopy"
                                                 @click:append="toggleCopy"
                                                 @click:prepend="toggleGenerate()"
+                                                v-if="role == 3 && affiliateActivate"
                                             ></v-text-field>
                                             <v-chip
                                                 class="ma-2"
@@ -195,11 +179,11 @@
                                 >
                                     Description
                                 </v-tab>
-                                <v-tab
-                                    :href="'#tab-reviews'"
-                                >
-                                    Reviews
-                                </v-tab>
+<!--                                <v-tab-->
+<!--                                    :href="'#tab-reviews'"-->
+<!--                                >-->
+<!--                                    Reviews-->
+<!--                                </v-tab>-->
                             </v-tabs>
                             <v-tabs-items v-model="model">
                                 <v-tab-item
@@ -212,13 +196,13 @@
                                         </v-card-text>
                                     </v-card>
                                 </v-tab-item>
-                                <v-tab-item
-                                    :value="'tab-reviews'"
-                                >
-                                    <v-card flat>
-                                        <v-card-text></v-card-text>
-                                    </v-card>
-                                </v-tab-item>
+<!--                                <v-tab-item-->
+<!--                                    :value="'tab-reviews'"-->
+<!--                                >-->
+<!--                                    <v-card flat>-->
+<!--                                        <v-card-text></v-card-text>-->
+<!--                                    </v-card>-->
+<!--                                </v-tab-item>-->
                             </v-tabs-items>
                         </template>
                     </v-container>
@@ -375,74 +359,6 @@
                     </v-row>
                 </template>
 
-                <!--				<div class="related-product section-gap bg-grey">-->
-                <!--					<v-container grid-list-xl class="py-0">-->
-                <!--						<div class="sec-title">-->
-                <!--							<h2 class="font-weight-medium">You Might Also Like</h2>-->
-                <!--						</div>-->
-                <!--						<div class="product-listing">-->
-                <!--							<v-layout row wrap mb-4>-->
-                <!--                        <template v-for="(product, index) in products[title]">-->
-                <!--                           <v-flex xs12 sm6 md6 lg3 xl3 mb3 text-center  v-if="index <= 3" :key="index">-->
-                <!--                              <div class="emb-card " >-->
-                <!--                                 <div class="thumb-wrap">-->
-                <!--                                    <router-link :to="'/products/'+title+'/'+product.objectID">-->
-                <!--                                       <img :src="product.image" alt="related product" width="626" height="800">-->
-                <!--                                    </router-link>-->
-                <!--                                    <div class="wishlist-icon">-->
-                <!--                                       <v-btn v-if="ifItemExistInWishlist(product)" @click="addItemToWishlist(product)" icon >-->
-                <!--                                          <v-icon  class="black&#45;&#45;text">favorite</v-icon>-->
-                <!--                                       </v-btn>-->
-                <!--                                       <v-btn v-else @click="addItemToWishlist(product)" icon >-->
-                <!--                                          <v-icon class="grey&#45;&#45;text">favorite</v-icon>-->
-                <!--                                       </v-btn>-->
-                <!--                                    </div>-->
-                <!--                                    <div class="add-to-cart">-->
-                <!--                                       <v-btn v-if="ifItemExistInCart(product)" to="/cart" class="primary" small icon>-->
-                <!--                                          <v-icon medium>edit</v-icon>-->
-                <!--                                       </v-btn>-->
-                <!--                                       <v-btn-->
-                <!--                                          v-else-->
-                <!--                                          class="accent"-->
-                <!--                                          small-->
-                <!--                                          icon-->
-                <!--                                          @click="addProductToCart(product)"-->
-                <!--                                       >-->
-                <!--                                          <v-icon>shopping_cart</v-icon>-->
-                <!--                                       </v-btn>-->
-                <!--                                    </div>-->
-                <!--                                 </div>-->
-                <!--                                 <div class="emb-card-content px-6 py-4 white">-->
-                <!--                                    <h5  v-text="product.name"></h5>-->
-                <!--                                    <div class="emb-meta-info">-->
-                <!--                                       <div class="layout align-center justify-space-between pa-4">-->
-                <!--                                          <div class="inline-block">-->
-                <!--                                             <h6 class="accent&#45;&#45;text font-weight-medium" >-->
-                <!--                                                <emb-currency-sign></emb-currency-sign>{{product.price}}-->
-                <!--                                             </h6>-->
-                <!--                                          </div>-->
-                <!--                                          <div class="inline-block">-->
-                <!--                                             <v-rating-->
-                <!--                                                :value="product.rating"-->
-                <!--                                                background-color="grey"-->
-                <!--                                                readonly-->
-                <!--                                                color="warning"-->
-                <!--                                             >-->
-                <!--                                             </v-rating>-->
-                <!--                                          </div>-->
-                <!--                                       </div>-->
-                <!--                                    </div>-->
-                <!--                                 </div>-->
-                <!--                              </div>-->
-                <!--                           </v-flex>-->
-                <!--                        </template>-->
-                <!--							</v-layout>-->
-                <!--						</div>-->
-                <!--						<div class="text-center">-->
-                <!--							<v-btn :to="`/products/`+title" class="white">Show All</v-btn>-->
-                <!--						</div>-->
-                <!--					</v-container>-->
-                <!--				</div>-->
             </div>
         </template>
     </div>
@@ -456,14 +372,18 @@
             ...mapGetters(["cart", "wishlist"]),
         },
         mounted() {
+
+            if (JSON.parse(sessionStorage.getItem('user')) != null) {
+                this.getAffiliateData();
+                this.user = JSON.parse(sessionStorage.getItem('user'));
+            }
             if (this.$router.history.current.params.id != null && this.$router.history.current.params.user != null) {
                 this.getProductDetailWithUser(this.$router.history.current.params.id, this.$router.history.current.params.user);
             } else {
                 this.getProductDetails(this.$router.history.current.params.id);
             }
-            if (JSON.parse(sessionStorage.getItem('user')) != null) {
-                this.user = JSON.parse(sessionStorage.getItem('user'));
-            }
+
+
         },
         data() {
             return {
@@ -500,6 +420,7 @@
                 },
                 user: null,
                 buyNowItem: null,
+                affiliateActivate:0,
             }
         },
         methods: {
@@ -722,6 +643,21 @@
                     }
                 }
                 return exists;
+            },
+            getAffiliateData() {
+                axios.get('/api/users/affiliate').then(response => {
+                    this.affiliateActivate = response.data.affiliate_activate;
+                }, err => {
+                    const errors = err.response.data.message;
+                    var html = '';
+                    for (const i in errors) {
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
             },
         }
     }

@@ -3,11 +3,80 @@
             <v-col cols="12" sm="12" md="12" lg="12">
                 <div class="emb-card pa-4 search-box-wrap">
                     <div class="d-flex justify-end align-center">
+                        <v-input
+                            :success-messages="[]"
+                            success
+                            disabled
+                        >
+                            Next Withdrawal Date
+                        </v-input>
                         <div class="action-btn-wrap">
-<!--                            <v-btn color="primary"  to="/admin-panel/product-add">-->
-<!--                                Members-->
-<!--&lt;!&ndash;                                <v-icon>mdi-plus-thick</v-icon>&ndash;&gt;-->
-<!--                            </v-btn>-->
+                            <v-dialog
+                                v-model="dialog"
+                                persistent
+                                max-width="350"
+                            >
+                                <template v-slot:activator="{ on, attrs }">
+                                    <v-btn
+                                        color="warning"
+                                        dark
+                                        v-bind="attrs"
+                                        v-on="on"
+                                    >
+                                        Define Withdrawal Date
+                                    </v-btn>
+                                </template>
+                                <v-card>
+                                    <v-card-title class="text-h5">
+                                        Select Next Withdrawal Date
+                                    </v-card-title>
+                                    <v-card-text>
+                                        <v-menu
+                                            ref="menu"
+                                            v-model="menu"
+                                            :close-on-content-click="false"
+                                            transition="scale-transition"
+                                            offset-y
+                                            min-width="auto"
+                                        >
+                                            <template v-slot:activator="{ on, attrs }">
+                                                <v-text-field
+                                                    v-model="date"
+                                                    label="Birthday date"
+                                                    prepend-icon="mdi-calendar"
+                                                    readonly
+                                                    v-bind="attrs"
+                                                    v-on="on"
+                                                ></v-text-field>
+                                            </template>
+                                            <v-date-picker
+                                                v-model="date"
+                                                :active-picker.sync="activePicker"
+                                                :max="(new Date(Date.now() * 1.05)).toISOString().substr(0, 10)"
+                                                :min="(new Date(Date.now())).toISOString().substr(0, 10)"
+                                                @change="save"
+                                            ></v-date-picker>
+                                        </v-menu>
+                                    </v-card-text>
+                                    <v-card-actions>
+                                        <v-spacer></v-spacer>
+                                        <v-btn
+                                            color="green darken-1"
+                                            text
+                                            @click="dialog = false"
+                                        >
+                                            Cancel
+                                        </v-btn>
+                                        <v-btn
+                                            color="green darken-1"
+                                            text
+                                            @click="saveWithdrawalDate"
+                                        >
+                                            Save
+                                        </v-btn>
+                                    </v-card-actions>
+                                </v-card>
+                            </v-dialog>
                             <v-btn color="primary"  to="/sriBay-admin/add-membership-plan">
                                 Add Membership Plan
                                 <v-icon>mdi-plus-thick</v-icon>
@@ -65,12 +134,12 @@
         name: "MembershipPlans",
         data: () => ({
             tableHeaders: [
-                {
-                    text: '#',
-                    align: 'start',
-                    sortable: false,
-                    value: 'count',
-                },
+                // {
+                //     text: '#',
+                //     align: 'start',
+                //     sortable: false,
+                //     value: 'count',
+                // },
                 {
                     text: 'Subscription Plan Name',
                     value: 'name',
@@ -139,6 +208,9 @@
             headers: null,
             dialog: false,
             dialogDelete: false,
+            activePicker: null,
+            date: null,
+            menu: false,
         }),
         watch: {
             dialog (val) {
@@ -147,15 +219,16 @@
             dialogDelete (val) {
                 val || this.closeDelete()
             },
+            menu (val) {
+                val && setTimeout(() => (this.activePicker = 'YEAR'))
+            },
         },
         created() {
             this.getMembershipPlans();
         },
         methods:{
             getMembershipPlans: function() {
-                axios.get(this.$serverUrl+'api/membership',{
-                    headers: {'Content-Type':'application/json','Authorization': 'Bearer ' + localStorage.getItem('bigStore.jwt')}
-                }).then(response => {
+                axios.get('/api/membership').then(response => {
                     const responseData = response.data.membershipPlans;
                     this.membershipPlans = responseData;
                 }, response => {
@@ -169,6 +242,9 @@
                         type: 'error',
                     });
                 });
+            },
+            save (date) {
+                this.$refs.menu.save(date)
             },
             editItem (id) {
                 this.$router.push('/sriBay-admin/edit-membership-plan/'+id);
@@ -188,6 +264,29 @@
             },
             closeDelete () {
                 this.dialogDelete = false
+            },
+            saveWithdrawalDate () {
+
+                let withdrawal_date = this.date;
+                axios.post('/api/withdrawal/create-withdrawal-date',{withdrawal_date:withdrawal_date}).then(response => {
+                    const responseData = response.data.message;
+                    this.$toast.open({
+                        message: responseData,
+                        type: 'success',
+                    });
+                    this.dialog = false;
+                    setTimeout(function(){ window.location.href=""; }, 2000);
+                }, response => {
+                    const errors = response.data.message;
+                    var html = '';
+                    for (const i in errors){
+                        html += errors[i];
+                    }
+                    this.$toast.open({
+                        message: html,
+                        type: 'error',
+                    });
+                });
             },
         }
     }

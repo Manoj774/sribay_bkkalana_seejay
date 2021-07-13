@@ -128,15 +128,6 @@
 								primaryText="Primary"
 						></vue-upload-multiple-image>
 						<br>
-<!--						<label style="font-size: 14px;" class="mb-2">Product Category</label>-->
-<!--						<v-treeview-->
-<!--								v-model="product.product_categories"-->
-<!--								:items="productCategories"-->
-<!--								:selection-type="selectionType"-->
-<!--								selectable-->
-<!--								return-object-->
-<!--								open-all-->
-<!--						></v-treeview>-->
 					</v-col>
 
 				</v-row>
@@ -259,11 +250,17 @@
 				 	});
 				 	this.$router.go(this.$router.currentRoute)
 				 }, err => {
-				 	const errors = err.response.data.message;
-				 	var html = '';
-				 	for (const i in errors){
-				 		html += errors[i];
-				 	}
+				 	const valid_errors = err.response.data.errors;
+                    const errors = err.response.data.message;
+				 	let html = '';
+
+				 	if (valid_errors != null){
+                        for (const i in valid_errors){
+                            html += valid_errors[i];
+                        }
+                    }else if (errors != null){
+                        html += errors;
+                    }
 				 	this.$toast.open({
 				 		message: html,
 				 		type: 'error',

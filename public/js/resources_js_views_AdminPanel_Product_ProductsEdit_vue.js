@@ -4590,11 +4590,16 @@ function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len 
 
         window.location.href = '';
       }, function (err) {
+        var valid_errors = err.response.data.errors;
         var errors = err.response.data.message;
         var html = '';
 
-        for (var _i in errors) {
-          html += errors[_i];
+        if (valid_errors != null) {
+          for (var _i in valid_errors) {
+            html += valid_errors[_i];
+          }
+        } else if (errors != null) {
+          html += errors;
         }
 
         _this3.$toast.open({

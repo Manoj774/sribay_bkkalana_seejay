@@ -45,7 +45,7 @@
                                         v-model="register.password"
                                         type="password"
                                         label="Enter Password*"
-                                        :rules="inputRules.basictextRules"
+                                        :rules="passwordRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
@@ -53,7 +53,7 @@
                                         class="mb-4"
                                         type="password"
                                         label="Retype Password*"
-                                        :rules="inputRules.basictextRules"
+                                        :rules="confirmPasswordRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
@@ -99,6 +99,14 @@
                     basictextRules: [v => !!v || 'This field should not be empty'],
                     mobileInputRules:[  v => ( v && v.length < 11 ) || "This field must have at least 10 characters"]
                 },
+                passwordRules: [
+                    (value) => !!value || 'Please type password.',
+                    (value) => (value && value.length >= 6) || 'minimum 6 characters',
+                ],
+                confirmPasswordRules: [
+                    (value) => !!value || 'type confirm password',
+                    (value) => value === this.register.password || 'The password confirmation does not match.',
+                ],
             }
         },
         mounted() {

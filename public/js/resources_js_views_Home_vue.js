@@ -3479,7 +3479,7 @@ var render = function() {
                           xs12: "",
                           sm12: "",
                           md12: "",
-                          lg8: "",
+                          lg12: "",
                           xl8: ""
                         }
                       },
@@ -3487,75 +3487,6 @@ var render = function() {
                         _c("emb-home-main-banner", {
                           attrs: { data: _vm.homeBannerData }
                         })
-                      ],
-                      1
-                    ),
-                    _vm._v(" "),
-                    _c(
-                      "v-flex",
-                      {
-                        attrs: {
-                          xs12: "",
-                          sm12: "",
-                          md12: "",
-                          lg4: "",
-                          xl4: ""
-                        }
-                      },
-                      [
-                        _c(
-                          "v-layout",
-                          {
-                            attrs: {
-                              row: "",
-                              wrap: "",
-                              "text-center": "",
-                              "mx-0": ""
-                            }
-                          },
-                          [
-                            _c(
-                              "v-flex",
-                              {
-                                attrs: {
-                                  xs12: "",
-                                  sm6: "",
-                                  md6: "",
-                                  lg12: "",
-                                  xl12: "",
-                                  "px-0": ""
-                                }
-                              },
-                              [
-                                _c("emb-aside-banner-v1", {
-                                  attrs: { img: "/static/images/aside-1.jpg" }
-                                })
-                              ],
-                              1
-                            ),
-                            _vm._v(" "),
-                            _c(
-                              "v-flex",
-                              {
-                                attrs: {
-                                  xs12: "",
-                                  sm6: "",
-                                  md6: "",
-                                  lg12: "",
-                                  xl12: "",
-                                  "px-0": ""
-                                }
-                              },
-                              [
-                                _c("emb-aside-banner-v2", {
-                                  attrs: { img: "/static/images/aside-2.jpg" }
-                                })
-                              ],
-                              1
-                            )
-                          ],
-                          1
-                        )
                       ],
                       1
                     )

@@ -75,7 +75,9 @@ class ShoppingCartController extends Controller
 
 
         }
+
         $shoppingCart = ShoppingCart::where('user_id','=',$request->user()->id)->first();
+
         if ($shoppingCart){
             $shoppingCartItem = ShoppingCartItems::where('shopping_cart_id','=',$shoppingCart->id)
                                 ->where('product_id','=',$request->product_id)->first();

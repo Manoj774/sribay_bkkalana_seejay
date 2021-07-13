@@ -4,28 +4,28 @@
 			<div class="banner">
 				<v-container grid-list-xl>
 					<v-layout row wrap>
-						<v-flex xs12 sm12 md12 lg8 xl8>
+						<v-flex xs12 sm12 md12 lg12 xl8>
 							<emb-home-main-banner
 								:data="homeBannerData"
 							>
 							</emb-home-main-banner>
 						</v-flex>
-						<v-flex xs12 sm12 md12 lg4 xl4>
-							<v-layout row wrap text-center mx-0>
-								<v-flex xs12 sm6 md6 lg12 xl12 px-0>
-									<emb-aside-banner-v1
-										img="/static/images/aside-1.jpg"
-									>
-									</emb-aside-banner-v1>
-								</v-flex>
-								<v-flex xs12 sm6 md6 lg12 xl12 px-0>
-									<emb-aside-banner-v2
-										img="/static/images/aside-2.jpg"
-									>
-									</emb-aside-banner-v2>
-								</v-flex>
-							</v-layout>
-						</v-flex>
+<!--						<v-flex xs12 sm12 md12 lg4 xl4>-->
+<!--							<v-layout row wrap text-center mx-0>-->
+<!--								<v-flex xs12 sm6 md6 lg12 xl12 px-0>-->
+<!--									<emb-aside-banner-v1-->
+<!--										img="/static/images/aside-1.jpg"-->
+<!--									>-->
+<!--									</emb-aside-banner-v1>-->
+<!--								</v-flex>-->
+<!--								<v-flex xs12 sm6 md6 lg12 xl12 px-0>-->
+<!--									<emb-aside-banner-v2-->
+<!--										img="/static/images/aside-2.jpg"-->
+<!--									>-->
+<!--									</emb-aside-banner-v2>-->
+<!--								</v-flex>-->
+<!--							</v-layout>-->
+<!--						</v-flex>-->
 					</v-layout>
 				</v-container>
 			</div>

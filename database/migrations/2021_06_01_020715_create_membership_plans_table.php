@@ -29,6 +29,7 @@ class CreateMembershipPlansTable extends Migration
             $table->double('annual_revenue');
             $table->double('registered_commission');
             $table->double('referral_commission');
+            $table->date('withdrawal_date')->nullable(true);
             $table->boolean('stat')->default(true);
             $table->timestamps();
         });

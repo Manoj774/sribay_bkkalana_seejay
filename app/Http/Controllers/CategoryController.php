@@ -7,6 +7,7 @@ use App\Models\Product;
 use App\Models\ProductHasCategory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class CategoryController extends Controller
 {
@@ -137,10 +138,12 @@ class CategoryController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
+        $validator =  Validator::make($request->all(),[
             'name' => 'required|max:250'
         ]);
-
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
         $category = new Category([
             'name' => $request->name,
             'parent_id' => $request->parent_category == null ? 0: $request->parent_category,
@@ -180,10 +183,12 @@ class CategoryController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator =  Validator::make($request->all(),[
             'name' => 'required|unique:categories|max:250'
         ]);
-
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);
@@ -208,9 +213,12 @@ class CategoryController extends Controller
      */
     public function destroy(Request $request, $id)
     {
-        $request->validate([
+        $validator =  Validator::make($request->all(),[
             'stat' => 'required'
         ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
         $category = Category::find($id);
         if (!$category) {
             return response()->json(['message' => 'Category not found'], 404);

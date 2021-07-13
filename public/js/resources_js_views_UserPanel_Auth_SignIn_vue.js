@@ -67,11 +67,11 @@ __webpack_require__.r(__webpack_exports__);
       }, function (v) {
         return /.+@.+/.test(v) || 'E-mail must be valid';
       }],
-      inputRules: {
-        basictextRules: [function (v) {
-          return !!v || 'This field should not be empty';
-        }]
-      }
+      passwordRules: [function (value) {
+        return !!value || 'Please type password.';
+      }, function (value) {
+        return value && value.length >= 6 || 'minimum 6 characters';
+      }]
     };
   },
   created: function created() {
@@ -307,7 +307,7 @@ var render = function() {
                                   attrs: {
                                     type: "password",
                                     placeholder: "Password*",
-                                    rules: _vm.inputRules.basictextRules
+                                    rules: _vm.passwordRules
                                   },
                                   model: {
                                     value: _vm.login.password,

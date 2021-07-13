@@ -1,6 +1,6 @@
 <template>
     <v-row>
-        <v-col cols="12" sm="12" md="12" lg="12">
+        <v-col cols="12" sm="12" md="12" lg="12" id="affiliate_data">
             <h1 class="font-weight-bold text-h4 basil--text">
                 Affiliate Dashboard - {{membership_name}}
             </h1>
@@ -36,7 +36,6 @@
                     Referral
                 </v-tab>
             </v-tabs>
-
             <v-tabs-items v-model="tab">
                 <v-tab-item
                     :value="'tab-overview'"
@@ -73,6 +72,17 @@
                                         <v-divider></v-divider>
                                         <v-card-text>
                                             <div class="text-center"><h3>{{accountBalance.toFixed(2)}}</h3></div>
+                                        </v-card-text>
+                                    </v-card>
+                                </v-col>
+                                <v-col cols="12" sm="12" md="4" lg="4">
+                                    <v-card class="text-xs-center" height="100%" dark tile flat color="red darken-4"
+                                            hover>
+                                        <v-card-title style="font-size: 13px;">Weekly Points</v-card-title>
+                                        <v-divider></v-divider>
+                                        <v-card-text>
+                                            <div class="text-center"><h3 style="color: #fff;">
+                                                {{total_weekly_points}}</h3></div>
                                         </v-card-text>
                                     </v-card>
                                 </v-col>
@@ -296,6 +306,8 @@
                 generateLinkTotalMobileClick: 0.0,
                 generateLinkTotalTabletClick: 0.0,
                 generateLinkTotalOtherClick: 0.0,
+                affiliateActivate : false,
+                total_weekly_points:0,
                 headers: [
                     {
                         text: '#',
@@ -346,40 +358,54 @@
             getAffiliateData() {
                 axios.get('/api/users/affiliate').then(response => {
 
-                    this.currentMonthCommission = response.data.currentMonthCommission;
-                    this.lastMonthCommission = response.data.lastMonthCommission;
-                    this.membership_name = response.data.membership_name;
-                    this.userHasMembershipID = response.data.userHasMembershipID;
-                    this.accountBalance = response.data.accountBalance;
-                    this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
-                    this.generateLinkTotalClick = response.data.generateLinkTotalClick;
-                    this.generateLinkTotalDesktopClick = response.data.generateLinkTotalDesktopClick;
-                    this.generateLinkTotalMobileClick = response.data.generateLinkTotalMobileClick;
-                    this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
+                    this.affiliateActivate = response.data.affiliate_activate;
+                    console.log(this.affiliateActivate)
+                    if (this.affiliateActivate == 1){
 
-                    let count = 1;
-                    for (const key in response.data.referral) {
-                        this.referralTableData.push({
-                            count: count++,
-                            full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
-                            email: response.data.referral[key].email,
-                            membership: response.data.referral[key].referralMembership,
-                            created_at: response.data.referral[key].created_at,
-                            // total_commission: response.data.referral[key].referralEarnCommission,
-                            // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
-                        });
+                        this.currentMonthCommission = response.data.currentMonthCommission;
+                        this.lastMonthCommission = response.data.lastMonthCommission;
+                        this.membership_name = response.data.membership_name;
+                        this.userHasMembershipID = response.data.userHasMembershipID;
+
+                        this.accountBalance = response.data.accountBalance;
+                        this.generateLinkTotalUniqueClick = response.data.generateLinkTotalUniqueClick;
+                        this.generateLinkTotalClick = response.data.generateLinkTotalClick;
+                        this.generateLinkTotalDesktopClick = response.data.generateLinkTotalDesktopClick;
+                        this.generateLinkTotalMobileClick = response.data.generateLinkTotalMobileClick;
+                        this.generateLinkTotalOtherClick = response.data.generateLinkTotalOtherClick;
+                        this.total_weekly_points = response.data.weeklyPoints;
+
+                        let count = 1;
+                        for (const key in response.data.referral) {
+                            this.referralTableData.push({
+                                count: count++,
+                                full_name: response.data.referral[key].first_name + " " + response.data.referral[key].last_name,
+                                email: response.data.referral[key].email,
+                                membership: response.data.referral[key].referralMembership,
+                                created_at: response.data.referral[key].created_at,
+                                // total_commission: response.data.referral[key].referralEarnCommission,
+                                // last_commission_date: response.data.referral[key].lastEarnCommissionDate,
+                            });
+                        }
+
+                        let count1 = 1;
+                        for (const key in response.data.earnHistory) {
+                            this.earnData.push({
+                                count: count1++,
+                                description: response.data.earnHistory[key].description,
+                                earn_amount: response.data.earnHistory[key].earn_amount.toFixed(2),
+                                created_at: response.data.earnHistory[key].created_at,
+                            });
+                        }
+
                     }
 
-                    let count1 = 1;
-                    for (const key in response.data.earnHistory) {
-                        this.earnData.push({
-                            count: count1++,
-                            description: response.data.earnHistory[key].description,
-                            earn_amount: response.data.earnHistory[key].earn_amount.toFixed(2),
-                            created_at: response.data.earnHistory[key].created_at,
-                        });
+                    else {
+                        let html = '<h1 class="font-weight-bold text-h4 basil--text text-center mt-16 text-danger" style="color: red;">';
+                        html += 'Waiting for activate';
+                        html += '</h1>';
+                        $('#affiliate_data').html(html);
                     }
-
 
                 }, err => {
                     const errors = err.response.data.message;
@@ -505,7 +531,9 @@
 
     }
 </script>
-
+<h1 class="font-weight-bold text-h4 basil--text text-center mt-16 text-danger" style="color: red;">
+    Waiting for activate
+</h1>
 <style scoped>
 
 </style>

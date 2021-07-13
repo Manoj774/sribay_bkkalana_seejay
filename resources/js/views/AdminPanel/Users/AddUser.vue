@@ -38,15 +38,15 @@
                             v-model="user.password"
                             type="password"
                             label="Enter Password*"
-                            :rules="inputRules.basictextRules"
+                            :rules="passwordRules"
                         >
                         </v-text-field>
                         <v-text-field
                             v-model="user.confirmPassword"
                             class="mb-4"
                             type="password"
-                            label="Confirm Passowrd*"
-                            :rules="inputRules.basictextRules"
+                            label="Confirm Password*"
+                            :rules="confirmPasswordRules"
                         >
                         </v-text-field>
                         <v-btn class="accent mx-0 mb-4" large  @click.stop.prevent="saveDetails">
@@ -80,7 +80,15 @@
                 ],
                 inputRules: {
                     basictextRules: [v => !!v || 'This field should not be empty']
-                }
+                },
+                passwordRules: [
+                    (value) => !!value || 'Please type password.',
+                    (value) => (value && value.length >= 6) || 'minimum 6 characters',
+                ],
+                confirmPasswordRules: [
+                    (value) => !!value || 'type confirm password',
+                    (value) => value === this.user.password || 'The password confirmation does not match.',
+                ],
             }
         },
         methods: {
@@ -95,8 +103,8 @@
                             type: 'success',
                         });
                         this.$router.go(this.$router.currentRoute)
-                    }, response => {
-                        const errors = response.data.message;
+                    }, err => {
+                        const errors = err.response.data.message;
                         var html = '';
                         for (const i in errors){
                             html += errors[i];

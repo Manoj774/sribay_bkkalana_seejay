@@ -61,17 +61,10 @@
                         </span>
                      </div>
                      <div class="layout align-center justify-space-between subtotal">
-                        <p>Shipping</p>
+                        <p>Free Shipping</p>
                         <span>
                            <emb-currency-sign></emb-currency-sign>
                            {{shipping}}
-                        </span>
-                     </div>
-                     <div class="layout align-center justify-space-between subtotal">
-                        <p>Tax(GST)</p>
-                        <span>
-                           <emb-currency-sign></emb-currency-sign>
-                           {{tax}}
                         </span>
                      </div>
                      <v-divider class="my-3"></v-divider>

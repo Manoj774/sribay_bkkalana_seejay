@@ -92,6 +92,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
+    var _this = this;
+
     return {
       register: {
         first_name: null,
@@ -115,7 +117,17 @@ __webpack_require__.r(__webpack_exports__);
         mobileInputRules: [function (v) {
           return v && v.length < 11 || "This field must have at least 10 characters";
         }]
-      }
+      },
+      passwordRules: [function (value) {
+        return !!value || 'Please type password.';
+      }, function (value) {
+        return value && value.length >= 6 || 'minimum 6 characters';
+      }],
+      confirmPasswordRules: [function (value) {
+        return !!value || 'type confirm password';
+      }, function (value) {
+        return value === _this.register.password || 'The password confirmation does not match.';
+      }]
     };
   },
   mounted: function mounted() {
@@ -129,7 +141,7 @@ __webpack_require__.r(__webpack_exports__);
   },
   methods: {
     registerUser: function registerUser() {
-      var _this = this;
+      var _this2 = this;
 
       this.$refs.register_form.validate();
 
@@ -145,7 +157,7 @@ __webpack_require__.r(__webpack_exports__);
 
           window.location.href = '/';
         })["catch"](function (error) {
-          _this.$toast.open({
+          _this2.$toast.open({
             message: error.response.data.message,
             type: 'error'
           });
@@ -389,7 +401,7 @@ var render = function() {
                                   attrs: {
                                     type: "password",
                                     label: "Enter Password*",
-                                    rules: _vm.inputRules.basictextRules
+                                    rules: _vm.passwordRules
                                   },
                                   model: {
                                     value: _vm.register.password,
@@ -405,7 +417,7 @@ var render = function() {
                                   attrs: {
                                     type: "password",
                                     label: "Retype Password*",
-                                    rules: _vm.inputRules.basictextRules
+                                    rules: _vm.confirmPasswordRules
                                   },
                                   model: {
                                     value: _vm.register.confirm_password,

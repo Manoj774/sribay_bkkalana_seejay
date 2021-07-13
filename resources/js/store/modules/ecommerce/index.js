@@ -6,8 +6,8 @@ import moment from 'moment';
 const state = {
     cart,
     wishlist,
-      tax: 27.95,
-      shipping: 12.95,
+      tax: 0.00,
+      shipping: 0.00,
       invoiceData: {
             products: [],
             orderId: '',

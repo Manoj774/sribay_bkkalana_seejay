@@ -78,26 +78,6 @@
                             <div class="shop-header">
                                 <v-layout row wrap my-0 align-center>
                                     <v-flex xs12 sm12 md12 lg7 xl7 py-0 cpx-7 mb-4>
-<!--                                        <div class="d-sm-flex">-->
-<!--                                            <div class="app-selectbox-sm">-->
-<!--                                                <ais-sort-by-->
-<!--                                                    :items="[-->
-<!--                                                             { value: 'ikea', label: 'Default' },-->
-<!--                                                             { value: 'ikea_price_asc',label: 'Lowest price'},-->
-<!--                                                             { value: 'ikea_price_desc',  label: 'Highest price'},-->
-<!--                                                        ]"-->
-<!--                                                />-->
-<!--                                            </div>-->
-<!--                                            <div class="app-selectbox-sm ml-sm-4 mt-sm-0 mt-6">-->
-<!--                                                <ais-hits-per-page-->
-<!--                                                    :items="[-->
-<!--                                                            { label: '8 hits per page', value: 8, default: true },-->
-<!--                                                            { label: '12 hits per page', value: 12},-->
-<!--                                                            { label: '15 hits per page', value: 16 },-->
-<!--                                                        ]"-->
-<!--                                                />-->
-<!--                                            </div>-->
-<!--                                        </div>-->
                                     </v-flex>
                                     <v-flex xs12 sm12 md12 lg5 xl5 cpx-7 py-0 pr-0 mb-4>
                                         <div class="text-lg-right">
@@ -180,21 +160,20 @@ export default {
         },
 
         getProductsData() {
-            this.listData = [];
-            this.product = {
-                    product_categories: null,
-                    searchText:null,
-                    minPrice:0,
-                    maxPrice:null,
-            }
+
             axios.get('/api/product'
             ).then(response => {
+                this.listData = [];
+                this.product = {
+                    product_categories: null,
+                    minPrice:0,
+                    maxPrice:null,
+                }
                 this.products = response.data.products;
                 let count = 1;
                 for (let categoryKey in this.products) {
                     this.listData.push(this.products[categoryKey]);
                 }
-                // console.log(this.listData);
             })
                 .catch(error => {
                     console.log(error);
@@ -202,11 +181,12 @@ export default {
         },
 
         getProductsDataWithCategory(category) {
-            this.listData = [];
+
             axios.get('/api/product-by-category/'+category
             ).then(response => {
                 this.products = response.data.products;
                 let count = 1;
+                this.listData = [];
                 for (let categoryKey in this.products) {
                     this.listData.push(this.products[categoryKey]);
                 }
@@ -242,8 +222,9 @@ export default {
             if (this.product.searchText === ''){
                 this.getProductsData();
             }else{
-                this.listData = [];
+
                 axios.post('/api/product/filter',this.product).then(response => {
+                    this.listData = [];
                     this.products = response.data.products;
                     let count = 1;
                     for (let categoryKey in this.products) {

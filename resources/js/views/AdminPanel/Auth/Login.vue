@@ -10,17 +10,19 @@
                         <v-flex sm10 md5 lg5 xl6>
                             <div class="emb-card sign-in-form form-margin d-block white pa-6">
                                 <h4>Admin Login</h4>
-                                <v-form>
+                                <v-form ref="login_form" v-model="login_valid">
                                     <v-text-field
                                             v-model="email"
                                             type="email"
                                             placeholder="Email*"
+                                            :rules="emailRules"
                                     >
                                     </v-text-field>
                                     <v-text-field
                                             v-model="password"
                                             type="password"
                                             placeholder="Password*"
+                                            :rules="passwordRules"
                                     >
                                     </v-text-field>
                                     <div class="layout align-center justify-space-between">
@@ -50,7 +52,16 @@
             return {
                 email: "",
                 password: "",
-                checkbox: false
+                checkbox: false,
+                login_valid: false,
+                emailRules: [
+                    v => !!v || 'E-mail is required',
+                    v => /.+@.+/.test(v) || 'E-mail must be valid'
+                ],
+                passwordRules: [
+                    (value) => !!value || 'Please type password.',
+                    (value) => (value && value.length >= 6) || 'minimum 6 characters',
+                ],
             }
         },
         created() {
@@ -61,7 +72,8 @@
         methods: {
             handleSubmit(e) {
                 e.preventDefault()
-                if (this.password.length > 0) {
+                this.$refs.login_form.validate();
+                if (this.login_valid === true) {
                     let email = this.email
                     let password = this.password
 
@@ -80,8 +92,13 @@
                              }
                          }
                     }).catch(error => {
+                        const errors = error.response.data.message;
+                        var html = '';
+                        for (const i in errors){
+                            html += errors[i];
+                        }
                         this.$toast.open({
-                            message: error.response.data.message,
+                            message: html,
                             type: 'error',
                         });
                     });
@@ -97,8 +114,13 @@
                         type: 'success',
                     });
                 }).catch(error => {
+                    const errors = error.response.data.message;
+                    var html = '';
+                    for (const i in errors){
+                        html += errors[i];
+                    }
                     this.$toast.open({
-                        message: error.response.data.message,
+                        message: html,
                         type: 'error',
                     });
 

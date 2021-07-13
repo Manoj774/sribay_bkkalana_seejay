@@ -390,102 +390,19 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
 //
 //
 //
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
-//
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   computed: _objectSpread({}, (0,vuex__WEBPACK_IMPORTED_MODULE_0__.mapGetters)(["cart", "wishlist"])),
   mounted: function mounted() {
+    if (JSON.parse(sessionStorage.getItem('user')) != null) {
+      this.getAffiliateData();
+      this.user = JSON.parse(sessionStorage.getItem('user'));
+    }
+
     if (this.$router.history.current.params.id != null && this.$router.history.current.params.user != null) {
       this.getProductDetailWithUser(this.$router.history.current.params.id, this.$router.history.current.params.user);
     } else {
       this.getProductDetails(this.$router.history.current.params.id);
-    }
-
-    if (JSON.parse(sessionStorage.getItem('user')) != null) {
-      this.user = JSON.parse(sessionStorage.getItem('user'));
     }
   },
   data: function data() {
@@ -525,7 +442,8 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
         }]
       },
       user: null,
-      buyNowItem: null
+      buyNowItem: null,
+      affiliateActivate: 0
     };
   },
   methods: {
@@ -805,6 +723,25 @@ function _defineProperty(obj, key, value) { if (key in obj) { Object.definePrope
       }
 
       return exists;
+    },
+    getAffiliateData: function getAffiliateData() {
+      var _this9 = this;
+
+      axios.get('/api/users/affiliate').then(function (response) {
+        _this9.affiliateActivate = response.data.affiliate_activate;
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this9.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
     }
   }
 });
@@ -1170,40 +1107,46 @@ var render = function() {
                                         _vm.selectedProduct.stat === 1
                                           ? [
                                               _c(
-                                                "span",
+                                                "v-chip",
                                                 {
-                                                  staticClass:
-                                                    "font-weight-medium"
+                                                  attrs: {
+                                                    color: "success",
+                                                    label: "",
+                                                    "text-color": "white"
+                                                  }
                                                 },
-                                                [_vm._v("Availability")]
-                                              ),
-                                              _vm._v(" : "),
-                                              _c(
-                                                "span",
-                                                {
-                                                  staticClass:
-                                                    "font-weight-regular"
-                                                },
-                                                [_vm._v("In Stocks")]
+                                                [
+                                                  _c(
+                                                    "span",
+                                                    {
+                                                      staticClass:
+                                                        "font-weight-regular"
+                                                    },
+                                                    [_vm._v("In Stocks")]
+                                                  )
+                                                ]
                                               )
                                             ]
                                           : [
                                               _c(
-                                                "span",
+                                                "v-chip",
                                                 {
-                                                  staticClass:
-                                                    "font-weight-medium"
+                                                  attrs: {
+                                                    color: "red",
+                                                    label: "",
+                                                    "text-color": "white"
+                                                  }
                                                 },
-                                                [_vm._v("Availability")]
-                                              ),
-                                              _vm._v(" : "),
-                                              _c(
-                                                "span",
-                                                {
-                                                  staticClass:
-                                                    "font-weight-regular"
-                                                },
-                                                [_vm._v("Out Of Stocks")]
+                                                [
+                                                  _c(
+                                                    "span",
+                                                    {
+                                                      staticClass:
+                                                        "font-weight-regular"
+                                                    },
+                                                    [_vm._v("Out Of Stocks")]
+                                                  )
+                                                ]
                                               )
                                             ]
                                       ],
@@ -1328,27 +1271,41 @@ var render = function() {
                                   1
                                 ),
                                 _vm._v(" "),
-                                _vm.role == 3
-                                  ? _c(
-                                      "div",
+                                _c(
+                                  "div",
+                                  [
+                                    _c(
+                                      "v-row",
                                       [
                                         _c(
-                                          "v-row",
+                                          "v-col",
+                                          {
+                                            staticClass: "ml-3",
+                                            attrs: { cols: "12" }
+                                          },
                                           [
                                             _c(
-                                              "v-col",
-                                              { attrs: { cols: "12" } },
+                                              "span",
+                                              {
+                                                staticClass:
+                                                  "font-weight-medium"
+                                              },
                                               [
-                                                _c(
-                                                  "span",
-                                                  {
-                                                    staticClass:
-                                                      "font-weight-medium"
-                                                  },
-                                                  [_vm._v("Affiliate")]
-                                                ),
-                                                _vm._v(" "),
-                                                _c("v-text-field", {
+                                                _vm._v(
+                                                  "Affiliate Commission Rate"
+                                                )
+                                              ]
+                                            )
+                                          ]
+                                        ),
+                                        _vm._v(" "),
+                                        _c(
+                                          "v-col",
+                                          { attrs: { cols: "12" } },
+                                          [
+                                            _vm.role == 3 &&
+                                            _vm.affiliateActivate
+                                              ? _c("v-text-field", {
                                                   ref: "productLinkToCopy",
                                                   attrs: {
                                                     "append-icon":
@@ -1374,77 +1331,73 @@ var render = function() {
                                                     },
                                                     expression: "generateLink"
                                                   }
-                                                }),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "v-chip",
-                                                  {
-                                                    staticClass: "ma-2",
-                                                    attrs: {
-                                                      color: "pink",
-                                                      label: "",
-                                                      "text-color": "white"
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      "\n                                                Commission Rate: " +
-                                                        _vm._s(
-                                                          this.selectedProduct
-                                                            .selling_margin
-                                                        ) +
-                                                        "%\n                                            "
-                                                    )
-                                                  ]
+                                                })
+                                              : _vm._e(),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-chip",
+                                              {
+                                                staticClass: "ma-2",
+                                                attrs: {
+                                                  color: "pink",
+                                                  label: "",
+                                                  "text-color": "white"
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                                Commission Rate: " +
+                                                    _vm._s(
+                                                      this.selectedProduct
+                                                        .selling_margin
+                                                    ) +
+                                                    "%\n                                            "
+                                                )
+                                              ]
+                                            ),
+                                            _vm._v(" "),
+                                            _c(
+                                              "v-chip",
+                                              {
+                                                staticClass: "ma-2",
+                                                attrs: {
+                                                  color: "primary",
+                                                  label: "",
+                                                  "text-color": "white"
+                                                }
+                                              },
+                                              [
+                                                _vm._v(
+                                                  "\n                                                Estimated Commissions:\n                                                "
                                                 ),
-                                                _vm._v(" "),
-                                                _c(
-                                                  "v-chip",
-                                                  {
-                                                    staticClass: "ma-2",
-                                                    attrs: {
-                                                      color: "primary",
-                                                      label: "",
-                                                      "text-color": "white"
-                                                    }
-                                                  },
-                                                  [
-                                                    _vm._v(
-                                                      "\n                                                Estimated Commissions:\n                                                "
-                                                    ),
-                                                    _c("emb-currency-sign"),
-                                                    _vm._v(
-                                                      "\n                                                " +
-                                                        _vm._s(
-                                                          (
-                                                            (this
-                                                              .selectedProduct
-                                                              .sell_price *
-                                                              this
-                                                                .selectedProduct
-                                                                .selling_margin) /
-                                                            100
-                                                          ).toFixed(2)
-                                                        ) +
-                                                        "\n                                            "
-                                                    )
-                                                  ],
-                                                  1
+                                                _c("emb-currency-sign"),
+                                                _vm._v(
+                                                  "\n                                                " +
+                                                    _vm._s(
+                                                      (
+                                                        (this.selectedProduct
+                                                          .sell_price *
+                                                          this.selectedProduct
+                                                            .selling_margin) /
+                                                        100
+                                                      ).toFixed(2)
+                                                    ) +
+                                                    "\n                                            "
                                                 )
                                               ],
                                               1
-                                            ),
-                                            _vm._v(" "),
-                                            _c("v-col", {
-                                              attrs: { cols: "12" }
-                                            })
+                                            )
                                           ],
                                           1
-                                        )
+                                        ),
+                                        _vm._v(" "),
+                                        _c("v-col", { attrs: { cols: "12" } })
                                       ],
                                       1
                                     )
-                                  : _vm._e(),
+                                  ],
+                                  1
+                                ),
                                 _vm._v(" "),
                                 _c(
                                   "div",
@@ -1487,13 +1440,7 @@ var render = function() {
                                     "\n                                    Description\n                                "
                                   )
                                 ]
-                              ),
-                              _vm._v(" "),
-                              _c("v-tab", { attrs: { href: "#tab-reviews" } }, [
-                                _vm._v(
-                                  "\n                                    Reviews\n                                "
-                                )
-                              ])
+                              )
                             ],
                             1
                           ),
@@ -1529,20 +1476,6 @@ var render = function() {
                                         }
                                       })
                                     ],
-                                    1
-                                  )
-                                ],
-                                1
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-tab-item",
-                                { attrs: { value: "tab-reviews" } },
-                                [
-                                  _c(
-                                    "v-card",
-                                    { attrs: { flat: "" } },
-                                    [_c("v-card-text")],
                                     1
                                   )
                                 ],

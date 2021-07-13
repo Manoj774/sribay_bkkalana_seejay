@@ -76,6 +76,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   data: function data() {
+    var _this = this;
+
     return {
       user: {
         first_name: "",
@@ -95,12 +97,22 @@ __webpack_require__.r(__webpack_exports__);
         basictextRules: [function (v) {
           return !!v || 'This field should not be empty';
         }]
-      }
+      },
+      passwordRules: [function (value) {
+        return !!value || 'Please type password.';
+      }, function (value) {
+        return value && value.length >= 6 || 'minimum 6 characters';
+      }],
+      confirmPasswordRules: [function (value) {
+        return !!value || 'type confirm password';
+      }, function (value) {
+        return value === _this.user.password || 'The password confirmation does not match.';
+      }]
     };
   },
   methods: {
     saveDetails: function saveDetails() {
-      var _this = this;
+      var _this2 = this;
 
       this.$refs.form.validate();
 
@@ -111,21 +123,21 @@ __webpack_require__.r(__webpack_exports__);
             'Authorization': 'Bearer ' + localStorage.getItem('sriBay.jwt')
           }
         }).then(function (response) {
-          _this.$toast.open({
+          _this2.$toast.open({
             message: response.data.message,
             type: 'success'
           });
 
-          _this.$router.go(_this.$router.currentRoute);
-        }, function (response) {
-          var errors = response.data.message;
+          _this2.$router.go(_this2.$router.currentRoute);
+        }, function (err) {
+          var errors = err.response.data.message;
           var html = '';
 
           for (var i in errors) {
             html += errors[i];
           }
 
-          _this.$toast.open({
+          _this2.$toast.open({
             message: html,
             type: 'error'
           });
@@ -315,7 +327,7 @@ var render = function() {
                                 attrs: {
                                   type: "password",
                                   label: "Enter Password*",
-                                  rules: _vm.inputRules.basictextRules
+                                  rules: _vm.passwordRules
                                 },
                                 model: {
                                   value: _vm.user.password,
@@ -330,8 +342,8 @@ var render = function() {
                                 staticClass: "mb-4",
                                 attrs: {
                                   type: "password",
-                                  label: "Confirm Passowrd*",
-                                  rules: _vm.inputRules.basictextRules
+                                  label: "Confirm Password*",
+                                  rules: _vm.confirmPasswordRules
                                 },
                                 model: {
                                   value: _vm.user.confirmPassword,

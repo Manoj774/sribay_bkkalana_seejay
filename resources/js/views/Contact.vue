@@ -95,27 +95,28 @@ export default {
       //   });
     },
     saveDetails() {
-
-        axios.post('/api/contact-us',this.contactFormData).then(response => {
-            this.$snotify.success(response.data.message, {
-                closeOnClick: false,
-                pauseOnHover: false,
-                timeout: 1000,
-                showProgressBar: false,
+        this.$refs.form.validate();
+        if (this.valid){
+            axios.post('/api/contact-us',this.contactFormData).then(response => {
+                this.$toast.open({
+                    message: response.data.message,
+                    type: 'success',
+                });
+                setTimeout(() => {
+                    window.location.href='';
+                }, 2000);
+            }).catch(error => {
+                const errors = error.response.data.message;
+                var html = '';
+                for (const i in errors){
+                    html += errors[i];
+                }
+                this.$toast.open({
+                    message: html,
+                    type: 'error',
+                });
             });
-            setTimeout(() => {
-               window.location.href='';
-            }, 2000);
-        }).catch(error => {
-            this.$snotify.success(error.response.data.message, {
-                closeOnClick: false,
-                pauseOnHover: false,
-                timeout: 1000,
-                showProgressBar: false,
-            });
-        });
-
-
+        }
     }
   }
 };

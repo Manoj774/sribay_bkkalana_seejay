@@ -22,6 +22,7 @@ class CreateUserHasMemberShipsTable extends Migration
             $table->string('bank_account_number');
             $table->string('bank_name');
             $table->string('bank_branch');
+            $table->string('stat')->default(true);
             $table->timestamps();
         });
     }

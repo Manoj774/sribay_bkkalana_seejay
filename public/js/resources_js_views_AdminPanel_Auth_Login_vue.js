@@ -55,13 +55,26 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: 'admin-login',
   data: function data() {
     return {
       email: "",
       password: "",
-      checkbox: false
+      checkbox: false,
+      login_valid: false,
+      emailRules: [function (v) {
+        return !!v || 'E-mail is required';
+      }, function (v) {
+        return /.+@.+/.test(v) || 'E-mail must be valid';
+      }],
+      passwordRules: [function (value) {
+        return !!value || 'Please type password.';
+      }, function (value) {
+        return value && value.length >= 6 || 'minimum 6 characters';
+      }]
     };
   },
   created: function created() {
@@ -74,8 +87,9 @@ __webpack_require__.r(__webpack_exports__);
       var _this = this;
 
       e.preventDefault();
+      this.$refs.login_form.validate();
 
-      if (this.password.length > 0) {
+      if (this.login_valid === true) {
         var email = this.email;
         var password = this.password;
         axios.post('/api/admin-sribay/admin-login', {
@@ -98,8 +112,15 @@ __webpack_require__.r(__webpack_exports__);
             }
           }
         })["catch"](function (error) {
+          var errors = error.response.data.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
           _this.$toast.open({
-            message: error.response.data.message,
+            message: html,
             type: 'error'
           });
         });
@@ -118,8 +139,15 @@ __webpack_require__.r(__webpack_exports__);
           type: 'success'
         });
       })["catch"](function (error) {
+        var errors = error.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
         _this2.$toast.open({
-          message: error.response.data.message,
+          message: html,
           type: 'error'
         });
       });
@@ -279,11 +307,22 @@ var render = function() {
                             _vm._v(" "),
                             _c(
                               "v-form",
+                              {
+                                ref: "login_form",
+                                model: {
+                                  value: _vm.login_valid,
+                                  callback: function($$v) {
+                                    _vm.login_valid = $$v
+                                  },
+                                  expression: "login_valid"
+                                }
+                              },
                               [
                                 _c("v-text-field", {
                                   attrs: {
                                     type: "email",
-                                    placeholder: "Email*"
+                                    placeholder: "Email*",
+                                    rules: _vm.emailRules
                                   },
                                   model: {
                                     value: _vm.email,
@@ -297,7 +336,8 @@ var render = function() {
                                 _c("v-text-field", {
                                   attrs: {
                                     type: "password",
-                                    placeholder: "Password*"
+                                    placeholder: "Password*",
+                                    rules: _vm.passwordRules
                                   },
                                   model: {
                                     value: _vm.password,

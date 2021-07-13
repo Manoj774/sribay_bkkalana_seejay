@@ -110,25 +110,32 @@ __webpack_require__.r(__webpack_exports__);
     saveDetails: function saveDetails() {
       var _this = this;
 
-      axios.post('/api/contact-us', this.contactFormData).then(function (response) {
-        _this.$snotify.success(response.data.message, {
-          closeOnClick: false,
-          pauseOnHover: false,
-          timeout: 1000,
-          showProgressBar: false
-        });
+      this.$refs.form.validate();
 
-        setTimeout(function () {
-          window.location.href = '';
-        }, 2000);
-      })["catch"](function (error) {
-        _this.$snotify.success(error.response.data.message, {
-          closeOnClick: false,
-          pauseOnHover: false,
-          timeout: 1000,
-          showProgressBar: false
+      if (this.valid) {
+        axios.post('/api/contact-us', this.contactFormData).then(function (response) {
+          _this.$toast.open({
+            message: response.data.message,
+            type: 'success'
+          });
+
+          setTimeout(function () {
+            window.location.href = '';
+          }, 2000);
+        })["catch"](function (error) {
+          var errors = error.response.data.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this.$toast.open({
+            message: html,
+            type: 'error'
+          });
         });
-      });
+      }
     }
   }
 });

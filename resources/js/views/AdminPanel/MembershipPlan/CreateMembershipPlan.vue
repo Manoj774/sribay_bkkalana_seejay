@@ -8,7 +8,7 @@
                     </router-link>
                 </v-col>
                 <v-col cols="12" sm="12" md="12" lg="12">
-                    <v-form @submit.prevent="submitNewMembershipPlanFrom">
+                    <v-form @submit.prevent="submitNewMembershipPlanFrom" ref="create_membership_form" v-model="membership_valid">
                         <v-card
                             class="mx-auto"
                             max-width="800"
@@ -162,6 +162,7 @@
                                             type="number"
                                             required
                                             v-model="membership.registered_commission"
+                                            :rules="registerCommissionRules"
                                         >
                                         </v-text-field>
                                     </v-col>
@@ -172,6 +173,7 @@
                                             type="number"
                                             required
                                             v-model="membership.referral_commission"
+                                            :rules="referralCommissionRules"
                                         >
                                         </v-text-field>
                                     </v-col>
@@ -210,6 +212,7 @@
                 referral_commission:'',
 
             },
+            membership_valid:false,
             membershipNameRules: [
                 v => !!v || 'Membership Name is required',
                 v => (v && v.length <= 250) || 'Membership Name must be less than 250 characters',
@@ -232,6 +235,12 @@
             bonusRewardsRules: [
                 v => !!v || 'Bonus Reward is required',
             ],
+            referralCommissionRules: [
+                v => !!v || 'Referral commission is required.',
+            ],
+            registerCommissionRules: [
+                v => !!v || 'Registered commission is required',
+            ],
         }),
         methods:{
             calculateDailyReward(){
@@ -250,23 +259,27 @@
                 this.membership.annual_revenue = calculateMonthlyIncomeWithBonus * 12;
             },
             submitNewMembershipPlanFrom(){
-                axios.post('/api/membership/create', this.membership).then(response => {
-                    this.$toast.open({
-                        message: response.data.message,
-                        type: 'success',
+                this.$refs.create_membership_form.validate();
+                if (this.membership_valid){
+                    axios.post('/api/membership/create', this.membership).then(response => {
+                        this.$toast.open({
+                            message: response.data.message,
+                            type: 'success',
+                        });
+                        this.$router.go(this.$router.currentRoute)
+                    }, err => {
+                        const errors = err.response.data.message;
+                        var html = '';
+                        for (const i in errors){
+                            html += errors[i];
+                        }
+                        this.$toast.open({
+                            message: html,
+                            type: 'error',
+                        });
                     });
-                    this.$router.go(this.$router.currentRoute)
-                }, response => {
-                    const errors = response.data.message;
-                    var html = '';
-                    for (const i in errors){
-                        html += errors[i];
-                    }
-                    this.$toast.open({
-                        message: html,
-                        type: 'error',
-                    });
-                });
+                }
+
             }
         },
 

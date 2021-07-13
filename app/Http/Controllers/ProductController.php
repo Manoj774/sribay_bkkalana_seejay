@@ -278,7 +278,7 @@ class ProductController extends Controller
      */
     public function create(Request $request)
     {
-        $request->validate([
+        $validator = Validator::make($request->all(),[
             'product_name' => 'required|unique:products|max:250',
             'description' => 'required',
             'market_price' => 'required|numeric',
@@ -289,7 +289,9 @@ class ProductController extends Controller
             'images' => 'required',
             'product_category' => 'required',
         ]);
-
+        if ($validator->fails()) {
+            return response()->json(['errors' => $validator->errors()->all()], 500);
+        }
         $product = new Product([
             'product_name' => $request->product_name,
             'is_featured' => $request->is_featured,
@@ -374,6 +376,7 @@ class ProductController extends Controller
      * @return void json
      */
     public function update(Request $request){
+
         $validator =  Validator::make($request->all(), [
             'product_name' => 'required|max:250',
             'description' => 'required',
@@ -386,7 +389,7 @@ class ProductController extends Controller
         ]);
 
         if ($validator->fails()) {
-            return response()->json(['message' => $validator->errors()], 401);
+            return response()->json(['message' => $validator->errors()->all()], 401);
         }
 
         $product = Product::find($request->id);
@@ -497,11 +500,14 @@ class ProductController extends Controller
             ->select('count_down_products.*','products.sell_price')
             ->join('products','count_down_products.product_id','=','products.id')
             ->first();
-        $countDownProductImages = DB::table('product_images')
-            ->select('id','image_url AS image')
-            ->where('product_id', $countDownProduct->product_id)->get();
-        $countDownProduct->productGallery = $countDownProductImages;
-        return response()->json(['product' => $countDownProduct], 200);
+        if($countDownProduct){
+            $countDownProductImages = DB::table('product_images')
+                ->select('id','image_url AS image')
+                ->where('product_id', $countDownProduct->product_id)->get();
+            $countDownProduct->productGallery = $countDownProductImages;
+            return response()->json(['product' => $countDownProduct], 200);
+        }
+        return response()->json(['product' => null], 200);
     }
 
 

@@ -6,11 +6,11 @@
 				<router-link :to="'/product-detail/'+data.id">
 					<img alt="product" :src="data.image_url" style="max-height: 280px;min-height: 280px;">
 				</router-link>
-				<div class="wishlist-icon">
-					<v-btn @click="addItemToWishlist(data)" icon >
-						<v-icon class="grey--text">mdi-cards-heart </v-icon>
-					</v-btn>
-				</div>
+<!--				<div class="wishlist-icon">-->
+<!--					<v-btn @click="addItemToWishlist(data)" icon >-->
+<!--						<v-icon class="grey&#45;&#45;text">mdi-cards-heart </v-icon>-->
+<!--					</v-btn>-->
+<!--				</div>-->
 				<div class="add-to-cart">
 					<v-btn
 						class="accent"
@@ -22,7 +22,7 @@
 				</div>
 			</div>
 			<div class="emb-card-content pa-4">
-				<h6 class="font-weight-medium text-capitalize">{{data.product_name.substring(0,50)+'....'}}</h6>
+				<h6 class="font-weight-medium text-capitalize">{{data.product_name.toLowerCase().substring(0,50)+'....'}}</h6>
 				<div class="emb-meta-info layout align-center justify-space-between">
 					<div class="inline-block">
 						<h6 class="accent--text">
@@ -55,6 +55,9 @@ export default {
 	  ...mapGetters(["wishlist"])
 	},
 	methods: {
+        capitalizeFirstLetter(string) {
+            return string.charAt(0).toUpperCase() + string.slice(1);
+        },
 		/**
 		 * method for adding item to cart
 		*/

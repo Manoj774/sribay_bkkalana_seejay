@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\MembershipPlan;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 
 class MembershipPlanController extends Controller
 {
@@ -95,7 +96,7 @@ class MembershipPlanController extends Controller
      */
     public function update(Request $request, $id)
     {
-        $request->validate([
+        $validator =  Validator::make($request->all(),[
             'name' => 'required|unique:categories|max:250',
             'price' => 'required|numeric',
             'value_for_point' => 'required|numeric',
@@ -107,13 +108,17 @@ class MembershipPlanController extends Controller
             'referral_commission' => 'required|numeric',
         ]);
 
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
+
         $membershipPlan = MembershipPlan::find($id);
         if (!$membershipPlan) {
             return response()->json(['message' => 'Membership plan not found'], 404);
         }
         $membershipPlan->name = $request->name;
         $membershipPlan->price = $request->price;
-        $membershipPlan->value_for_point = $request->valueForPoint;
+        $membershipPlan->value_for_point = $request->value_for_point;
         $membershipPlan->no_of_link_click_per_day = $request->no_of_link_click_per_day;
         $membershipPlan->task_rewards = $request->task_rewards;
         $membershipPlan->total_reward_per_day = $request->total_reward_per_day;
@@ -131,6 +136,24 @@ class MembershipPlanController extends Controller
         }
 
         return response()->json(['message' => 'Membership plan has been updated'], 200);
+    }
+
+    public function storeWithdrawalDate(Request $request){
+        $validator =  Validator::make($request->all(),[
+            'withdrawal_date' => 'required|date',
+        ]);
+        if ($validator->fails()) {
+            return response()->json(['message' => $validator->errors()->all()], 401);
+        }
+        $memberships = MembershipPlan::all();
+
+        foreach ($memberships as $membership){
+            $membership->withdrawal_date = $request->withdrawal_date;
+            $membership->update();
+        }
+
+        return response()->json(['message' => 'Withdrawal date successfully created'], 200);
+
     }
 
     /**

@@ -202,6 +202,8 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "CreateMembership",
   data: function data() {
@@ -244,7 +246,14 @@ __webpack_require__.r(__webpack_exports__);
       }],
       bonusRewardsRules: [function (v) {
         return !!v || 'Bonus Reward is required';
-      }]
+      }],
+      referralCommissionRules: [function (v) {
+        return !!v || 'Referral commission is required.';
+      }],
+      registerCommissionRules: [function (v) {
+        return !!v || 'Registered commission is required';
+      }],
+      edit_membership_valid: false
     };
   },
   created: function created() {
@@ -288,26 +297,30 @@ __webpack_require__.r(__webpack_exports__);
     submitUpdateMembershipPlanFrom: function submitUpdateMembershipPlanFrom() {
       var _this2 = this;
 
-      axios.put('/api/membership/' + this.membership.id, this.membership).then(function (response) {
-        _this2.$toast.open({
-          message: response.data.message,
-          type: 'success'
+      this.$refs.edit_membership_form.validate();
+
+      if (this.edit_membership_valid) {
+        axios.put('/api/membership/' + this.membership.id, this.membership).then(function (response) {
+          _this2.$toast.open({
+            message: response.data.message,
+            type: 'success'
+          });
+
+          _this2.$router.go(_this2.$router.currentRoute);
+        }, function (err) {
+          var errors = err.response.data.message;
+          var html = '';
+
+          for (var i in errors) {
+            html += errors[i];
+          }
+
+          _this2.$toast.open({
+            message: html,
+            type: 'error'
+          });
         });
-
-        _this2.$router.go(_this2.$router.currentRoute);
-      }, function (response) {
-        var errors = response.data.message;
-        var html = '';
-
-        for (var i in errors) {
-          html += errors[i];
-        }
-
-        _this2.$toast.open({
-          message: html,
-          type: 'error'
-        });
-      });
+      }
     }
   }
 });
@@ -442,6 +455,7 @@ var render = function() {
                   _c(
                     "v-form",
                     {
+                      ref: "edit_membership_form",
                       on: {
                         submit: function($event) {
                           $event.preventDefault()
@@ -450,6 +464,13 @@ var render = function() {
                             arguments
                           )
                         }
+                      },
+                      model: {
+                        value: _vm.edit_membership_valid,
+                        callback: function($$v) {
+                          _vm.edit_membership_valid = $$v
+                        },
+                        expression: "edit_membership_valid"
                       }
                     },
                     [
@@ -920,7 +941,8 @@ var render = function() {
                                         attrs: {
                                           label: "Registered Commission",
                                           type: "number",
-                                          required: ""
+                                          required: "",
+                                          rules: _vm.registerCommissionRules
                                         },
                                         model: {
                                           value:
@@ -957,7 +979,8 @@ var render = function() {
                                         attrs: {
                                           label: "Referral Commission",
                                           type: "number",
-                                          required: ""
+                                          required: "",
+                                          rules: _vm.referralCommissionRules
                                         },
                                         model: {
                                           value:

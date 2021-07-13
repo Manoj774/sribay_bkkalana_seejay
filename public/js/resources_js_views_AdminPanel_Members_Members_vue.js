@@ -67,11 +67,91 @@ __webpack_require__.r(__webpack_exports__);
 //
 //
 //
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
+//
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = ({
   name: "Members",
   data: function data() {
     return {
       switch1: true,
+      width: 300,
       tableHeaders: [{
         text: '#',
         align: 'start',
@@ -106,7 +186,11 @@ __webpack_require__.r(__webpack_exports__);
         value: 'status',
         sortable: false
       }, {
-        text: 'Actions',
+        text: 'Affiliate Status',
+        value: 'affiliate_status',
+        sortable: false
+      }, {
+        text: 'Payment Status',
         value: 'actions',
         sortable: false
       }],
@@ -114,7 +198,9 @@ __webpack_require__.r(__webpack_exports__);
       search: null,
       dialog: false,
       changeStatus: true,
-      changeStatusCustomerId: null
+      changeStatusCustomerId: null,
+      payment_status_dialog: false,
+      payment_status_change_dialog: false
     };
   },
   watch: {
@@ -145,7 +231,9 @@ __webpack_require__.r(__webpack_exports__);
             account_amount: responseData[i].account_amount,
             date_registered: responseData[i].created_at,
             stat: responseData[i].stat,
-            id: responseData[i].id
+            id: responseData[i].id,
+            affiliate_stat: responseData[i].affiliate_stat,
+            payment_detail: responseData[i].payment_details
           });
 
           count++;
@@ -175,6 +263,7 @@ __webpack_require__.r(__webpack_exports__);
       this.changeStatus = null;
       this.changeStatusCustomerId = null;
       this.dialog = false;
+      window.location.href = "";
     },
     changeCustomerStatus: function changeCustomerStatus() {
       var _this2 = this;
@@ -194,7 +283,7 @@ __webpack_require__.r(__webpack_exports__);
         });
 
         setTimeout(function () {
-          _this2.getCustomers();
+          window.location.href = "";
         }, 2000);
       }, function (err) {
         var errors = err.response.data.message;
@@ -205,6 +294,51 @@ __webpack_require__.r(__webpack_exports__);
         }
 
         _this2.$toast.open({
+          message: html,
+          type: 'error'
+        });
+      });
+    },
+    changeAffiliateStatusDialogOpen: function changeAffiliateStatusDialogOpen(user_id, value, event) {
+      this.changeStatus = value;
+      this.changeStatusCustomerId = user_id;
+      this.payment_status_change_dialog = true;
+    },
+    closeAffiliateStatusChangeDialog: function closeAffiliateStatusChangeDialog() {
+      this.changeStatus = null;
+      this.changeStatusCustomerId = null;
+      this.payment_status_change_dialog = false;
+      window.location.href = "";
+    },
+    changeAffiliateStatus: function changeAffiliateStatus() {
+      var _this3 = this;
+
+      var member = {
+        id: this.changeStatusCustomerId,
+        status: this.changeStatus
+      };
+      axios.post('/api/members/change-affiliate-status', member).then(function (response) {
+        _this3.closeAffiliateStatusChangeDialog();
+
+        _this3.$snotify.success('Member Affiliate Status Updated', {
+          closeOnClick: false,
+          pauseOnHover: false,
+          timeout: 1000,
+          showProgressBar: false
+        });
+
+        setTimeout(function () {
+          window.location.href = "";
+        }, 2000);
+      }, function (err) {
+        var errors = err.response.data.message;
+        var html = '';
+
+        for (var i in errors) {
+          html += errors[i];
+        }
+
+        _this3.$toast.open({
           message: html,
           type: 'error'
         });
@@ -303,196 +437,403 @@ var render = function() {
   var _vm = this
   var _h = _vm.$createElement
   var _c = _vm._self._c || _h
-  return _c("div", [
-    _c("h4", { staticClass: "mb-6" }, [_vm._v("Members")]),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: "pa-4 pt-0 emb-card mb-6" },
-      [
-        _c(
-          "v-row",
-          [
-            _c(
-              "v-col",
-              { attrs: { cols: "12", sm: "8", md: "5", lg: "5" } },
-              [
-                _c("v-text-field", {
-                  attrs: {
-                    label: "Search",
-                    "single-line": "",
-                    "hide-details": ""
-                  },
-                  model: {
-                    value: _vm.search,
-                    callback: function($$v) {
-                      _vm.search = $$v
-                    },
-                    expression: "search"
-                  }
-                })
-              ],
-              1
-            )
-          ],
-          1
-        )
-      ],
-      1
-    ),
-    _vm._v(" "),
-    _c(
-      "div",
-      { staticClass: " pa-4" },
-      [
-        _c("v-data-table", {
-          staticClass: "elevation-1",
-          attrs: {
-            headers: _vm.tableHeaders,
-            items: _vm.members,
-            "items-per-page": 20,
-            search: _vm.search
-          },
-          scopedSlots: _vm._u([
-            {
-              key: "top",
-              fn: function() {
-                return [
-                  _c(
-                    "v-dialog",
-                    {
-                      attrs: { "max-width": "650px" },
-                      model: {
-                        value: _vm.dialog,
-                        callback: function($$v) {
-                          _vm.dialog = $$v
-                        },
-                        expression: "dialog"
-                      }
-                    },
-                    [
-                      _c(
-                        "v-card",
-                        [
-                          _c("v-card-title", { staticClass: "text-h5" }, [
-                            _vm._v(
-                              "Are you sure you want to change this this customer status ?"
-                            )
-                          ]),
-                          _vm._v(" "),
-                          _c(
-                            "v-card-actions",
-                            [
-                              _c("v-spacer"),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: { color: "blue darken-1", text: "" },
-                                  on: { click: _vm.closeStatusChangeDialog }
-                                },
-                                [_vm._v("Cancel")]
-                              ),
-                              _vm._v(" "),
-                              _c(
-                                "v-btn",
-                                {
-                                  attrs: { color: "blue darken-1", text: "" },
-                                  on: { click: _vm.changeCustomerStatus }
-                                },
-                                [_vm._v("OK")]
-                              ),
-                              _vm._v(" "),
-                              _c("v-spacer")
-                            ],
-                            1
-                          )
-                        ],
-                        1
-                      )
-                    ],
-                    1
-                  )
-                ]
-              },
-              proxy: true
-            },
-            {
-              key: "item.account_amount",
-              fn: function(ref) {
-                var item = ref.item
-                return [
-                  _vm._v(
-                    "\n               " +
-                      _vm._s(item.account_amount.toFixed(2)) +
-                      "\n            "
-                  )
-                ]
-              }
-            },
-            {
-              key: "item.status",
-              fn: function(ref) {
-                var item = ref.item
-                return [
-                  _c("v-switch", {
+  return _c(
+    "div",
+    [
+      _c("h4", { staticClass: "mb-6" }, [_vm._v("Members")]),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: "pa-4 pt-0 emb-card mb-6" },
+        [
+          _c(
+            "v-row",
+            [
+              _c(
+                "v-col",
+                { attrs: { cols: "12", sm: "8", md: "5", lg: "5" } },
+                [
+                  _c("v-text-field", {
                     attrs: {
-                      color: "success",
-                      value: item.stat,
-                      "input-value": item.stat
+                      label: "Search",
+                      "single-line": "",
+                      "hide-details": ""
                     },
-                    on: {
-                      change: function($event) {
-                        return _vm.changeStatusCustomerDialogOpen(
-                          item.id,
-                          $event !== null,
-                          $event
-                        )
-                      }
+                    model: {
+                      value: _vm.search,
+                      callback: function($$v) {
+                        _vm.search = $$v
+                      },
+                      expression: "search"
                     }
                   })
-                ]
-              }
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "div",
+        { staticClass: " pa-4" },
+        [
+          _c("v-data-table", {
+            staticClass: "elevation-1",
+            attrs: {
+              headers: _vm.tableHeaders,
+              items: _vm.members,
+              "items-per-page": 20,
+              search: _vm.search
             },
-            {
-              key: "item.actions",
-              fn: function(ref) {
-                var item = ref.item
-                return [
+            scopedSlots: _vm._u([
+              {
+                key: "top",
+                fn: function() {
+                  return [
+                    _c(
+                      "v-dialog",
+                      {
+                        attrs: { "max-width": "720px" },
+                        model: {
+                          value: _vm.payment_status_change_dialog,
+                          callback: function($$v) {
+                            _vm.payment_status_change_dialog = $$v
+                          },
+                          expression: "payment_status_change_dialog"
+                        }
+                      },
+                      [
+                        _c(
+                          "v-card",
+                          [
+                            _c("v-card-title", { staticClass: "text-h5" }, [
+                              _vm._v(
+                                "Are you sure you want to change this this member affiliate status ?"
+                              )
+                            ]),
+                            _vm._v(" "),
+                            _c(
+                              "v-card-actions",
+                              [
+                                _c("v-spacer"),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "blue darken-1", text: "" },
+                                    on: {
+                                      click:
+                                        _vm.closeAffiliateStatusChangeDialog
+                                    }
+                                  },
+                                  [_vm._v("Cancel")]
+                                ),
+                                _vm._v(" "),
+                                _c(
+                                  "v-btn",
+                                  {
+                                    attrs: { color: "blue darken-1", text: "" },
+                                    on: { click: _vm.changeAffiliateStatus }
+                                  },
+                                  [_vm._v("OK")]
+                                ),
+                                _vm._v(" "),
+                                _c("v-spacer")
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      ],
+                      1
+                    )
+                  ]
+                },
+                proxy: true
+              },
+              {
+                key: "item.account_amount",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _vm._v(
+                      "\n               " +
+                        _vm._s(item.account_amount.toFixed(2)) +
+                        "\n            "
+                    )
+                  ]
+                }
+              },
+              {
+                key: "item.status",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _c("v-switch", {
+                      attrs: {
+                        color: "success",
+                        value: item.stat,
+                        "input-value": item.stat
+                      },
+                      on: {
+                        change: function($event) {
+                          return _vm.changeStatusCustomerDialogOpen(
+                            item.id,
+                            $event !== null,
+                            $event
+                          )
+                        }
+                      }
+                    })
+                  ]
+                }
+              },
+              {
+                key: "item.affiliate_status",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    _c("v-switch", {
+                      attrs: {
+                        color: "success",
+                        value: item.affiliate_stat,
+                        "input-value": item.affiliate_stat
+                      },
+                      on: {
+                        change: function($event) {
+                          return _vm.changeAffiliateStatusDialogOpen(
+                            item.id,
+                            $event !== null,
+                            $event
+                          )
+                        }
+                      }
+                    })
+                  ]
+                }
+              },
+              {
+                key: "item.actions",
+                fn: function(ref) {
+                  var item = ref.item
+                  return [
+                    !item.affiliate_stat
+                      ? _c(
+                          "v-dialog",
+                          {
+                            attrs: { persistent: "", "max-width": "600px" },
+                            scopedSlots: _vm._u(
+                              [
+                                {
+                                  key: "activator",
+                                  fn: function(ref) {
+                                    var on = ref.on
+                                    var attrs = ref.attrs
+                                    return [
+                                      _c(
+                                        "v-chip",
+                                        _vm._g(
+                                          _vm._b(
+                                            {
+                                              staticClass: "ma-2",
+                                              attrs: {
+                                                color: "orange",
+                                                "text-color": "white"
+                                              }
+                                            },
+                                            "v-chip",
+                                            attrs,
+                                            false
+                                          ),
+                                          on
+                                        ),
+                                        [
+                                          _vm._v(
+                                            "\n                            Pending\n                        "
+                                          )
+                                        ]
+                                      )
+                                    ]
+                                  }
+                                }
+                              ],
+                              null,
+                              true
+                            ),
+                            model: {
+                              value: _vm.payment_status_dialog,
+                              callback: function($$v) {
+                                _vm.payment_status_dialog = $$v
+                              },
+                              expression: "payment_status_dialog"
+                            }
+                          },
+                          [
+                            _vm._v(" "),
+                            _c(
+                              "v-card",
+                              [
+                                _c("v-card-title", [
+                                  _c("span", { staticClass: "text-h5" }, [
+                                    _vm._v("Member Bank Payment Details")
+                                  ])
+                                ]),
+                                _vm._v(" "),
+                                _c("v-card-text", [
+                                  _c("h6", [_vm._v("Payment Slip Image")]),
+                                  _vm._v(" "),
+                                  _c(
+                                    "div",
+                                    {
+                                      staticClass:
+                                        "d-flex flex-column justify-space-between align-center"
+                                    },
+                                    [
+                                      _c("v-slider", {
+                                        staticClass: "align-self-stretch",
+                                        attrs: {
+                                          min: "200",
+                                          max: "500",
+                                          step: "1"
+                                        },
+                                        model: {
+                                          value: _vm.width,
+                                          callback: function($$v) {
+                                            _vm.width = $$v
+                                          },
+                                          expression: "width"
+                                        }
+                                      }),
+                                      _vm._v(" "),
+                                      _c("v-img", {
+                                        attrs: {
+                                          "aspect-ratio": 16 / 9,
+                                          width: _vm.width,
+                                          src: item.payment_detail.payment_slip
+                                        }
+                                      })
+                                    ],
+                                    1
+                                  )
+                                ]),
+                                _vm._v(" "),
+                                _c(
+                                  "v-card-actions",
+                                  [
+                                    _c("v-spacer"),
+                                    _vm._v(" "),
+                                    _c(
+                                      "v-btn",
+                                      {
+                                        attrs: {
+                                          color: "blue darken-1",
+                                          text: ""
+                                        },
+                                        on: {
+                                          click: function($event) {
+                                            _vm.payment_status_dialog = false
+                                          }
+                                        }
+                                      },
+                                      [
+                                        _vm._v(
+                                          "\n                                Close\n                            "
+                                        )
+                                      ]
+                                    )
+                                  ],
+                                  1
+                                )
+                              ],
+                              1
+                            )
+                          ],
+                          1
+                        )
+                      : _c(
+                          "v-chip",
+                          {
+                            staticClass: "ma-2",
+                            attrs: { color: "success", "text-color": "white" }
+                          },
+                          [
+                            _vm._v(
+                              "\n                    Approval\n                "
+                            )
+                          ]
+                        )
+                  ]
+                }
+              }
+            ])
+          })
+        ],
+        1
+      ),
+      _vm._v(" "),
+      _c(
+        "v-dialog",
+        {
+          attrs: { "max-width": "650px" },
+          model: {
+            value: _vm.dialog,
+            callback: function($$v) {
+              _vm.dialog = $$v
+            },
+            expression: "dialog"
+          }
+        },
+        [
+          _c(
+            "v-card",
+            [
+              _c("v-card-title", { staticClass: "text-h5" }, [
+                _vm._v(
+                  "Are you sure you want to change this this member status ?"
+                )
+              ]),
+              _vm._v(" "),
+              _c(
+                "v-card-actions",
+                [
+                  _c("v-spacer"),
+                  _vm._v(" "),
                   _c(
                     "v-btn",
                     {
-                      staticClass: "mr-3",
-                      attrs: {
-                        slot: "activator",
-                        text: "",
-                        icon: "",
-                        color: "grey",
-                        small: ""
-                      },
-                      on: {
-                        click: function($event) {
-                          return _vm.openDialog(item)
-                        }
-                      },
-                      slot: "activator"
+                      attrs: { color: "blue darken-1", text: "" },
+                      on: { click: _vm.closeStatusChangeDialog }
                     },
-                    [
-                      _c("v-icon", { staticClass: "primary--text" }, [
-                        _vm._v("mdi-eye")
-                      ])
-                    ],
-                    1
-                  )
-                ]
-              }
-            }
-          ])
-        })
-      ],
-      1
-    )
-  ])
+                    [_vm._v("Cancel")]
+                  ),
+                  _vm._v(" "),
+                  _c(
+                    "v-btn",
+                    {
+                      attrs: { color: "blue darken-1", text: "" },
+                      on: { click: _vm.changeCustomerStatus }
+                    },
+                    [_vm._v("OK")]
+                  ),
+                  _vm._v(" "),
+                  _c("v-spacer")
+                ],
+                1
+              )
+            ],
+            1
+          )
+        ],
+        1
+      )
+    ],
+    1
+  )
 }
 var staticRenderFns = []
 render._withStripped = true
