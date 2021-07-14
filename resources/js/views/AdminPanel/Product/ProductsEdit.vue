@@ -294,6 +294,23 @@
 
                 const formData = new FormData();
 
+
+                if(this.product.images == null){
+                    this.$toast.open({
+                        message: "Please add images to this product...!",
+                        type: 'error',
+                    });
+                    return;
+                }
+
+                if(this.product.product_categories == null){
+                    this.$toast.open({
+                        message: "Please add category to this product...!",
+                        type: 'error',
+                    });
+                    return;
+                }
+
                 for(let i = 0; i < this.product.images.length; i++ ){
                     let file = this.product.images[i];
                     formData.append('images[' + i + ']', file);

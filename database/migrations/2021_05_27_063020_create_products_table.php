@@ -22,7 +22,7 @@ class CreateProductsTable extends Migration
             $table->double('sell_price')->nullable(false);
             $table->double('selling_margin')->nullable(false);
             $table->double('quantity')->nullable(false);
-            $table->string('sku')->nullable(false);
+            $table->string('sku')->nullable(true);
             $table->boolean('is_featured')->nullable(false)->default(false);
             $table->boolean('stat')->nullable(false)->default(true);
             $table->timestamps();

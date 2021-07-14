@@ -17,7 +17,7 @@ class CreateProductImagesTable extends Migration
             $table->increments('id');
             $table->string('image_url')->nullable(false);
             $table->foreignId('product_id')->nullable(false);
-            $table->boolean('is_main');
+            $table->boolean('is_main')->nullable(true);
             $table->boolean('stat')->nullable(false)->default(true);
             $table->timestamps();
         });
